@@ -67,18 +67,18 @@ export default function SetWithdrawPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#bde2ff] via-[#ebf5fe] to-[#cfe7fe] flex flex-col justify-between">
+    <div className="min-h-screen bg-gradient-to-b from-[#020a1f] via-[#051338] to-[#01081a] text-white flex flex-col justify-between pb-28">
       <div>
         <Header title="Set Withdrawl Password" showBack={true} />
 
         <div className="p-4 space-y-4 max-w-[400px] mx-auto">
           {/* Security Shield Icon Badge */}
           <div className="flex flex-col items-center justify-center my-3">
-            <div className="relative w-20 h-20 rounded-full bg-gradient-to-tr from-blue-500 to-cyan-400 p-1 flex items-center justify-center shadow-lg border-2 border-white">
-              <Shield size={40} className="text-white drop-shadow" />
-              <Lock size={18} className="absolute text-blue-950 stroke-[3]" />
+            <div className="relative w-20 h-20 rounded-full bg-gradient-to-tr from-[#ffe58f] via-[#f5ba31] to-[#d49002] p-1 flex items-center justify-center shadow-[0_0_20px_rgba(245,186,49,0.4)] border-2 border-white/40">
+              <Shield size={40} className="text-[#020a1f] drop-shadow" />
+              <Lock size={18} className="absolute text-[#020a1f] stroke-[3]" />
             </div>
-            <h2 className="text-base font-black text-blue-950 mt-3 tracking-tight">
+            <h2 className="text-base font-black text-white mt-3 tracking-tight">
               Set Withdrawl Password
             </h2>
           </div>
@@ -98,63 +98,63 @@ export default function SetWithdrawPasswordPage() {
 
           <form
             onSubmit={handleSubmit}
-            className="p-5 rounded-3xl bg-white shadow-md border border-blue-200 space-y-4"
+            className="p-5 rounded-3xl bg-[#04102e]/85 backdrop-blur-md border border-[#f5ba31]/30 shadow-lg space-y-4"
           >
             {/* Login Password input */}
-            <div className="flex items-center bg-blue-50/50 rounded-2xl border-2 border-blue-200 px-3.5 py-1 focus-within:border-blue-500">
-              <Lock size={18} className="text-blue-500 mr-2 flex-shrink-0" />
+            <div className="flex items-center bg-[#020a1f] rounded-2xl border border-slate-700 px-3.5 py-1 focus-within:border-[#f5ba31]">
+              <Lock size={18} className="text-[#f5ba31] mr-2 flex-shrink-0" />
               <input
                 type={showLoginPass ? "text" : "password"}
                 placeholder="Enter your login password"
                 value={loginPassword}
                 onChange={(e) => setLoginPassword(e.target.value)}
-                className="w-full py-2.5 bg-transparent text-sm font-semibold text-gray-800 placeholder-gray-400 outline-none"
+                className="w-full py-2.5 bg-transparent text-sm font-semibold text-white placeholder-slate-500 outline-none"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowLoginPass(!showLoginPass)}
-                className="p-1 text-gray-400 hover:text-blue-600"
+                className="p-1 text-slate-400 hover:text-[#f5ba31]"
               >
                 {showLoginPass ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
 
             {/* New Withdrawal Password input */}
-            <div className="flex items-center bg-blue-50/50 rounded-2xl border-2 border-blue-200 px-3.5 py-1 focus-within:border-blue-500">
-              <Lock size={18} className="text-blue-500 mr-2 flex-shrink-0" />
+            <div className="flex items-center bg-[#020a1f] rounded-2xl border border-slate-700 px-3.5 py-1 focus-within:border-[#f5ba31]">
+              <Lock size={18} className="text-[#f5ba31] mr-2 flex-shrink-0" />
               <input
                 type={showWithdrawPass ? "text" : "password"}
                 placeholder="Plesse enter you withdrawl new password"
                 value={withdrawPassword}
                 onChange={(e) => setWithdrawPassword(e.target.value)}
-                className="w-full py-2.5 bg-transparent text-sm font-semibold text-gray-800 placeholder-gray-400 outline-none"
+                className="w-full py-2.5 bg-transparent text-sm font-semibold text-white placeholder-slate-500 outline-none"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowWithdrawPass(!showWithdrawPass)}
-                className="p-1 text-gray-400 hover:text-blue-600"
+                className="p-1 text-slate-400 hover:text-[#f5ba31]"
               >
                 {showWithdrawPass ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
 
             {/* Confirm Withdrawal Password */}
-            <div className="flex items-center bg-blue-50/50 rounded-2xl border-2 border-blue-200 px-3.5 py-1 focus-within:border-blue-500">
-              <Lock size={18} className="text-blue-500 mr-2 flex-shrink-0" />
+            <div className="flex items-center bg-[#020a1f] rounded-2xl border border-slate-700 px-3.5 py-1 focus-within:border-[#f5ba31]">
+              <Lock size={18} className="text-[#f5ba31] mr-2 flex-shrink-0" />
               <input
                 type={showConfirmPass ? "text" : "password"}
                 placeholder="Confirm your withdrawl new password"
                 value={confirmWithdrawPassword}
                 onChange={(e) => setConfirmWithdrawPassword(e.target.value)}
-                className="w-full py-2.5 bg-transparent text-sm font-semibold text-gray-800 placeholder-gray-400 outline-none"
+                className="w-full py-2.5 bg-transparent text-sm font-semibold text-white placeholder-slate-500 outline-none"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowConfirmPass(!showConfirmPass)}
-                className="p-1 text-gray-400 hover:text-blue-600"
+                className="p-1 text-slate-400 hover:text-[#f5ba31]"
               >
                 {showConfirmPass ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
@@ -163,7 +163,7 @@ export default function SetWithdrawPasswordPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold text-base shadow-md active:scale-98 transition-all disabled:opacity-50"
+              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#f5ba31] via-[#ffd369] to-[#d49002] text-[#020a1f] font-black text-base shadow-[0_0_20px_rgba(245,186,49,0.35)] active:scale-98 transition-all disabled:opacity-50"
             >
               {loading ? "Setting Password..." : "Set withdraw password"}
             </button>

@@ -61,24 +61,24 @@ export default function CountryCodeDropdown({
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className="h-[48px] min-w-[105px] px-3 bg-white rounded-2xl border-2 border-blue-200 shadow-sm flex items-center justify-between gap-1.5 hover:border-blue-400 focus:border-blue-500 transition-all select-none active:scale-98"
+        className="h-[48px] min-w-[105px] px-3 bg-[#04102e] rounded-2xl border-2 border-slate-700 shadow-sm flex items-center justify-between gap-1.5 hover:border-[#f5ba31]/60 focus:border-[#f5ba31] transition-all select-none active:scale-98"
       >
         <div className="flex items-center gap-1.5">
-          <User size={18} className="text-blue-600 flex-shrink-0" />
-          <span className="text-sm font-black text-blue-950 tracking-tight">
+          <User size={18} className="text-[#f5ba31] flex-shrink-0" />
+          <span className="text-sm font-black text-white tracking-tight">
             {selected.code}
           </span>
         </div>
         <ChevronDown
           size={15}
-          className={`text-blue-900 transition-transform duration-200 ${
-            isOpen ? "rotate-180" : ""
+          className={`text-slate-300 transition-transform duration-200 ${
+            isOpen ? "rotate-180 text-[#f5ba31]" : ""
           }`}
         />
       </button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 mt-1.5 w-40 bg-white/98 backdrop-blur-md rounded-2xl border-2 border-blue-200 shadow-xl overflow-hidden z-50 py-1.5 max-h-64 overflow-y-auto">
+        <div className="absolute top-full left-0 mt-1.5 w-44 bg-[#04102e]/98 backdrop-blur-md rounded-2xl border-2 border-[#f5ba31]/50 shadow-[0_0_20px_rgba(245,186,49,0.3)] overflow-hidden z-50 py-1.5 max-h-64 overflow-y-auto">
           {COUNTRY_LIST.map((country, idx) => {
             const isSelected =
               selected.code === country.code && selected.iso === country.iso;
@@ -90,26 +90,26 @@ export default function CountryCodeDropdown({
                   onSelect(country);
                   setIsOpen(false);
                 }}
-                className={`w-full flex items-center justify-between px-3 py-2 text-xs font-bold transition-colors hover:bg-blue-50/80 ${
+                className={`w-full flex items-center justify-between px-3 py-2 text-xs font-bold transition-colors hover:bg-white/10 ${
                   isSelected
-                    ? "bg-blue-50 text-blue-700"
-                    : "text-gray-700"
+                    ? "bg-[#f5ba31]/20 text-[#f5ba31]"
+                    : "text-slate-200"
                 }`}
               >
                 <div className="flex items-center gap-2">
                   <span className="text-base select-none leading-none">
                     {country.flag}
                   </span>
-                  <span className="text-[11px] text-gray-500 font-medium">
+                  <span className="text-[11px] text-slate-400 font-medium">
                     {country.iso}
                   </span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <span className="font-extrabold text-blue-950 text-xs">
+                  <span className="font-extrabold text-white text-xs">
                     {country.code}
                   </span>
                   {isSelected && (
-                    <Check size={13} className="text-blue-600 stroke-[3]" />
+                    <Check size={13} className="text-[#f5ba31] stroke-[3]" />
                   )}
                 </div>
               </button>

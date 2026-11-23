@@ -44,7 +44,7 @@ export default function WithdrawPage() {
       .then((data) => {
         if (data?.user) setBalance(data.user.balance);
       })
-      .catch(() => {});
+      .catch(() => { });
 
     // Fetch bound wallets
     fetch("/api/user/wallets")
@@ -57,7 +57,7 @@ export default function WithdrawPage() {
           }
         }
       })
-      .catch(() => {});
+      .catch(() => { });
 
     // Fetch settings
     fetch("/api/settings")
@@ -67,7 +67,7 @@ export default function WithdrawPage() {
           setUsdtRate(data.settings.usdtRateBDT);
         }
       })
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   const handleWithdrawSubmit = async (e: React.FormEvent) => {
@@ -150,53 +150,53 @@ export default function WithdrawPage() {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#bde2ff] via-[#ebf5fe] to-[#cfe7fe] flex flex-col justify-between">
+    <div className="min-h-screen bg-gradient-to-b from-[#020a1f] via-[#051338] to-[#01081a] text-white flex flex-col justify-between pb-28">
       <div>
         <Header title="Withdraw" showBack={true} />
 
-        <div className="p-4 space-y-4">
+        <div className="p-4 space-y-4 max-w-[420px] mx-auto">
           {/* Withdrawal Amount Header & Rate Pill */}
           <div className="text-center py-2">
-            <span className="text-xs font-bold text-gray-600 uppercase tracking-wider">
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
               Available Balance
             </span>
-            <div className="text-3xl font-black text-blue-950 mt-1 flex items-baseline justify-center gap-1">
+            <div className="text-3xl font-black text-white mt-1 flex items-baseline justify-center gap-1">
               <span>{Number(balance).toFixed(2)}</span>
-              <span className="text-sm font-bold text-blue-600">USDT</span>
+              <span className="text-sm font-bold text-[#f5ba31]">USDT</span>
             </div>
-            <div className="text-xs text-gray-500 font-semibold mt-0.5">
+            <div className="text-xs text-slate-400 font-semibold mt-0.5">
               ≈ {(Number(balance) * usdtRate).toFixed(2)} BDT
             </div>
-            <div className="mt-2 inline-block px-4 py-1 rounded-full bg-blue-100/90 text-blue-800 text-xs font-bold shadow-inner">
+            <div className="mt-2 inline-block px-4 py-1 rounded-full bg-[#f5ba31]/20 border border-[#f5ba31]/60 text-[#f5ba31] text-xs font-bold shadow-[0_0_10px_rgba(245,186,49,0.2)]">
               1 USDT = {usdtRate} BDT (Min: 5 USDT)
             </div>
           </div>
 
           {/* Feedback Alerts */}
           {error && (
-            <div className="p-3 bg-red-100 border border-red-300 text-red-700 text-xs font-semibold rounded-xl text-center shadow-sm flex items-center justify-center gap-1.5">
+            <div className="p-3 bg-red-500/20 border border-red-500/40 text-red-300 text-xs font-semibold rounded-xl text-center shadow-sm flex items-center justify-center gap-1.5">
               <AlertCircle size={16} />
               <span>{error}</span>
             </div>
           )}
           {success && (
-            <div className="p-3 bg-emerald-100 border border-emerald-300 text-emerald-800 text-xs font-semibold rounded-xl text-center shadow-sm flex items-center justify-center gap-1.5">
+            <div className="p-3 bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-semibold rounded-xl text-center shadow-sm flex items-center justify-center gap-1.5">
               <CheckCircle2 size={16} />
               <span>{success}</span>
             </div>
           )}
 
           {/* Form Container with Tabs */}
-          <div className="rounded-3xl bg-white shadow-md border border-blue-200 overflow-hidden">
+          <div className="rounded-3xl bg-[#04102e]/85 backdrop-blur-md border border-[#f5ba31]/30 shadow-lg overflow-hidden">
             {/* Tabs */}
-            <div className="grid grid-cols-2 bg-blue-50/70 border-b border-blue-100">
+            <div className="grid grid-cols-2 bg-[#020a1f]/80 border-b border-white/10">
               <button
                 type="button"
                 onClick={() => setActiveTab("Bank")}
                 className={`py-3.5 text-sm font-bold flex items-center justify-center gap-2 transition-all ${
                   activeTab === "Bank"
-                    ? "bg-white text-blue-700 border-b-2 border-blue-600 shadow-xs"
-                    : "text-gray-500 hover:text-blue-600"
+                    ? "bg-[#04102e] text-[#f5ba31] border-b-2 border-[#f5ba31] shadow-xs"
+                    : "text-slate-400 hover:text-white"
                 }`}
               >
                 <Building size={16} />
@@ -208,8 +208,8 @@ export default function WithdrawPage() {
                 onClick={() => setActiveTab("USDT")}
                 className={`py-3.5 text-sm font-bold flex items-center justify-center gap-2 transition-all ${
                   activeTab === "USDT"
-                    ? "bg-white text-blue-700 border-b-2 border-blue-600 shadow-xs"
-                    : "text-gray-500 hover:text-blue-600"
+                    ? "bg-[#04102e] text-[#f5ba31] border-b-2 border-[#f5ba31] shadow-xs"
+                    : "text-slate-400 hover:text-white"
                 }`}
               >
                 <Coins size={16} />
@@ -225,7 +225,7 @@ export default function WithdrawPage() {
                   <select
                     value={selectedWalletId}
                     onChange={(e) => setSelectedWalletId(e.target.value)}
-                    className="w-full px-3.5 py-3 rounded-2xl bg-blue-50/50 border border-blue-200 text-sm font-semibold text-gray-800 outline-none focus:border-blue-500"
+                    className="w-full px-3.5 py-3 rounded-2xl bg-[#020a1f] border border-slate-700 text-sm font-semibold text-white outline-none focus:border-[#f5ba31]"
                   >
                     {currentWallets.map((w) => (
                       <option key={w._id} value={w._id}>
@@ -241,7 +241,7 @@ export default function WithdrawPage() {
                   <button
                     type="button"
                     onClick={() => router.push("/my-bank")}
-                    className="w-full px-3.5 py-3 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs font-bold flex items-center justify-between hover:bg-amber-100 transition-colors"
+                    className="w-full px-3.5 py-3 rounded-2xl bg-[#f5ba31]/15 border border-[#f5ba31]/40 text-[#f5ba31] text-xs font-bold flex items-center justify-between hover:bg-[#f5ba31]/25 transition-colors"
                   >
                     <span>No {activeTab} wallet bound. Tap to add wallet</span>
                     <ChevronRight size={16} />
@@ -251,7 +251,7 @@ export default function WithdrawPage() {
 
               {/* Withdrawal Amount Input */}
               <div>
-                <label className="block text-xs font-bold text-blue-900 mb-1">
+                <label className="block text-xs font-bold text-slate-300 mb-1">
                   Withdrawal Amount (in USDT)
                 </label>
                 <div className="relative">
@@ -261,35 +261,35 @@ export default function WithdrawPage() {
                     placeholder="Enter amount in USDT (Min: 5)"
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
-                    className="w-full px-3.5 py-3 rounded-2xl bg-blue-50/50 border border-blue-200 text-sm font-semibold text-gray-800 placeholder-gray-400 outline-none focus:border-blue-500"
+                    className="w-full px-3.5 py-3 rounded-2xl bg-[#020a1f] border border-slate-700 text-sm font-semibold text-white placeholder-slate-500 outline-none focus:border-[#f5ba31]"
                     required
                   />
                   <button
                     type="button"
                     onClick={() => setAmount(String(balance))}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 px-2.5 py-1 rounded-xl bg-blue-600 text-white text-[10px] font-bold"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 px-2.5 py-1 rounded-xl bg-[#f5ba31] text-[#020a1f] text-[10px] font-black"
                   >
                     All
                   </button>
                 </div>
                 {amount && Number(amount) > 0 && (
-                  <div className="mt-2 p-2.5 rounded-xl bg-blue-50/80 border border-blue-200 text-xs space-y-1">
-                    <div className="flex justify-between font-semibold text-gray-600">
+                  <div className="mt-2 p-2.5 rounded-xl bg-white/5 border border-white/10 text-xs space-y-1">
+                    <div className="flex justify-between font-semibold text-slate-400">
                       <span>10% Platform Fee:</span>
-                      <span className="text-rose-600 font-bold">
+                      <span className="text-rose-400 font-bold">
                         -{(Number(amount) * 0.1).toFixed(2)} USDT
                       </span>
                     </div>
-                    <div className="flex justify-between font-bold text-blue-950 border-t border-blue-200/60 pt-1">
+                    <div className="flex justify-between font-bold text-white border-t border-white/10 pt-1">
                       <span>Arrival Amount:</span>
-                      <span className="text-emerald-600 font-black">
+                      <span className="text-[#00e676] font-black">
                         {(Number(amount) * 0.9).toFixed(2)} USDT
                       </span>
                     </div>
                     {activeTab === "Bank" && (
-                      <div className="flex justify-between font-black text-blue-900 text-[11px] bg-white/70 p-1.5 rounded-lg border border-blue-200">
+                      <div className="flex justify-between font-black text-white text-[11px] bg-white/5 p-1.5 rounded-lg border border-white/10">
                         <span>bKash / Nagad Arrival:</span>
-                        <span className="text-[#E2136E]">
+                        <span className="text-[#f5ba31]">
                           {((Number(amount) * 0.9) * usdtRate).toFixed(2)} BDT
                         </span>
                       </div>
@@ -299,14 +299,14 @@ export default function WithdrawPage() {
               </div>
 
               {/* Withdrawal Password Input */}
-              <div className="flex items-center px-3.5 py-1 rounded-2xl bg-blue-50/50 border border-blue-200 focus-within:border-blue-500">
-                <Lock size={18} className="text-blue-500 mr-2 flex-shrink-0" />
+              <div className="flex items-center px-3.5 py-1 rounded-2xl bg-[#020a1f] border border-slate-700 focus-within:border-[#f5ba31]">
+                <Lock size={18} className="text-[#f5ba31] mr-2 flex-shrink-0" />
                 <input
                   type="password"
                   placeholder="Enter Your Withdraw Password"
                   value={withdrawPassword}
                   onChange={(e) => setWithdrawPassword(e.target.value)}
-                  className="w-full py-2.5 bg-transparent text-sm font-semibold text-gray-800 placeholder-gray-400 outline-none"
+                  className="w-full py-2.5 bg-transparent text-sm font-semibold text-white placeholder-slate-500 outline-none"
                   required
                 />
               </div>
@@ -315,7 +315,7 @@ export default function WithdrawPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold text-base shadow-md active:scale-98 transition-all disabled:opacity-50"
+                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#f5ba31] via-[#ffd369] to-[#d49002] text-[#020a1f] font-black text-base shadow-[0_0_20px_rgba(245,186,49,0.35)] active:scale-98 transition-all disabled:opacity-50"
               >
                 {loading ? "Processing..." : "Submit"}
               </button>
@@ -323,8 +323,8 @@ export default function WithdrawPage() {
           </div>
 
           {/* Operating Rules List */}
-          <div className="p-4 rounded-3xl bg-white/95 border border-blue-200 shadow-sm text-xs leading-relaxed text-gray-700 space-y-2">
-            <p className="font-semibold text-blue-950">
+          <div className="p-4 rounded-3xl bg-[#04102e]/85 border border-[#f5ba31]/30 shadow-lg text-xs leading-relaxed text-slate-300 space-y-2">
+            <p className="font-semibold text-white">
               1. Minimum withdrawal Amount 250 BDT / 5 USDT
             </p>
             <p className="font-semibold text-blue-950">

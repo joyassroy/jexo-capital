@@ -47,29 +47,29 @@ export default function GiftReceivePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#bde2ff] via-[#ebf5fe] to-[#cfe7fe] flex flex-col justify-between">
+    <div className="min-h-screen bg-gradient-to-b from-[#020a1f] via-[#051338] to-[#01081a] text-white flex flex-col justify-between pb-28">
       <div>
         <Header title="Gift Receive" showBack={true} />
 
         <div className="p-4 space-y-4 max-w-[400px] mx-auto">
           {/* 3D Gift Box illustration */}
           <div className="flex flex-col items-center justify-center my-3">
-            <div className="w-24 h-24 rounded-3xl bg-gradient-to-tr from-blue-500 to-cyan-400 p-2 flex items-center justify-center shadow-xl border-2 border-white animate-floating">
-              <Gift size={56} className="text-white drop-shadow" />
+            <div className="w-24 h-24 rounded-3xl bg-gradient-to-tr from-[#ffe58f] via-[#f5ba31] to-[#d49002] p-2 flex items-center justify-center shadow-[0_0_25px_rgba(245,186,49,0.4)] border-2 border-white/40 animate-floating">
+              <Gift size={56} className="text-[#020a1f] drop-shadow" />
             </div>
-            <h2 className="text-xl font-black text-blue-950 mt-3 tracking-tight">
+            <h2 className="text-xl font-black text-white mt-3 tracking-tight">
               Gift Receive
             </h2>
           </div>
 
           {error && (
-            <div className="p-3 bg-red-100 border border-red-300 text-red-700 text-xs font-semibold rounded-xl text-center shadow-sm flex items-center justify-center gap-1.5">
+            <div className="p-3 bg-red-500/20 border border-red-500/40 text-red-300 text-xs font-semibold rounded-xl text-center shadow-sm flex items-center justify-center gap-1.5">
               <AlertCircle size={16} />
               <span>{error}</span>
             </div>
           )}
           {success && (
-            <div className="p-3 bg-emerald-100 border border-emerald-300 text-emerald-800 text-xs font-semibold rounded-xl text-center shadow-sm flex items-center justify-center gap-1.5">
+            <div className="p-3 bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-semibold rounded-xl text-center shadow-sm flex items-center justify-center gap-1.5">
               <CheckCircle2 size={16} />
               <span>{success}</span>
             </div>
@@ -78,15 +78,15 @@ export default function GiftReceivePage() {
           {/* Form */}
           <form
             onSubmit={handleClaim}
-            className="p-5 rounded-3xl bg-white shadow-md border border-blue-200 space-y-3"
+            className="p-5 rounded-3xl bg-[#04102e]/85 backdrop-blur-md border border-[#f5ba31]/30 shadow-lg space-y-3"
           >
-            <div className="bg-blue-50/50 rounded-2xl border-2 border-blue-200 px-4 py-1.5 focus-within:border-blue-500">
+            <div className="bg-[#020a1f] rounded-2xl border-2 border-slate-700 px-4 py-1.5 focus-within:border-[#f5ba31]">
               <input
                 type="text"
                 placeholder="Secret code"
                 value={code}
                 onChange={(e) => setCode(e.target.value.toUpperCase())}
-                className="w-full py-2 bg-transparent text-sm font-mono font-bold text-gray-800 placeholder-gray-400 outline-none uppercase tracking-wider"
+                className="w-full py-2 bg-transparent text-sm font-mono font-bold text-white placeholder-slate-500 outline-none uppercase tracking-wider"
                 required
               />
             </div>
@@ -94,23 +94,23 @@ export default function GiftReceivePage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold text-base shadow-md active:scale-98 transition-all disabled:opacity-50"
+              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#f5ba31] via-[#ffd369] to-[#d49002] text-[#020a1f] font-black text-base shadow-[0_0_20px_rgba(245,186,49,0.35)] active:scale-98 transition-all disabled:opacity-50"
             >
               {loading ? "Claiming..." : "Receive Reward"}
             </button>
           </form>
 
           {/* Instructions Box */}
-          <div className="p-4 rounded-3xl bg-white/95 border border-blue-200 shadow-sm text-xs leading-relaxed text-gray-700 space-y-3">
+          <div className="p-4 rounded-3xl bg-[#04102e]/85 border border-[#f5ba31]/30 shadow-lg text-xs leading-relaxed text-slate-300 space-y-3">
             <div className="flex items-start gap-2.5">
-              <span className="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-[11px] flex-shrink-0 mt-0.5">
+              <span className="w-5 h-5 rounded-full bg-[#f5ba31] text-[#020a1f] flex items-center justify-center font-bold text-[11px] flex-shrink-0 mt-0.5">
                 1
               </span>
               <p>Obtain the secret code from the Telegram group.</p>
             </div>
 
             <div className="flex items-start gap-2.5">
-              <span className="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-[11px] flex-shrink-0 mt-0.5">
+              <span className="w-5 h-5 rounded-full bg-[#f5ba31] text-[#020a1f] flex items-center justify-center font-bold text-[11px] flex-shrink-0 mt-0.5">
                 2
               </span>
               <p>
@@ -120,7 +120,7 @@ export default function GiftReceivePage() {
             </div>
 
             <div className="flex items-start gap-2.5">
-              <span className="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-[11px] flex-shrink-0 mt-0.5">
+              <span className="w-5 h-5 rounded-full bg-[#f5ba31] text-[#020a1f] flex items-center justify-center font-bold text-[11px] flex-shrink-0 mt-0.5">
                 3
               </span>
               <p>Get a bonus and enjoy.</p>

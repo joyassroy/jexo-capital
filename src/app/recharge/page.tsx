@@ -56,7 +56,7 @@ export default function RechargePage() {
       .then((data) => {
         if (data?.user) setBalance(data.user.balance);
       })
-      .catch(() => {});
+      .catch(() => { });
 
     fetch("/api/settings")
       .then((res) => res.json())
@@ -67,11 +67,11 @@ export default function RechargePage() {
           setAdminNagad(data.settings.nagadNumber || "01812345678");
           setAdminUsdtAddress(
             data.settings.usdtBep20Address ||
-              "TKrvSHzuR9CcvRwPGiDDb7kzPvCGU3jtyi"
+            "TKrvSHzuR9CcvRwPGiDDb7kzPvCGU3jtyi"
           );
         }
       })
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   const handleCopy = (text: string, label: string) => {
@@ -188,30 +188,30 @@ export default function RechargePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#bfe4ff] via-[#ebf5fe] to-[#cfe7fe] flex flex-col justify-between">
+    <div className="min-h-screen bg-gradient-to-b from-[#020a1f] via-[#051338] to-[#01081a] text-white flex flex-col justify-between pb-28">
       <div>
         <Header
           title={
             step === "select_amount"
               ? "Recharge"
               : step === "bank_step2"
-              ? "Please Complete Your Recharge"
-              : step === "bank_step3"
-              ? "Payment"
-              : "USDT"
+                ? "Please Complete Your Recharge"
+                : step === "bank_step3"
+                  ? "Payment"
+                  : "USDT"
           }
           showBack={true}
         />
 
         {/* Global Notifications */}
         {error && (
-          <div className="mx-4 mt-3 p-3 bg-red-100 border border-red-300 text-red-700 text-xs font-semibold rounded-xl text-center shadow-sm flex items-center justify-center gap-1.5">
+          <div className="mx-4 mt-3 p-3 bg-red-500/20 border border-red-500/40 text-red-300 text-xs font-semibold rounded-xl text-center shadow-sm flex items-center justify-center gap-1.5">
             <AlertCircle size={16} />
             <span>{error}</span>
           </div>
         )}
         {successMessage && (
-          <div className="mx-4 mt-3 p-3 bg-emerald-100 border border-emerald-300 text-emerald-800 text-xs font-semibold rounded-xl text-center shadow-sm flex items-center justify-center gap-1.5">
+          <div className="mx-4 mt-3 p-3 bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-semibold rounded-xl text-center shadow-sm flex items-center justify-center gap-1.5">
             <CheckCircle2 size={16} />
             <span>{successMessage}</span>
           </div>
@@ -221,23 +221,23 @@ export default function RechargePage() {
             STEP 1: Amount Selection (Screens 9 & 10)
         ========================================================================= */}
         {step === "select_amount" && (
-          <div className="p-4 space-y-4">
+          <div className="p-4 space-y-4 max-w-[420px] mx-auto">
             {/* Live Balance Card */}
-            <div className="flex items-center justify-between px-4 py-3 rounded-2xl bg-white shadow-sm border border-blue-100">
-              <span className="text-sm font-bold text-gray-600">Account Balance</span>
+            <div className="flex items-center justify-between px-4 py-3 rounded-2xl bg-[#04102e]/85 backdrop-blur-md border border-[#f5ba31]/30 shadow-lg">
+              <span className="text-sm font-bold text-slate-300">Account Balance</span>
               <div className="text-right">
-                <span className="text-xl font-black text-blue-900">
-                  {Number(balance).toFixed(2)} USDT
+                <span className="text-xl font-black text-white">
+                  {Number(balance).toFixed(2)} <span className="text-[#f5ba31]">USDT</span>
                 </span>
-                <span className="text-xs text-gray-500 font-semibold block">
+                <span className="text-xs text-slate-400 font-semibold block">
                   ≈ {(Number(balance) * usdtRate).toFixed(2)} BDT
                 </span>
               </div>
             </div>
 
             {/* Amount Selection Card */}
-            <div className="p-4 rounded-3xl bg-white shadow-md border border-blue-200">
-              <h2 className="text-base font-bold text-orange-600 mb-3 text-center">
+            <div className="p-4 rounded-3xl bg-[#04102e]/85 backdrop-blur-md border border-[#f5ba31]/30 shadow-lg">
+              <h2 className="text-base font-bold text-[#f5ba31] mb-3 text-center">
                 Please select the recharge amount (in BDT)
               </h2>
 
@@ -250,8 +250,8 @@ export default function RechargePage() {
                     onClick={() => setAmount(val)}
                     className={`py-2.5 rounded-xl font-bold text-sm transition-all ${
                       amount === val
-                        ? "bg-blue-600 text-white shadow-md scale-102"
-                        : "bg-blue-50/80 text-blue-900 border border-blue-200 hover:bg-blue-100"
+                        ? "bg-gradient-to-r from-[#f5ba31] via-[#ffd369] to-[#d49002] text-[#020a1f] font-black shadow-[0_0_12px_rgba(245,186,49,0.4)] scale-102"
+                        : "bg-[#020a1f] text-slate-200 border border-slate-700 hover:border-[#f5ba31]/60"
                     }`}
                   >
                     <div>{val} TK</div>
@@ -265,8 +265,8 @@ export default function RechargePage() {
                   onClick={() => setAmount("")}
                   className={`py-2.5 rounded-xl font-bold text-sm transition-all ${
                     !["500", "1000", "1270", "2540", "5000"].includes(amount)
-                      ? "bg-blue-600 text-white shadow-md"
-                      : "bg-blue-50/80 text-blue-900 border border-blue-200 hover:bg-blue-100"
+                      ? "bg-gradient-to-r from-[#f5ba31] via-[#ffd369] to-[#d49002] text-[#020a1f] font-black shadow-[0_0_12px_rgba(245,186,49,0.4)]"
+                      : "bg-[#020a1f] text-slate-200 border border-slate-700 hover:border-[#f5ba31]/60"
                   }`}
                 >
                   Others
@@ -274,17 +274,17 @@ export default function RechargePage() {
               </div>
 
               {/* Custom Input & Recharge Button */}
-              <div className="flex items-center gap-2 bg-blue-50/50 p-1 rounded-2xl border border-blue-200 focus-within:border-blue-500">
+              <div className="flex items-center gap-2 bg-[#020a1f] p-1.5 rounded-2xl border border-slate-700 focus-within:border-[#f5ba31]">
                 <input
                   type="number"
                   placeholder="Enter amount in BDT (Taka)"
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
-                  className="w-full px-3 py-2 bg-transparent text-sm font-semibold text-gray-800 placeholder-gray-400 outline-none"
+                  className="w-full px-3 py-2 bg-transparent text-sm font-semibold text-white placeholder-slate-500 outline-none"
                 />
                 <button
                   onClick={handleInitialRechargeClick}
-                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold text-sm shadow-md hover:opacity-95 active:scale-95 transition-all flex-shrink-0"
+                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#f5ba31] via-[#ffd369] to-[#d49002] text-[#020a1f] font-black text-sm shadow-[0_0_15px_rgba(245,186,49,0.35)] hover:opacity-95 active:scale-95 transition-all flex-shrink-0"
                 >
                   Recharge
                 </button>
@@ -292,9 +292,9 @@ export default function RechargePage() {
 
               {/* Real-time conversion badge */}
               {amount && Number(amount) > 0 && (
-                <div className="mt-3 p-3 rounded-2xl bg-blue-50/80 border border-blue-200 text-xs font-bold text-blue-950 flex flex-col sm:flex-row sm:items-center justify-between gap-1 shadow-inner">
+                <div className="mt-3 p-3 rounded-2xl bg-white/5 border border-white/10 text-xs font-bold text-white flex flex-col sm:flex-row sm:items-center justify-between gap-1 shadow-inner">
                   <span>Recharge Amount: {amount} BDT</span>
-                  <span className="text-emerald-600 font-black">
+                  <span className="text-[#00e676] font-black">
                     Account receives: ≈ {(Number(amount) / usdtRate).toFixed(2)} USDT (1$ = {usdtRate} Tk)
                   </span>
                 </div>
@@ -349,11 +349,10 @@ export default function RechargePage() {
                 <button
                   type="button"
                   onClick={() => setSelectedMethod("bank")}
-                  className={`w-full flex items-center justify-between p-3.5 rounded-2xl border-2 transition-all ${
-                    selectedMethod === "bank"
-                      ? "border-blue-600 bg-blue-50/50 shadow-sm"
-                      : "border-gray-200 hover:border-blue-300"
-                  }`}
+                  className={`w-full flex items-center justify-between p-3.5 rounded-2xl border-2 transition-all ${selectedMethod === "bank"
+                    ? "border-blue-600 bg-blue-50/50 shadow-sm"
+                    : "border-gray-200 hover:border-blue-300"
+                    }`}
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-orange-500 text-white flex items-center justify-center shadow-sm">
@@ -377,11 +376,10 @@ export default function RechargePage() {
                 <button
                   type="button"
                   onClick={() => setSelectedMethod("usdt")}
-                  className={`w-full flex items-center justify-between p-3.5 rounded-2xl border-2 transition-all ${
-                    selectedMethod === "usdt"
-                      ? "border-blue-600 bg-blue-50/50 shadow-sm"
-                      : "border-gray-200 hover:border-blue-300"
-                  }`}
+                  className={`w-full flex items-center justify-between p-3.5 rounded-2xl border-2 transition-all ${selectedMethod === "usdt"
+                    ? "border-blue-600 bg-blue-50/50 shadow-sm"
+                    : "border-gray-200 hover:border-blue-300"
+                    }`}
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center shadow-sm">
@@ -463,22 +461,20 @@ export default function RechargePage() {
                   <button
                     type="button"
                     onClick={() => setPaymentChannel("bKash")}
-                    className={`py-3 rounded-2xl font-bold text-sm border-2 transition-all ${
-                      paymentChannel === "bKash"
-                        ? "border-[#E2136E] bg-pink-50 text-[#E2136E]"
-                        : "border-gray-200 text-gray-700 hover:border-gray-300"
-                    }`}
+                    className={`py-3 rounded-2xl font-bold text-sm border-2 transition-all ${paymentChannel === "bKash"
+                      ? "border-[#E2136E] bg-pink-50 text-[#E2136E]"
+                      : "border-gray-200 text-gray-700 hover:border-gray-300"
+                      }`}
                   >
                     bKash
                   </button>
                   <button
                     type="button"
                     onClick={() => setPaymentChannel("Nagad")}
-                    className={`py-3 rounded-2xl font-bold text-sm border-2 transition-all ${
-                      paymentChannel === "Nagad"
-                        ? "border-[#F7941D] bg-orange-50 text-[#F7941D]"
-                        : "border-gray-200 text-gray-700 hover:border-gray-300"
-                    }`}
+                    className={`py-3 rounded-2xl font-bold text-sm border-2 transition-all ${paymentChannel === "Nagad"
+                      ? "border-[#F7941D] bg-orange-50 text-[#F7941D]"
+                      : "border-gray-200 text-gray-700 hover:border-gray-300"
+                      }`}
                   >
                     Nagad
                   </button>
@@ -583,11 +579,10 @@ export default function RechargePage() {
               <div className="grid grid-cols-2 gap-2">
                 <div
                   onClick={() => setTransferType("send_money")}
-                  className={`p-3 rounded-2xl border-2 cursor-pointer transition-all ${
-                    transferType === "send_money"
-                      ? "border-blue-600 bg-blue-50/70"
-                      : "border-gray-200"
-                  }`}
+                  className={`p-3 rounded-2xl border-2 cursor-pointer transition-all ${transferType === "send_money"
+                    ? "border-blue-600 bg-blue-50/70"
+                    : "border-gray-200"
+                    }`}
                 >
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-[11px] font-bold text-gray-800">
@@ -604,11 +599,10 @@ export default function RechargePage() {
 
                 <div
                   onClick={() => setTransferType("payment")}
-                  className={`p-3 rounded-2xl border-2 cursor-pointer transition-all ${
-                    transferType === "payment"
-                      ? "border-blue-600 bg-blue-50/70"
-                      : "border-gray-200"
-                  }`}
+                  className={`p-3 rounded-2xl border-2 cursor-pointer transition-all ${transferType === "payment"
+                    ? "border-blue-600 bg-blue-50/70"
+                    : "border-gray-200"
+                    }`}
                 >
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-[11px] font-bold text-gray-800">

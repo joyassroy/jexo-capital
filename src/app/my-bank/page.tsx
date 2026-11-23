@@ -84,7 +84,7 @@ export default function MyBankPage() {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#bde2ff] via-[#ebf5fe] to-[#cfe7fe] flex flex-col justify-between">
+    <div className="min-h-screen bg-gradient-to-b from-[#020a1f] via-[#051338] to-[#01081a] text-white flex flex-col justify-between pb-28">
       <div>
         <Header
           title={
@@ -97,24 +97,24 @@ export default function MyBankPage() {
           showBack={true}
         />
 
-        <div className="p-4 space-y-4">
+        <div className="p-4 space-y-4 max-w-[420px] mx-auto">
           {error && (
-            <div className="p-3 bg-red-100 border border-red-300 text-red-700 text-xs font-semibold rounded-xl text-center shadow-sm flex items-center justify-center gap-1.5">
+            <div className="p-3 bg-red-500/20 border border-red-500/40 text-red-300 text-xs font-semibold rounded-xl text-center shadow-sm flex items-center justify-center gap-1.5">
               <AlertCircle size={16} />
               <span>{error}</span>
             </div>
           )}
           {success && (
-            <div className="p-3 bg-emerald-100 border border-emerald-300 text-emerald-800 text-xs font-semibold rounded-xl text-center shadow-sm flex items-center justify-center gap-1.5">
+            <div className="p-3 bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-semibold rounded-xl text-center shadow-sm flex items-center justify-center gap-1.5">
               <CheckCircle size={16} />
               <span>{success}</span>
             </div>
           )}
 
           {/* Outer Card with Tabs */}
-          <div className="rounded-3xl bg-white shadow-md border border-blue-200 overflow-hidden">
+          <div className="rounded-3xl bg-[#04102e]/85 backdrop-blur-md border border-[#f5ba31]/30 shadow-lg overflow-hidden">
             {/* Tabs */}
-            <div className="grid grid-cols-2 bg-blue-50/70 border-b border-blue-100">
+            <div className="grid grid-cols-2 bg-[#020a1f]/80 border-b border-white/10">
               <button
                 type="button"
                 onClick={() => {
@@ -123,8 +123,8 @@ export default function MyBankPage() {
                 }}
                 className={`py-3.5 text-sm font-bold flex items-center justify-center gap-2 transition-all ${
                   activeTab === "Bank"
-                    ? "bg-white text-blue-700 border-b-2 border-blue-600 shadow-xs"
-                    : "text-gray-500 hover:text-blue-600"
+                    ? "bg-[#04102e] text-[#f5ba31] border-b-2 border-[#f5ba31] shadow-xs"
+                    : "text-slate-400 hover:text-white"
                 }`}
               >
                 <Building2 size={16} />
@@ -139,8 +139,8 @@ export default function MyBankPage() {
                 }}
                 className={`py-3.5 text-sm font-bold flex items-center justify-center gap-2 transition-all ${
                   activeTab === "USDT"
-                    ? "bg-white text-blue-700 border-b-2 border-blue-600 shadow-xs"
-                    : "text-gray-500 hover:text-blue-600"
+                    ? "bg-[#04102e] text-[#f5ba31] border-b-2 border-[#f5ba31] shadow-xs"
+                    : "text-slate-400 hover:text-white"
                 }`}
               >
                 <Coins size={16} />
@@ -312,7 +312,7 @@ export default function MyBankPage() {
           </div>
 
           {/* Info Box Guidelines */}
-          <div className="p-4 rounded-3xl bg-white/95 border border-blue-200 shadow-sm text-xs leading-relaxed text-gray-700 space-y-2">
+          <div className="p-4 rounded-3xl bg-[#04102e]/85 border border-[#f5ba31]/30 shadow-lg text-xs leading-relaxed text-slate-300 space-y-2">
             <p>1. For withdrawals to a bank card, only bKash and Nagad are applicable.</p>
             <p>2. If you wish to receive payments via cryptocurrency, please add a cryptocurrency.</p>
             <p>3. To receive funds, you must select a USDT (BEP-20) address.</p>

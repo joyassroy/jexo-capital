@@ -63,30 +63,30 @@ export default function ChangePasswordPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#bde2ff] via-[#ebf5fe] to-[#cfe7fe] flex flex-col justify-between">
+    <div className="min-h-screen bg-gradient-to-b from-[#020a1f] via-[#051338] to-[#01081a] text-white flex flex-col justify-between pb-28">
       <div>
         <Header title="Change Login Password" showBack={true} />
 
         <div className="p-4 space-y-4 max-w-[400px] mx-auto">
           {/* Shield Badge */}
           <div className="flex flex-col items-center justify-center my-3">
-            <div className="relative w-20 h-20 rounded-full bg-gradient-to-tr from-blue-500 to-cyan-400 p-1 flex items-center justify-center shadow-lg border-2 border-white">
-              <Shield size={40} className="text-white drop-shadow" />
-              <Lock size={18} className="absolute text-blue-950 stroke-[3]" />
+            <div className="relative w-20 h-20 rounded-full bg-gradient-to-tr from-[#ffe58f] via-[#f5ba31] to-[#d49002] p-1 flex items-center justify-center shadow-[0_0_20px_rgba(245,186,49,0.4)] border-2 border-white/40">
+              <Shield size={40} className="text-[#020a1f] drop-shadow" />
+              <Lock size={18} className="absolute text-[#020a1f] stroke-[3]" />
             </div>
-            <h2 className="text-base font-black text-blue-950 mt-3 tracking-tight">
+            <h2 className="text-base font-black text-white mt-3 tracking-tight">
               Change Login Password
             </h2>
           </div>
 
           {error && (
-            <div className="p-3 bg-red-100 border border-red-300 text-red-700 text-xs font-semibold rounded-xl text-center shadow-sm flex items-center justify-center gap-1.5">
+            <div className="p-3 bg-red-500/20 border border-red-500/40 text-red-300 text-xs font-semibold rounded-xl text-center shadow-sm flex items-center justify-center gap-1.5">
               <AlertCircle size={16} />
               <span>{error}</span>
             </div>
           )}
           {success && (
-            <div className="p-3 bg-emerald-100 border border-emerald-300 text-emerald-800 text-xs font-semibold rounded-xl text-center shadow-sm flex items-center justify-center gap-1.5">
+            <div className="p-3 bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-semibold rounded-xl text-center shadow-sm flex items-center justify-center gap-1.5">
               <CheckCircle size={16} />
               <span>{success}</span>
             </div>
@@ -94,63 +94,63 @@ export default function ChangePasswordPage() {
 
           <form
             onSubmit={handleSubmit}
-            className="p-5 rounded-3xl bg-white shadow-md border border-blue-200 space-y-4"
+            className="p-5 rounded-3xl bg-[#04102e]/85 backdrop-blur-md border border-[#f5ba31]/30 shadow-lg space-y-4"
           >
             {/* Old password */}
-            <div className="flex items-center bg-blue-50/50 rounded-2xl border-2 border-blue-200 px-3.5 py-1 focus-within:border-blue-500">
-              <Lock size={18} className="text-blue-500 mr-2 flex-shrink-0" />
+            <div className="flex items-center bg-[#020a1f] rounded-2xl border border-slate-700 px-3.5 py-1 focus-within:border-[#f5ba31]">
+              <Lock size={18} className="text-[#f5ba31] mr-2 flex-shrink-0" />
               <input
                 type={showOld ? "text" : "password"}
                 placeholder="Enter you old login password"
                 value={oldPassword}
                 onChange={(e) => setOldPassword(e.target.value)}
-                className="w-full py-2.5 bg-transparent text-sm font-semibold text-gray-800 placeholder-gray-400 outline-none"
+                className="w-full py-2.5 bg-transparent text-sm font-semibold text-white placeholder-slate-500 outline-none"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowOld(!showOld)}
-                className="p-1 text-gray-400 hover:text-blue-600"
+                className="p-1 text-slate-400 hover:text-[#f5ba31]"
               >
                 {showOld ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
 
             {/* New password */}
-            <div className="flex items-center bg-blue-50/50 rounded-2xl border-2 border-blue-200 px-3.5 py-1 focus-within:border-blue-500">
-              <Lock size={18} className="text-blue-500 mr-2 flex-shrink-0" />
+            <div className="flex items-center bg-[#020a1f] rounded-2xl border border-slate-700 px-3.5 py-1 focus-within:border-[#f5ba31]">
+              <Lock size={18} className="text-[#f5ba31] mr-2 flex-shrink-0" />
               <input
                 type={showNew ? "text" : "password"}
                 placeholder="Please enter your new password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                className="w-full py-2.5 bg-transparent text-sm font-semibold text-gray-800 placeholder-gray-400 outline-none"
+                className="w-full py-2.5 bg-transparent text-sm font-semibold text-white placeholder-slate-500 outline-none"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowNew(!showNew)}
-                className="p-1 text-gray-400 hover:text-blue-600"
+                className="p-1 text-slate-400 hover:text-[#f5ba31]"
               >
                 {showNew ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
 
             {/* Confirm password */}
-            <div className="flex items-center bg-blue-50/50 rounded-2xl border-2 border-blue-200 px-3.5 py-1 focus-within:border-blue-500">
-              <Lock size={18} className="text-blue-500 mr-2 flex-shrink-0" />
+            <div className="flex items-center bg-[#020a1f] rounded-2xl border border-slate-700 px-3.5 py-1 focus-within:border-[#f5ba31]">
+              <Lock size={18} className="text-[#f5ba31] mr-2 flex-shrink-0" />
               <input
                 type={showConfirm ? "text" : "password"}
                 placeholder="Confirm your new password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full py-2.5 bg-transparent text-sm font-semibold text-gray-800 placeholder-gray-400 outline-none"
+                className="w-full py-2.5 bg-transparent text-sm font-semibold text-white placeholder-slate-500 outline-none"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowConfirm(!showConfirm)}
-                className="p-1 text-gray-400 hover:text-blue-600"
+                className="p-1 text-slate-400 hover:text-[#f5ba31]"
               >
                 {showConfirm ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
@@ -159,7 +159,7 @@ export default function ChangePasswordPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold text-base shadow-md active:scale-98 transition-all disabled:opacity-50"
+              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#f5ba31] via-[#ffd369] to-[#d49002] text-[#020a1f] font-black text-base shadow-[0_0_20px_rgba(245,186,49,0.35)] active:scale-98 transition-all disabled:opacity-50"
             >
               {loading ? "Updating..." : "Submit"}
             </button>

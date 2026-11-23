@@ -19,7 +19,7 @@ export default function CustomerServiceModal({
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
 
-  if (pathname.startsWith("/admin")) {
+  if (pathname.startsWith("/admin") || pathname === "/") {
     return null;
   }
 

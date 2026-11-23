@@ -16,23 +16,23 @@ export default function NoticePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#bde2ff] via-[#ebf5fe] to-[#cfe7fe] flex flex-col justify-between">
+    <div className="min-h-screen bg-gradient-to-b from-[#020a1f] via-[#051338] to-[#01081a] text-white flex flex-col justify-between pb-28">
       <div>
         <Header title="Notice" showBack={true} />
 
         <div className="p-4 space-y-4 max-w-[420px] mx-auto">
           {/* Header Banner */}
           <div className="flex flex-col items-center justify-center my-2">
-            <div className="w-16 h-16 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-lg border-2 border-white">
+            <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-[#ffe58f] via-[#f5ba31] to-[#d49002] text-[#020a1f] flex items-center justify-center shadow-[0_0_20px_rgba(245,186,49,0.4)] border-2 border-white/40">
               <Volume2 size={32} />
             </div>
-            <h2 className="text-xl font-black text-blue-950 mt-2 tracking-tight">
+            <h2 className="text-xl font-black text-white mt-2 tracking-tight">
               Notice
             </h2>
           </div>
 
           {/* Rules Card */}
-          <div className="p-5 rounded-3xl bg-white shadow-md border border-blue-200 divide-y divide-blue-50 text-xs text-gray-800 font-semibold leading-relaxed space-y-3">
+          <div className="p-5 rounded-3xl bg-[#04102e]/85 backdrop-blur-md border border-[#f5ba31]/30 shadow-lg divide-y divide-white/10 text-xs text-slate-300 font-semibold leading-relaxed space-y-3">
             {rules.map((rule, idx) => (
               <div key={idx} className="pt-3 first:pt-0">
                 {rule}

@@ -88,6 +88,7 @@ export interface ITransaction {
     | "refer_commission"
     | "team_return"
     | "invest_return"
+    | "vip_purchase"
     | "gift_received"
     | "recharge"
     | "withdraw"

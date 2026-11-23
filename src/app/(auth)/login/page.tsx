@@ -72,14 +72,14 @@ function LoginForm() {
   };
 
   return (
-    <div className="relative min-h-screen flex flex-col justify-between overflow-hidden bg-gradient-to-b from-[#bfe4ff] via-[#eaf4fe] to-[#cce8ff]">
+    <div className="relative min-h-screen flex flex-col justify-between overflow-hidden bg-gradient-to-b from-[#020a1f] via-[#051338] to-[#01081a] text-white">
       {/* Wave lines decorative top */}
-      <div className="absolute top-0 left-0 right-0 h-40 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-400/40 via-transparent to-transparent pointer-events-none" />
+      <div className="absolute top-0 left-0 right-0 h-40 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-amber-400/10 via-transparent to-transparent pointer-events-none" />
 
       {/* Language Selector Top Right */}
       <div className="flex justify-end p-4 z-10">
-        <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/80 backdrop-blur-md border border-blue-200 text-xs font-semibold text-blue-900 shadow-sm">
-          <Globe size={14} className="text-blue-600" />
+        <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#05143a]/90 backdrop-blur-md border border-[#f5ba31]/50 text-xs font-semibold text-white shadow-sm">
+          <Globe size={14} className="text-[#f5ba31]" />
           <span>English</span>
         </div>
       </div>
@@ -93,21 +93,21 @@ function LoginForm() {
 
         {/* Titles */}
         <div className="text-center mb-6">
-          <h2 className="text-2xl font-black text-blue-950 tracking-tight">
+          <h2 className="text-2xl font-black text-white tracking-tight">
             Welcome to Zexo Capital
           </h2>
           <div className="flex items-center justify-center gap-2 mt-2">
-            <span className="h-[1px] w-6 bg-blue-300" />
-            <p className="text-xs font-medium text-blue-800">
+            <span className="h-[1px] w-6 bg-[#f5ba31]/60" />
+            <p className="text-xs font-medium text-slate-300">
               Login to continue your investment journey
             </p>
-            <span className="h-[1px] w-6 bg-blue-300" />
+            <span className="h-[1px] w-6 bg-[#f5ba31]/60" />
           </div>
         </div>
 
         {/* Error message */}
         {error && (
-          <div className="mb-4 p-3 bg-red-50/90 border border-red-200 text-red-600 text-xs font-medium rounded-xl text-center shadow-sm">
+          <div className="mb-4 p-3 bg-red-500/20 border border-red-500/40 text-red-300 text-xs font-medium rounded-xl text-center shadow-sm">
             {error}
           </div>
         )}
@@ -118,34 +118,34 @@ function LoginForm() {
           <div className="flex items-center gap-2">
             <CountryCodeDropdown selected={country} onSelect={setCountry} />
 
-            <div className="flex-1 flex items-center bg-white rounded-2xl border-2 border-blue-200 px-3.5 h-[48px] shadow-sm focus-within:border-blue-500 focus-within:shadow-md transition-all">
-              <Phone size={18} className="text-blue-500 mr-2.5 flex-shrink-0" />
+            <div className="flex-1 flex items-center bg-[#04102e] rounded-2xl border-2 border-slate-700 px-3.5 h-[48px] shadow-sm focus-within:border-[#f5ba31] transition-all">
+              <Phone size={18} className="text-[#f5ba31] mr-2.5 flex-shrink-0" />
               <input
                 type="tel"
                 placeholder="Mobile Number"
                 value={phone}
                 onChange={handlePhoneChange}
-                className="w-full bg-transparent text-sm font-semibold text-gray-900 placeholder:text-gray-400 placeholder:font-normal outline-none"
+                className="w-full bg-transparent text-sm font-semibold text-white placeholder:text-slate-500 outline-none"
                 required
               />
             </div>
           </div>
 
           {/* Password input */}
-          <div className="flex items-center bg-white rounded-2xl border-2 border-blue-200 px-3 py-1 shadow-sm focus-within:border-blue-500 focus-within:shadow-md transition-all">
-            <Lock size={18} className="text-blue-500 mr-2 flex-shrink-0" />
+          <div className="flex items-center bg-[#04102e] rounded-2xl border-2 border-slate-700 px-3 py-1 shadow-sm focus-within:border-[#f5ba31] transition-all">
+            <Lock size={18} className="text-[#f5ba31] mr-2 flex-shrink-0" />
             <input
               type={showPassword ? "text" : "password"}
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full py-2 text-sm font-semibold text-gray-900 placeholder:text-gray-400 placeholder:font-normal bg-transparent outline-none"
+              className="w-full py-2 text-sm font-semibold text-white placeholder:text-slate-500 bg-transparent outline-none"
               required
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="p-1 text-gray-400 hover:text-blue-600 transition-colors"
+              className="p-1 text-slate-400 hover:text-[#f5ba31] transition-colors"
             >
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
@@ -153,19 +153,19 @@ function LoginForm() {
 
           {/* Remember me & Forgot Password */}
           <div className="flex items-center justify-between text-xs pt-1 px-1">
-            <label className="flex items-center gap-2 cursor-pointer font-medium text-blue-900">
+            <label className="flex items-center gap-2 cursor-pointer font-medium text-slate-300">
               <input
                 type="checkbox"
                 checked={keepSignedIn}
                 onChange={(e) => setKeepSignedIn(e.target.checked)}
-                className="w-4 h-4 rounded text-blue-600 border-blue-300 focus:ring-blue-400"
+                className="w-4 h-4 rounded text-[#f5ba31] border-slate-600 focus:ring-[#f5ba31]"
               />
               <span>Keep me signed in</span>
             </label>
 
             <Link
               href="/support"
-              className="text-blue-600 font-semibold hover:underline"
+              className="text-[#f5ba31] font-semibold hover:underline"
             >
               Forgot Password?
             </Link>
@@ -175,7 +175,7 @@ function LoginForm() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#0066FF] to-[#0099FF] text-white font-bold text-base shadow-[0_4px_16px_rgba(0,102,255,0.4)] hover:shadow-lg active:scale-98 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+            className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#f5ba31] via-[#ffd369] to-[#d49002] text-[#020a1f] font-black text-base shadow-[0_0_20px_rgba(245,186,49,0.35)] hover:shadow-lg active:scale-98 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {loading ? "Logging in..." : "Login"}
           </button>
@@ -183,11 +183,11 @@ function LoginForm() {
 
         {/* Register navigation link */}
         <div className="text-center mt-6">
-          <p className="text-xs text-blue-950 font-medium">
+          <p className="text-xs text-slate-300 font-medium">
             Don&apos;t have an account?{" "}
             <Link
               href="/register"
-              className="text-[#0055FF] font-bold hover:underline"
+              className="text-[#f5ba31] font-bold hover:underline"
             >
               Register Now
             </Link>
@@ -205,7 +205,7 @@ export default function LoginPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-[#dcf0ff] flex items-center justify-center">
+        <div className="min-h-screen bg-[#020a1f] text-white flex items-center justify-center">
           Loading...
         </div>
       }

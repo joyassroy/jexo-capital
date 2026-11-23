@@ -56,7 +56,7 @@ export default function PersonalInfoPage() {
           setAdminNote(data.kyc.adminNote || "");
         }
       })
-      .catch(() => {})
+      .catch(() => { })
       .finally(() => setFetching(false));
   };
 
@@ -159,15 +159,15 @@ export default function PersonalInfoPage() {
   const isApproved = kycStatus === "approved";
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#bde2ff] via-[#ebf5fe] to-[#cfe7fe] flex flex-col justify-between pb-24">
+    <div className="min-h-screen bg-gradient-to-b from-[#020a1f] via-[#051338] to-[#01081a] text-white flex flex-col justify-between pb-28">
       <div>
         <Header title="Personal Information" showBack={true} />
 
         <div className="p-4 space-y-4 max-w-[420px] mx-auto">
           {/* Status Banners */}
           {kycStatus === "pending" && (
-            <div className="p-3.5 bg-amber-50 border border-amber-300 text-amber-900 text-xs rounded-2xl shadow-sm flex items-start gap-2.5">
-              <Clock size={18} className="text-amber-600 flex-shrink-0 mt-0.5" />
+            <div className="p-3.5 bg-amber-500/20 border border-amber-500/40 text-amber-200 text-xs rounded-2xl shadow-sm flex items-start gap-2.5">
+              <Clock size={18} className="text-[#f5ba31] flex-shrink-0 mt-0.5" />
               <div>
                 <span className="font-bold">Under Review: </span>
                 Your National ID documents are currently pending review by Admin.
@@ -176,8 +176,8 @@ export default function PersonalInfoPage() {
           )}
 
           {kycStatus === "approved" && (
-            <div className="p-3.5 bg-emerald-50 border border-emerald-300 text-emerald-900 text-xs rounded-2xl shadow-sm flex items-start gap-2.5">
-              <ShieldCheck size={20} className="text-emerald-600 flex-shrink-0 mt-0.5" />
+            <div className="p-3.5 bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs rounded-2xl shadow-sm flex items-start gap-2.5">
+              <ShieldCheck size={20} className="text-emerald-400 flex-shrink-0 mt-0.5" />
               <div>
                 <span className="font-bold">Verified Account: </span>
                 Your identity and National ID documents have been successfully approved by Admin.
@@ -186,8 +186,8 @@ export default function PersonalInfoPage() {
           )}
 
           {kycStatus === "rejected" && (
-            <div className="p-3.5 bg-rose-50 border border-rose-300 text-rose-900 text-xs rounded-2xl shadow-sm flex items-start gap-2.5">
-              <AlertCircle size={18} className="text-rose-600 flex-shrink-0 mt-0.5" />
+            <div className="p-3.5 bg-rose-500/20 border border-rose-500/40 text-rose-300 text-xs rounded-2xl shadow-sm flex items-start gap-2.5">
+              <AlertCircle size={18} className="text-rose-400 flex-shrink-0 mt-0.5" />
               <div>
                 <span className="font-bold">Verification Rejected: </span>
                 {adminNote || "Please upload clear, legible photos of your National ID and re-submit."}
@@ -196,14 +196,14 @@ export default function PersonalInfoPage() {
           )}
 
           {error && (
-            <div className="p-3 bg-red-100 border border-red-300 text-red-700 text-xs font-semibold rounded-2xl text-center shadow-sm flex items-center justify-center gap-1.5">
+            <div className="p-3 bg-red-500/20 border border-red-500/40 text-red-300 text-xs font-semibold rounded-2xl text-center shadow-sm flex items-center justify-center gap-1.5">
               <AlertCircle size={16} />
               <span>{error}</span>
             </div>
           )}
 
           {success && (
-            <div className="p-3 bg-emerald-100 border border-emerald-300 text-emerald-800 text-xs font-semibold rounded-2xl text-center shadow-sm flex items-center justify-center gap-1.5">
+            <div className="p-3 bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-semibold rounded-2xl text-center shadow-sm flex items-center justify-center gap-1.5">
               <CheckCircle2 size={16} />
               <span>{success}</span>
             </div>
@@ -211,11 +211,11 @@ export default function PersonalInfoPage() {
 
           <form
             onSubmit={handleSubmit}
-            className="p-5 rounded-3xl bg-white shadow-md border border-blue-200 space-y-4"
+            className="p-5 rounded-3xl bg-[#04102e]/85 backdrop-blur-md border border-[#f5ba31]/30 shadow-lg space-y-4"
           >
             {/* Real Name */}
             <div>
-              <label className="block text-xs font-bold text-blue-900 mb-1">
+              <label className="block text-xs font-bold text-slate-300 mb-1">
                 Your Name
               </label>
               <input
@@ -224,7 +224,7 @@ export default function PersonalInfoPage() {
                 value={realName}
                 onChange={(e) => setRealName(e.target.value)}
                 disabled={isApproved}
-                className="w-full px-3.5 py-2.5 rounded-2xl bg-blue-50/50 border border-blue-200 text-sm font-semibold text-gray-800 outline-none focus:border-blue-500 disabled:opacity-75"
+                className="w-full px-3.5 py-2.5 rounded-2xl bg-[#020a1f] border border-slate-700 text-sm font-semibold text-white outline-none focus:border-[#f5ba31] disabled:opacity-75"
                 required
               />
             </div>
@@ -308,11 +308,10 @@ export default function PersonalInfoPage() {
                 {/* Front Card Box */}
                 <div
                   onClick={() => !isApproved && frontInputRef.current?.click()}
-                  className={`p-3 border-2 border-dashed rounded-2xl transition-all ${
-                    frontPreview
-                      ? "border-emerald-400 bg-emerald-50/30"
-                      : "border-blue-300 bg-blue-50/40 hover:bg-blue-50"
-                  } text-center flex flex-col items-center justify-center cursor-pointer min-h-[120px] relative overflow-hidden group`}
+                  className={`p-3 border-2 border-dashed rounded-2xl transition-all ${frontPreview
+                    ? "border-emerald-400 bg-emerald-50/30"
+                    : "border-blue-300 bg-blue-50/40 hover:bg-blue-50"
+                    } text-center flex flex-col items-center justify-center cursor-pointer min-h-[120px] relative overflow-hidden group`}
                 >
                   {frontPreview ? (
                     <div className="w-full flex flex-col items-center">
@@ -349,11 +348,10 @@ export default function PersonalInfoPage() {
                 {/* Back Card Box */}
                 <div
                   onClick={() => !isApproved && backInputRef.current?.click()}
-                  className={`p-3 border-2 border-dashed rounded-2xl transition-all ${
-                    backPreview
-                      ? "border-emerald-400 bg-emerald-50/30"
-                      : "border-blue-300 bg-blue-50/40 hover:bg-blue-50"
-                  } text-center flex flex-col items-center justify-center cursor-pointer min-h-[120px] relative overflow-hidden group`}
+                  className={`p-3 border-2 border-dashed rounded-2xl transition-all ${backPreview
+                    ? "border-emerald-400 bg-emerald-50/30"
+                    : "border-blue-300 bg-blue-50/40 hover:bg-blue-50"
+                    } text-center flex flex-col items-center justify-center cursor-pointer min-h-[120px] relative overflow-hidden group`}
                 >
                   {backPreview ? (
                     <div className="w-full flex flex-col items-center">

@@ -98,21 +98,21 @@ function RegisterForm() {
     <form onSubmit={handleRegister} className="space-y-3.5">
       {/* Error notification */}
       {error && (
-        <div className="mb-4 p-3 bg-red-50/90 border border-red-200 text-red-600 text-xs font-medium rounded-xl text-center shadow-sm">
+        <div className="mb-4 p-3 bg-red-500/20 border border-red-500/40 text-red-300 text-xs font-medium rounded-xl text-center shadow-sm">
           {error}
         </div>
       )}
 
       {/* Nickname */}
-      <div className="flex items-center bg-white rounded-2xl border-2 border-blue-200 px-3.5 h-[48px] shadow-sm focus-within:border-blue-500 focus-within:shadow-md transition-all">
-        <User size={18} className="text-blue-500 mr-2.5 flex-shrink-0" />
+      <div className="flex items-center bg-[#04102e] rounded-2xl border-2 border-slate-700 px-3.5 h-[48px] shadow-sm focus-within:border-[#f5ba31] transition-all">
+        <User size={18} className="text-[#f5ba31] mr-2.5 flex-shrink-0" />
         <input
           type="text"
           placeholder="Nickname"
           value={nickname}
           onChange={(e) => setNickname(e.target.value)}
           required
-          className="w-full bg-transparent text-sm text-gray-800 placeholder-gray-400 outline-none font-medium"
+          className="w-full bg-transparent text-sm text-white placeholder-slate-500 outline-none font-medium"
         />
       </div>
 
@@ -120,22 +120,22 @@ function RegisterForm() {
       <div className="flex items-center gap-2">
         <CountryCodeDropdown selected={country} onSelect={setCountry} />
 
-        <div className="flex-1 flex items-center bg-white rounded-2xl border-2 border-blue-200 px-3.5 h-[48px] shadow-sm focus-within:border-blue-500 focus-within:shadow-md transition-all">
-          <Phone size={18} className="text-blue-500 mr-2.5 flex-shrink-0" />
+        <div className="flex-1 flex items-center bg-[#04102e] rounded-2xl border-2 border-slate-700 px-3.5 h-[48px] shadow-sm focus-within:border-[#f5ba31] transition-all">
+          <Phone size={18} className="text-[#f5ba31] mr-2.5 flex-shrink-0" />
           <input
             type="tel"
             placeholder="Mobile Number"
             value={phone}
             onChange={handlePhoneChange}
             required
-            className="w-full bg-transparent text-sm text-gray-800 placeholder-gray-400 outline-none font-semibold"
+            className="w-full bg-transparent text-sm text-white placeholder-slate-500 outline-none font-semibold"
           />
         </div>
       </div>
 
       {/* Password (4-10 digits) */}
-      <div className="flex items-center bg-white rounded-2xl border-2 border-blue-200 px-3.5 h-[48px] shadow-sm focus-within:border-blue-500 focus-within:shadow-md transition-all">
-        <Lock size={18} className="text-blue-500 mr-2.5 flex-shrink-0" />
+      <div className="flex items-center bg-[#04102e] rounded-2xl border-2 border-slate-700 px-3.5 h-[48px] shadow-sm focus-within:border-[#f5ba31] transition-all">
+        <Lock size={18} className="text-[#f5ba31] mr-2.5 flex-shrink-0" />
         <input
           type={showPassword ? "text" : "password"}
           placeholder="Password of 4–10 digits."
@@ -143,20 +143,20 @@ function RegisterForm() {
           onChange={(e) => setPassword(e.target.value)}
           required
           maxLength={10}
-          className="w-full bg-transparent text-sm text-gray-800 placeholder-gray-400 outline-none font-medium"
+          className="w-full bg-transparent text-sm text-white placeholder-slate-500 outline-none font-medium"
         />
         <button
           type="button"
           onClick={() => setShowPassword(!showPassword)}
-          className="p-1 text-gray-400 hover:text-blue-600 transition-colors"
+          className="p-1 text-slate-400 hover:text-[#f5ba31] transition-colors"
         >
           {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
         </button>
       </div>
 
       {/* Confirm Password */}
-      <div className="flex items-center bg-white rounded-2xl border-2 border-blue-200 px-3.5 h-[48px] shadow-sm focus-within:border-blue-500 focus-within:shadow-md transition-all">
-        <Lock size={18} className="text-blue-500 mr-2.5 flex-shrink-0" />
+      <div className="flex items-center bg-[#04102e] rounded-2xl border-2 border-slate-700 px-3.5 h-[48px] shadow-sm focus-within:border-[#f5ba31] transition-all">
+        <Lock size={18} className="text-[#f5ba31] mr-2.5 flex-shrink-0" />
         <input
           type={showConfirmPassword ? "text" : "password"}
           placeholder="Confirm password"
@@ -164,26 +164,26 @@ function RegisterForm() {
           onChange={(e) => setConfirmPassword(e.target.value)}
           required
           maxLength={10}
-          className="w-full bg-transparent text-sm text-gray-800 placeholder-gray-400 outline-none font-medium"
+          className="w-full bg-transparent text-sm text-white placeholder-slate-500 outline-none font-medium"
         />
         <button
           type="button"
           onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-          className="p-1 text-gray-400 hover:text-blue-600 transition-colors"
+          className="p-1 text-slate-400 hover:text-[#f5ba31] transition-colors"
         >
           {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
         </button>
       </div>
 
       {/* Invite Code (Optional) */}
-      <div className="flex items-center bg-white rounded-2xl border-2 border-blue-200 px-3.5 h-[48px] shadow-sm focus-within:border-blue-500 focus-within:shadow-md transition-all">
-        <UserPlus size={18} className="text-blue-500 mr-2.5 flex-shrink-0" />
+      <div className="flex items-center bg-[#04102e] rounded-2xl border-2 border-slate-700 px-3.5 h-[48px] shadow-sm focus-within:border-[#f5ba31] transition-all">
+        <UserPlus size={18} className="text-[#f5ba31] mr-2.5 flex-shrink-0" />
         <input
           type="text"
           placeholder="Invite Code (Optional)"
           value={referralCode}
           onChange={(e) => setReferralCode(e.target.value)}
-          className="w-full bg-transparent text-sm text-gray-800 placeholder-gray-400 outline-none font-medium"
+          className="w-full bg-transparent text-sm text-white placeholder-slate-500 outline-none font-medium"
         />
       </div>
 
@@ -191,7 +191,7 @@ function RegisterForm() {
       <button
         type="submit"
         disabled={loading}
-        className="w-full py-3.5 mt-2 rounded-2xl bg-gradient-to-r from-[#0066FF] to-[#0099FF] text-white font-bold text-base shadow-[0_4px_16px_rgba(0,102,255,0.4)] hover:shadow-lg active:scale-98 transition-all disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+        className="w-full py-3.5 mt-2 rounded-2xl bg-gradient-to-r from-[#f5ba31] via-[#ffd369] to-[#d49002] text-[#020a1f] font-black text-base shadow-[0_0_20px_rgba(245,186,49,0.35)] hover:shadow-lg active:scale-98 transition-all disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
       >
         <UserPlus size={18} />
         <span>{loading ? "Creating Account..." : "Register"}</span>
@@ -202,11 +202,11 @@ function RegisterForm() {
 
 export default function RegisterPage() {
   return (
-    <div className="relative min-h-screen flex flex-col justify-between overflow-hidden bg-gradient-to-b from-[#bfe4ff] via-[#eaf4fe] to-[#cce8ff]">
+    <div className="relative min-h-screen flex flex-col justify-between overflow-hidden bg-gradient-to-b from-[#020a1f] via-[#051338] to-[#01081a] text-white">
       {/* Language Selector Top Right */}
       <div className="flex justify-end p-4 z-10">
-        <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/80 backdrop-blur-md border border-blue-200 text-xs font-semibold text-blue-900 shadow-sm">
-          <Globe size={14} className="text-blue-600" />
+        <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#05143a]/90 backdrop-blur-md border border-[#f5ba31]/50 text-xs font-semibold text-white shadow-sm">
+          <Globe size={14} className="text-[#f5ba31]" />
           <span>English</span>
         </div>
       </div>
@@ -220,29 +220,29 @@ export default function RegisterPage() {
 
         {/* Titles */}
         <div className="text-center mb-5">
-          <h2 className="text-2xl font-black text-blue-950 tracking-tight">
+          <h2 className="text-2xl font-black text-white tracking-tight">
             Welcome to Zexo Capital
           </h2>
           <div className="flex items-center justify-center gap-2 mt-2">
-            <span className="h-[1px] w-6 bg-blue-300" />
-            <p className="text-xs font-medium text-blue-800">
+            <span className="h-[1px] w-6 bg-[#f5ba31]/60" />
+            <p className="text-xs font-medium text-slate-300">
               Complete your registration
             </p>
-            <span className="h-[1px] w-6 bg-blue-300" />
+            <span className="h-[1px] w-6 bg-[#f5ba31]/60" />
           </div>
         </div>
 
-        <Suspense fallback={<div className="text-center py-6 text-sm text-gray-500">Loading form...</div>}>
+        <Suspense fallback={<div className="text-center py-6 text-sm text-slate-400">Loading form...</div>}>
           <RegisterForm />
         </Suspense>
 
         {/* Already have an account */}
         <div className="text-center mt-5">
-          <p className="text-xs text-blue-950 font-medium">
+          <p className="text-xs text-slate-300 font-medium">
             Already have an account?{" "}
             <Link
               href="/login"
-              className="text-[#0055FF] font-bold hover:underline"
+              className="text-[#f5ba31] font-bold hover:underline"
             >
               Login
             </Link>

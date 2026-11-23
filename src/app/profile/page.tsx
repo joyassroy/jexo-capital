@@ -157,30 +157,30 @@ export default function ProfilePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#bce0ff] via-[#e9f4ff] to-[#cfe7fe] pb-24">
+    <div className="min-h-screen bg-gradient-to-b from-[#020a1f] via-[#051338] to-[#01081a] text-white pb-32">
       {/* Header Building Image with Avatar */}
-      <div className="relative h-48 w-full bg-slate-950 overflow-hidden shadow-inner">
+      <div className="relative h-36 w-full bg-slate-950 overflow-hidden shadow-inner">
         <Image
           src="/profile-banner.jpg"
           alt="Zexo Capital International Headquarters"
           fill
-          className="object-cover object-center"
+          className="object-cover object-center opacity-85"
           priority
           unoptimized
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0d1b3e] via-[#0d1b3e]/35 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#020a1f] via-[#020a1f]/50 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-transparent" />
       </div>
 
       {/* User Avatar & Identity Card */}
-      <div className="relative px-4 -mt-14">
+      <div className="relative px-4 -mt-11">
         <div className="flex flex-col items-center">
           {/* Avatar Container with Upload & Initials fallback */}
           <div className="relative group">
-            <div className="relative w-24 h-24 rounded-full p-1 bg-gradient-to-tr from-[#00C6FF] via-[#0072FF] to-blue-800 shadow-xl border-2 border-white overflow-hidden flex items-center justify-center">
+            <div className="relative w-20 h-20 sm:w-22 sm:h-22 rounded-full p-1 bg-gradient-to-tr from-[#ffe58f] via-[#f5ba31] to-[#d49002] shadow-[0_0_20px_rgba(245,186,49,0.45)] border-2 border-white/40 overflow-hidden flex items-center justify-center">
               {uploadingAvatar ? (
-                <div className="w-full h-full rounded-full bg-blue-900/80 flex items-center justify-center text-white">
-                  <Loader2 size={28} className="animate-spin text-cyan-300" />
+                <div className="w-full h-full rounded-full bg-slate-900 flex items-center justify-center text-white">
+                  <Loader2 size={24} className="animate-spin text-[#f5ba31]" />
                 </div>
               ) : user?.avatarUrl ? (
                 <img
@@ -189,7 +189,7 @@ export default function ProfilePage() {
                   className="w-full h-full object-cover rounded-full"
                 />
               ) : (
-                <div className="w-full h-full rounded-full bg-gradient-to-tr from-blue-600 to-cyan-400 flex items-center justify-center text-white text-2xl font-black shadow-inner tracking-wider select-none">
+                <div className="w-full h-full rounded-full bg-gradient-to-tr from-[#00b4d8] to-[#0077b6] flex items-center justify-center text-white text-xl font-black shadow-inner tracking-wider select-none">
                   {getInitials(user?.nickname)}
                 </div>
               )}
@@ -199,9 +199,9 @@ export default function ProfilePage() {
             <label
               htmlFor="avatar-file-upload"
               title="Upload profile picture"
-              className="absolute bottom-0 right-0 p-2 rounded-full bg-gradient-to-tr from-blue-600 to-cyan-500 text-white shadow-md border-2 border-white cursor-pointer hover:scale-110 active:scale-95 transition-all"
+              className="absolute bottom-0 right-0 p-1.5 rounded-full bg-gradient-to-tr from-[#f5ba31] to-[#e69e05] text-[#020a1f] shadow-md border-2 border-[#020a1f] cursor-pointer hover:scale-110 active:scale-95 transition-all"
             >
-              <Camera size={14} className="stroke-[2.5]" />
+              <Camera size={13} className="stroke-[3]" />
             </label>
 
             <input
@@ -219,121 +219,130 @@ export default function ProfilePage() {
           {user?.avatarUrl && !uploadingAvatar && (
             <button
               onClick={handleRemoveAvatar}
-              className="mt-1 flex items-center gap-1 text-[11px] font-bold text-rose-500 hover:text-rose-700 transition-colors"
+              className="mt-0.5 flex items-center gap-1 text-[10.5px] font-bold text-rose-400 hover:text-rose-300 transition-colors"
             >
-              <Trash2 size={12} />
+              <Trash2 size={11} />
               <span>Remove Photo</span>
             </button>
           )}
 
           {/* User Nickname */}
-          <div className="mt-2 px-6 py-1 rounded-full bg-white/90 backdrop-blur-md border border-blue-200 shadow-sm flex items-center gap-1.5">
-            <User size={14} className="text-blue-600" />
-            <span className="font-extrabold text-blue-950 text-sm">
+          <div className="mt-1.5 px-4 py-1 rounded-full bg-[#05143a]/90 backdrop-blur-md border border-[#f5ba31]/50 shadow-[0_0_12px_rgba(245,186,49,0.2)] flex items-center gap-1.5">
+            <User size={13} className="text-[#f5ba31]" />
+            <span className="font-extrabold text-white text-xs sm:text-sm">
               {user?.nickname || "User"}
             </span>
           </div>
 
-          <div className="flex items-center gap-4 mt-1 text-xs font-bold text-blue-900">
+          <div className="flex items-center gap-3 mt-1.5 text-[11px] font-bold text-slate-300">
             <span>ID: {user?.referralCode || "------"}</span>
             <span>•</span>
-            <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-300">
+            <span className="px-2.5 py-0.5 rounded-full bg-[#f5ba31]/20 text-[#f5ba31] border border-[#f5ba31]/60 text-[10px] shadow-[0_0_8px_rgba(245,186,49,0.2)]">
               Vip: {user?.vipLevel ?? 0}
             </span>
           </div>
         </div>
 
-        {/* Total Assets Card with Deposit & Withdraw Buttons */}
-        <div className="mt-4 p-4 rounded-2xl bg-white shadow-md border border-blue-100">
-          <div className="flex items-center justify-between pb-3 border-b border-gray-100">
-            <div>
-              <span className="text-xs font-semibold text-gray-500">
-                My total assets: (USDT)
+        {/* Total Assets Card with Glowing Gold Border */}
+        <div className="mt-3 p-[2px] rounded-[24px] bg-gradient-to-b from-[#f5ba31] via-[#ffd778] to-[#c98600] shadow-[0_0_24px_rgba(245,186,49,0.3)]">
+          <div className="p-3 sm:p-3.5 rounded-[22px] bg-gradient-to-b from-[#081944]/95 via-[#04102e]/98 to-[#02091c] backdrop-blur-2xl text-white">
+            <div className="flex items-center justify-between pb-2 border-b border-white/10">
+              <div>
+                <span className="text-[10.5px] sm:text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">
+                  My total assets: (USDT)
+                </span>
+                <div className="text-xl sm:text-2xl font-black text-white flex items-baseline gap-1 mt-0.5">
+                  <span>{user ? Number(user.balance).toFixed(2) : "0.00"}</span>
+                  <span className="text-xs font-bold text-[#f5ba31]">USDT</span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-1.5 flex-shrink-0">
+                <Link
+                  href="/recharge"
+                  className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-extrabold text-xs shadow-[0_0_10px_rgba(16,185,129,0.4)] hover:brightness-105 active:scale-95 transition-all"
+                >
+                  Deposit
+                </Link>
+                <Link
+                  href="/withdraw"
+                  className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-red-500 to-rose-600 text-white font-extrabold text-xs shadow-[0_0_10px_rgba(239,68,68,0.4)] hover:brightness-105 active:scale-95 transition-all"
+                >
+                  Withdraw
+                </Link>
+              </div>
+            </div>
+
+            {/* Rate conversion line - strictly one line on all devices */}
+            <div className="pt-1.5 pb-1 flex items-center justify-between text-[10.5px] sm:text-xs font-semibold text-slate-300 whitespace-nowrap overflow-hidden">
+              <span className="text-[#f5ba31] font-bold whitespace-nowrap">
+                ≈ {user ? (Number(user.balance) * 127).toFixed(2) : "0.00"} BDT
               </span>
-              <div className="text-2xl font-black text-blue-950 flex items-baseline gap-1">
-                <span>{user ? Number(user.balance).toFixed(2) : "0.00"}</span>
-                <span className="text-xs font-bold text-blue-600">USDT</span>
-              </div>
-              <div className="text-[11px] font-semibold text-gray-400 mt-0.5">
-                ≈ {user ? (Number(user.balance) * 127).toFixed(2) : "0.00"} BDT (Rate: 1$ = 127 Tk)
-              </div>
+              <span className="text-slate-400 font-medium whitespace-nowrap text-[10px] sm:text-[11px]">
+                (Rate: 1 USDT = 127 Tk)
+              </span>
             </div>
 
-            <div className="flex gap-2">
-              <Link
-                href="/recharge"
-                className="px-4 py-2 rounded-xl bg-emerald-500 text-white font-bold text-xs shadow-sm hover:bg-emerald-600 active:scale-95 transition-all"
-              >
-                Deposit
-              </Link>
-              <Link
-                href="/withdraw"
-                className="px-4 py-2 rounded-xl bg-red-500 text-white font-bold text-xs shadow-sm hover:bg-red-600 active:scale-95 transition-all"
-              >
-                Withdraw
-              </Link>
-            </div>
-          </div>
-
-          {/* Earnings summary row */}
-          <div className="grid grid-cols-3 divide-x divide-gray-100 pt-3 text-center">
-            <div>
-              <div className="text-sm font-extrabold text-blue-900">
-                {user ? Number(user.yesterdayEarnings).toFixed(2) : "0.00"}
+            {/* Earnings summary row */}
+            <div className="grid grid-cols-3 divide-x divide-white/10 pt-2 border-t border-white/10 text-center">
+              <div>
+                <div className="text-xs sm:text-sm font-black text-white">
+                  {user ? Number(user.yesterdayEarnings).toFixed(2) : "0.00"}
+                </div>
+                <div className="text-[9.5px] sm:text-[10px] text-slate-400 font-medium mt-0.5">
+                  Earnings-yesterday
+                </div>
               </div>
-              <div className="text-[10px] text-gray-500 font-medium">
-                Earnings-yesterday
+              <div>
+                <div className="text-xs sm:text-sm font-black text-white">
+                  {user ? Number(user.fundIncome).toFixed(2) : "0.00"}
+                </div>
+                <div className="text-[9.5px] sm:text-[10px] text-slate-400 font-medium mt-0.5">
+                  Accumulated earnings
+                </div>
               </div>
-            </div>
-            <div>
-              <div className="text-sm font-extrabold text-blue-900">
-                {user ? Number(user.fundIncome).toFixed(2) : "0.00"}
-              </div>
-              <div className="text-[10px] text-gray-500 font-medium">
-                Accumulated earnings
-              </div>
-            </div>
-            <div>
-              <div className="text-sm font-extrabold text-blue-900">
-                {user ? Number(user.todayEarnings).toFixed(2) : "0.00"}
-              </div>
-              <div className="text-[10px] text-gray-500 font-medium">
-                Today&apos;s earnings
+              <div>
+                <div className="text-xs sm:text-sm font-black text-white">
+                  {user ? Number(user.todayEarnings).toFixed(2) : "0.00"}
+                </div>
+                <div className="text-[9.5px] sm:text-[10px] text-slate-400 font-medium mt-0.5">
+                  Today&apos;s earnings
+                </div>
               </div>
             </div>
           </div>
         </div>
 
         {/* Quick Actions Row: Notice, Company Info, FAQ */}
-        <div className="grid grid-cols-3 gap-3 mt-3">
+        <div className="grid grid-cols-3 gap-2.5 mt-3">
           <Link
             href="/notice"
-            className="flex flex-col items-center justify-center p-3 rounded-2xl bg-white border border-blue-100 shadow-sm hover:border-blue-300 transition-all"
+            className="flex flex-col items-center justify-center p-3 rounded-2xl bg-[#04102e]/85 backdrop-blur-md border border-white/10 shadow-sm hover:border-[#f5ba31]/50 hover:bg-[#071944] transition-all"
           >
-            <div className="w-9 h-9 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center mb-1">
+            <div className="w-9 h-9 rounded-xl bg-amber-500/20 text-[#f5ba31] border border-[#f5ba31]/40 flex items-center justify-center mb-1">
               <FileText size={18} />
             </div>
-            <span className="text-xs font-bold text-gray-700">Notice</span>
+            <span className="text-xs font-bold text-slate-200">Notice</span>
           </Link>
 
           <Link
             href="/company-info"
-            className="flex flex-col items-center justify-center p-3 rounded-2xl bg-white border border-blue-100 shadow-sm hover:border-blue-300 transition-all"
+            className="flex flex-col items-center justify-center p-3 rounded-2xl bg-[#04102e]/85 backdrop-blur-md border border-white/10 shadow-sm hover:border-[#f5ba31]/50 hover:bg-[#071944] transition-all"
           >
-            <div className="w-9 h-9 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center mb-1">
+            <div className="w-9 h-9 rounded-xl bg-blue-500/20 text-cyan-400 border border-cyan-400/40 flex items-center justify-center mb-1">
               <Info size={18} />
             </div>
-            <span className="text-xs font-bold text-gray-700">Company Info</span>
+            <span className="text-xs font-bold text-slate-200">Company Info</span>
           </Link>
 
           <Link
             href="/faq"
-            className="flex flex-col items-center justify-center p-3 rounded-2xl bg-white border border-blue-100 shadow-sm hover:border-blue-300 transition-all"
+            className="flex flex-col items-center justify-center p-3 rounded-2xl bg-[#04102e]/85 backdrop-blur-md border border-white/10 shadow-sm hover:border-[#f5ba31]/50 hover:bg-[#071944] transition-all"
           >
-            <div className="w-9 h-9 rounded-xl bg-cyan-100 text-cyan-600 flex items-center justify-center mb-1">
+            <div className="w-9 h-9 rounded-xl bg-cyan-500/20 text-teal-400 border border-teal-400/40 flex items-center justify-center mb-1">
               <HelpCircle size={18} />
             </div>
-            <span className="text-xs font-bold text-gray-700">FAQ</span>
+            <span className="text-xs font-bold text-slate-200">FAQ</span>
           </Link>
         </div>
 
@@ -341,13 +350,13 @@ export default function ProfilePage() {
         <div className="mt-3">
           <Link
             href="/vip"
-            className="block w-full py-2.5 rounded-full border-2 border-blue-400 bg-white text-center font-bold text-sm text-blue-800 shadow-sm hover:bg-blue-50 transition-all"
+            className="block w-full py-2.5 rounded-full border-2 border-[#f5ba31] bg-gradient-to-r from-[#f5ba31]/20 via-[#ffd369]/20 to-[#f5ba31]/20 text-center font-black text-sm text-[#f5ba31] shadow-[0_0_15px_rgba(245,186,49,0.25)] hover:bg-[#f5ba31]/30 transition-all"
           >
             Complete Now
           </Link>
         </div>
 
-        {/* Pill Menu Items List */}
+        {/* Pill Menu Items List (Dark Glass Pills with Gold Accents) */}
         <div className="mt-4 space-y-2">
           {menuItems.map((item, idx) => {
             const Icon = item.icon;
@@ -355,17 +364,20 @@ export default function ProfilePage() {
               <Link
                 key={idx}
                 href={item.href}
-                className="flex items-center justify-between p-3.5 rounded-2xl bg-white border border-blue-100 shadow-sm hover:border-blue-300 hover:shadow-md transition-all group"
+                className="flex items-center justify-between p-3.5 rounded-2xl bg-[#04102e]/85 backdrop-blur-md border border-white/10 shadow-sm hover:border-[#f5ba31]/40 hover:bg-[#071944] transition-all group"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                  <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 text-[#f5ba31] flex items-center justify-center group-hover:bg-[#f5ba31] group-hover:text-[#020a1f] transition-all">
                     <Icon size={18} />
                   </div>
-                  <span className="text-sm font-semibold text-gray-800">
+                  <span className="text-sm font-semibold text-slate-200 group-hover:text-white">
                     {item.label}
                   </span>
                 </div>
-                <ChevronRight size={18} className="text-gray-400 group-hover:text-blue-500" />
+                <ChevronRight
+                  size={18}
+                  className="text-slate-500 group-hover:text-[#f5ba31] group-hover:translate-x-1 transition-all"
+                />
               </Link>
             );
           })}
@@ -374,7 +386,7 @@ export default function ProfilePage() {
         {/* Log Out Button */}
         <button
           onClick={handleLogout}
-          className="w-full mt-5 py-3.5 rounded-2xl bg-gradient-to-r from-red-500 to-rose-600 text-white font-bold text-base shadow-[0_4px_16px_rgba(239,68,68,0.35)] hover:shadow-lg active:scale-98 transition-all flex items-center justify-center gap-2"
+          className="w-full mt-5 py-3.5 rounded-2xl bg-gradient-to-r from-red-600 to-rose-700 text-white font-bold text-base shadow-[0_4px_16px_rgba(220,38,38,0.4)] hover:brightness-110 active:scale-98 transition-all flex items-center justify-center gap-2"
         >
           <LogOut size={20} />
           <span>Log Out</span>

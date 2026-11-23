@@ -39,39 +39,39 @@ export default function RecordsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#bde2ff] via-[#ebf5fe] to-[#cfe7fe] flex flex-col justify-between">
+    <div className="min-h-screen bg-gradient-to-b from-[#020a1f] via-[#051338] to-[#01081a] text-white flex flex-col justify-between pb-28">
       <div>
         <Header title="Record" showBack={true} />
 
         <div className="p-4 space-y-2">
           {loading ? (
-            <div className="text-center py-10 text-gray-500 font-semibold text-sm">
+            <div className="text-center py-10 text-slate-400 font-semibold text-sm">
               Loading records...
             </div>
           ) : records.length === 0 ? (
-            <div className="text-center py-12 rounded-3xl bg-white shadow-sm border border-blue-100 text-gray-500">
-              <ClipboardList size={40} className="mx-auto text-blue-300 mb-2" />
-              <p className="font-bold text-sm text-gray-700">No transactions found</p>
-              <p className="text-xs text-gray-400 mt-1">
+            <div className="text-center py-12 rounded-3xl bg-[#05143a]/80 backdrop-blur-md border border-[#f5ba31]/30 shadow-lg text-slate-300">
+              <ClipboardList size={40} className="mx-auto text-[#f5ba31] mb-2" />
+              <p className="font-bold text-sm text-white">No transactions found</p>
+              <p className="text-xs text-slate-400 mt-1">
                 Your activity history will be listed here.
               </p>
             </div>
           ) : (
-            <div className="rounded-2xl bg-white shadow-md border border-blue-100 overflow-hidden divide-y divide-blue-50">
+            <div className="rounded-2xl bg-[#04102e]/85 backdrop-blur-md border border-[#f5ba31]/30 shadow-lg overflow-hidden divide-y divide-white/10">
               {records.map((item) => (
                 <div
                   key={item._id}
                   className="p-3.5 flex items-center justify-between text-xs"
                 >
-                  <div className="flex-1 font-semibold text-gray-800">
+                  <div className="flex-1 font-semibold text-white">
                     {item.title}
                   </div>
-                  <div className="text-center font-mono text-blue-600 font-medium px-2">
+                  <div className="text-center font-mono text-slate-400 font-medium px-2">
                     {formatDate(item.createdAt)}
                   </div>
                   <div
                     className={`font-black text-right text-sm ${
-                      item.amount >= 0 ? "text-blue-900" : "text-red-600"
+                      item.amount >= 0 ? "text-[#00e676]" : "text-[#ff4d4f]"
                     }`}
                   >
                     {item.amount >= 0

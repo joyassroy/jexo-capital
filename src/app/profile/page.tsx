@@ -159,20 +159,21 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#bce0ff] via-[#e9f4ff] to-[#cfe7fe] pb-24">
       {/* Header Building Image with Avatar */}
-      <div className="relative h-44 w-full bg-blue-950 overflow-hidden">
+      <div className="relative h-48 w-full bg-slate-950 overflow-hidden shadow-inner">
         <Image
           src="/profile-banner.jpg"
-          alt="Zexo Capital Official Conference"
+          alt="Zexo Capital International Headquarters"
           fill
           className="object-cover object-center"
           priority
           unoptimized
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-blue-950/90 via-blue-950/30 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0d1b3e] via-[#0d1b3e]/35 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-transparent to-transparent" />
       </div>
 
       {/* User Avatar & Identity Card */}
-      <div className="relative px-4 -mt-12">
+      <div className="relative px-4 -mt-14">
         <div className="flex flex-col items-center">
           {/* Avatar Container with Upload & Initials fallback */}
           <div className="relative group">

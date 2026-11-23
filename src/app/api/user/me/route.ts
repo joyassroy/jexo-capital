@@ -26,9 +26,7 @@ export async function GET() {
     }
 
     const hasWithdrawPassword = Boolean(user.withdrawPasswordHash);
-    const userObj = user.toObject();
-    delete userObj.passwordHash;
-    delete userObj.withdrawPasswordHash;
+    const { passwordHash: _p, withdrawPasswordHash: _w, ...userSafe } = user.toObject();
 
     // Check KYC status
     const kyc = await Kyc.findOne({ userId: user._id.toString() });
@@ -38,7 +36,7 @@ export async function GET() {
 
     return NextResponse.json({
       success: true,
-      user: userObj,
+      user: userSafe,
       hasWithdrawPassword,
       kycStatus: kyc ? kyc.status : "not_submitted",
       wallets,

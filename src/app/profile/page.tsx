@@ -157,7 +157,7 @@ export default function ProfilePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#bce0ff] via-[#e9f4ff] to-[#cfe7fe] pb-24">
+    <div className="w-full min-h-full bg-gradient-to-b from-[#bce0ff] via-[#e9f4ff] to-[#cfe7fe] pb-4">
       {/* Header Building Image with Avatar */}
       <div className="relative h-44 w-full bg-blue-900">
         <Image

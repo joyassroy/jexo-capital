@@ -39,7 +39,7 @@ export default function RecordsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#bde2ff] via-[#ebf5fe] to-[#cfe7fe] flex flex-col justify-between">
+    <div className="w-full min-h-full bg-gradient-to-b from-[#bde2ff] via-[#ebf5fe] to-[#cfe7fe] flex flex-col justify-between pb-4">
       <div>
         <Header title="Record" showBack={true} />
 

@@ -32,7 +32,7 @@ export default function SharePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#bde2ff] via-[#ebf5fe] to-[#cfe7fe] pb-24 flex flex-col justify-between">
+    <div className="w-full min-h-full bg-gradient-to-b from-[#bde2ff] via-[#ebf5fe] to-[#cfe7fe] pb-4 flex flex-col justify-between">
       <div>
         <Header title="Invitation rules" showBack={true} />
 

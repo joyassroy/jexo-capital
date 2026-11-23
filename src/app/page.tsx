@@ -148,7 +148,7 @@ export default function HomePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#bde2ff] via-[#ebf5fe] to-[#d6ebff] pb-24">
+    <div className="w-full min-h-full bg-gradient-to-b from-[#bde2ff] via-[#ebf5fe] to-[#d6ebff] pb-4">
       {/* Top Header */}
       <div className="flex items-center justify-between px-4 py-2.5 bg-gradient-to-r from-[#0066FF] to-[#00A3FF] text-white shadow-md">
         <div className="flex items-center gap-2.5">

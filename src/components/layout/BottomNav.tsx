@@ -27,7 +27,7 @@ export default function BottomNav() {
   return (
     <nav
       aria-label="Bottom Navigation"
-      className="fixed bottom-0 left-0 right-0 z-40 max-w-[440px] mx-auto bg-white/95 backdrop-blur-md border-t border-blue-100 shadow-[0_-4px_20px_rgba(0,102,255,0.09)] transition-all pb-[env(safe-area-inset-bottom)]"
+      className="fixed bottom-0 left-0 right-0 z-40 max-w-[440px] mx-auto bg-white/95 backdrop-blur-md border-t border-blue-100 shadow-[0_-4px_20px_rgba(0,102,255,0.09)] transition-all"
     >
       <div className="flex items-center justify-around py-2 px-1">
         {navItems.map((item) => {

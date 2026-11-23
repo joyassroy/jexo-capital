@@ -2,7 +2,7 @@ import React from "react";
 
 export default function CityFooter() {
   return (
-    <div className="relative w-full h-14 overflow-hidden mt-2 pointer-events-none">
+    <div className="relative w-full h-24 overflow-hidden mt-auto pointer-events-none">
       {/* City skyline silhouettes */}
       <svg
         viewBox="0 0 500 120"

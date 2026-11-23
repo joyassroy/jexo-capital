@@ -14,10 +14,11 @@ export default function CompanyInfoPage() {
           {/* Company Building Image */}
           <div className="relative h-48 w-full rounded-3xl overflow-hidden shadow-lg border-2 border-white">
             <Image
-              src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&auto=format&fit=crop&q=80"
+              src="/profile-banner.jpg"
               alt="Zexo Capital Building"
               fill
               className="object-cover"
+              unoptimized
             />
             <div className="absolute inset-0 bg-gradient-to-t from-blue-950/80 via-transparent to-transparent flex items-end p-4">
               <div className="text-white">

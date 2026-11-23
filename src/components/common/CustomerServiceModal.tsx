@@ -57,10 +57,11 @@ export default function CustomerServiceModal({
               <div className="relative w-28 h-28 rounded-full p-1 bg-gradient-to-tr from-[#00C6FF] to-[#0072FF] shadow-md mb-2">
                 <div className="w-full h-full rounded-full overflow-hidden bg-white relative">
                   <Image
-                    src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&auto=format&fit=crop&q=80"
+                    src="/support-agent.svg"
                     alt="24/7 Support Agent"
                     fill
-                    className="object-cover"
+                    className="object-cover p-1"
+                    unoptimized
                   />
                 </div>
                 <div className="absolute -bottom-1 -right-1 bg-white text-blue-600 px-2 py-0.5 rounded-full text-[9px] font-extrabold shadow flex items-center gap-1 border border-blue-200">

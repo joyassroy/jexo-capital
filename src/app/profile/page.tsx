@@ -157,16 +157,18 @@ export default function ProfilePage() {
   ];
 
   return (
-    <div className="w-full min-h-full bg-gradient-to-b from-[#bce0ff] via-[#e9f4ff] to-[#cfe7fe] pb-4">
+    <div className="min-h-screen bg-gradient-to-b from-[#bce0ff] via-[#e9f4ff] to-[#cfe7fe] pb-24">
       {/* Header Building Image with Avatar */}
-      <div className="relative h-44 w-full bg-blue-900">
+      <div className="relative h-44 w-full bg-blue-950 overflow-hidden">
         <Image
-          src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&auto=format&fit=crop&q=80"
-          alt="Zexo Capital Headquarters"
+          src="/profile-banner.jpg"
+          alt="Zexo Capital Official Conference"
           fill
-          className="object-cover opacity-80"
+          className="object-cover object-center"
+          priority
+          unoptimized
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-blue-950/70 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-blue-950/90 via-blue-950/30 to-transparent" />
       </div>
 
       {/* User Avatar & Identity Card */}

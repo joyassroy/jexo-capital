@@ -39,21 +39,33 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Clean phone number (standardize to e.g. 017xxxxxxxx)
-    const cleanPhone = phone.replace(/[^0-9]/g, "");
-    const formattedPhone = cleanPhone.startsWith("880")
-      ? cleanPhone.slice(2)
-      : cleanPhone;
+    // Clean and validate mobile number for any country
+    const rawTrimmed = phone.trim();
+    const cleanDigits = rawTrimmed.replace(/[^0-9]/g, "");
 
-    if (formattedPhone.length < 10 || formattedPhone.length > 11) {
+    if (cleanDigits.length < 6 || cleanDigits.length > 16) {
       return NextResponse.json(
-        { error: "Please enter a valid mobile number." },
+        { error: "Please enter a valid mobile number (6 to 16 digits)." },
         { status: 400 }
       );
     }
 
+    const possiblePhones = Array.from(
+      new Set(
+        [
+          rawTrimmed,
+          cleanDigits,
+          `+${cleanDigits}`,
+          cleanDigits.startsWith("880") ? "0" + cleanDigits.slice(3) : null,
+          cleanDigits.startsWith("0") ? "880" + cleanDigits.slice(1) : null,
+        ].filter(Boolean) as string[]
+      )
+    );
+
     // 2. Check if phone is already registered
-    const existingUser = await User.findOne({ phone: formattedPhone });
+    const existingUser = await User.findOne({
+      phone: { $in: possiblePhones },
+    });
     if (existingUser) {
       return NextResponse.json(
         { error: "This mobile number is already registered. Please login." },
@@ -78,7 +90,7 @@ export async function POST(req: NextRequest) {
     // 5. Create User
     const passwordHash = await hashPassword(password);
     const newUser = await User.create({
-      phone: formattedPhone,
+      phone: cleanDigits,
       nickname: nickname.trim(),
       passwordHash,
       balance: 0,

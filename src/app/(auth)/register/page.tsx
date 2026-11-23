@@ -94,23 +94,17 @@ function RegisterForm() {
         />
       </div>
 
-      {/* Mobile Number with country selector */}
-      <div className="flex items-center bg-white rounded-2xl border-2 border-blue-200 overflow-hidden shadow-sm focus-within:border-blue-500 focus-within:shadow-md transition-all">
-        <div className="flex items-center gap-1.5 px-3 py-2.5 bg-blue-50/70 border-r border-blue-100 text-sm font-semibold text-gray-700">
-          <span className="text-lg">🇧🇩</span>
-          <span className="text-xs font-bold text-gray-800">+880</span>
-        </div>
-        <div className="flex items-center flex-1 px-3">
-          <Phone size={18} className="text-blue-500 mr-2 flex-shrink-0" />
-          <input
-            type="tel"
-            placeholder="Mobile Number"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            required
-            className="w-full py-2.5 bg-transparent text-sm text-gray-800 placeholder-gray-400 outline-none font-medium"
-          />
-        </div>
+      {/* Mobile Number (Any country) */}
+      <div className="flex items-center bg-white rounded-2xl border-2 border-blue-200 px-3.5 py-1 shadow-sm focus-within:border-blue-500 focus-within:shadow-md transition-all">
+        <Phone size={18} className="text-blue-500 mr-2.5 flex-shrink-0" />
+        <input
+          type="tel"
+          placeholder="Mobile Number"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          required
+          className="w-full py-2.5 bg-transparent text-sm text-gray-800 placeholder-gray-400 outline-none font-medium"
+        />
       </div>
 
       {/* Password (4-10 digits) */}

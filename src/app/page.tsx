@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import Logo from "@/components/common/Logo";
 import {
   Volume2,
   Download,
@@ -121,15 +122,15 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#bde2ff] via-[#ebf5fe] to-[#d6ebff] pb-24">
       {/* Top Header */}
-      <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-[#0066FF] to-[#00A3FF] text-white shadow-md">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center font-black text-white text-lg">
-            Z
-          </div>
-          <span className="font-bold text-lg tracking-tight">Zexo Capital</span>
+      <div className="flex items-center justify-between px-4 py-2.5 bg-gradient-to-r from-[#0066FF] to-[#00A3FF] text-white shadow-md">
+        <div className="flex items-center gap-2.5">
+          <Logo size={32} showText={false} />
+          <span className="font-black text-lg tracking-tight text-white drop-shadow-sm">
+            Zexo Capital
+          </span>
         </div>
 
-        <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-semibold">
+        <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md border border-white/20 text-xs font-semibold hover:bg-white/30 transition-all cursor-pointer">
           <Globe size={13} />
           <span>Language</span>
         </div>

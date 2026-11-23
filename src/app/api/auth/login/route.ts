@@ -23,13 +23,26 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Clean phone number
-    const cleanPhone = phone.replace(/[^0-9]/g, "");
-    const formattedPhone = cleanPhone.startsWith("880")
-      ? cleanPhone.slice(2)
-      : cleanPhone;
+    // Clean and normalize phone number for any international or local format
+    const rawTrimmed = phone.trim();
+    const cleanDigits = rawTrimmed.replace(/[^0-9]/g, "");
 
-    const user = await User.findOne({ phone: formattedPhone });
+    const possiblePhones = Array.from(
+      new Set(
+        [
+          rawTrimmed,
+          cleanDigits,
+          `+${cleanDigits}`,
+          cleanDigits.startsWith("880") ? "0" + cleanDigits.slice(3) : null,
+          cleanDigits.startsWith("0") ? "880" + cleanDigits.slice(1) : null,
+          cleanDigits.startsWith("0") ? cleanDigits.slice(1) : null,
+        ].filter(Boolean) as string[]
+      )
+    );
+
+    const user = await User.findOne({
+      phone: { $in: possiblePhones },
+    });
     if (!user) {
       return NextResponse.json(
         { error: "Invalid mobile number or password." },

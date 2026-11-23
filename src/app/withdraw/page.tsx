@@ -193,11 +193,10 @@ export default function WithdrawPage() {
               <button
                 type="button"
                 onClick={() => setActiveTab("Bank")}
-                className={`py-3.5 text-sm font-bold flex items-center justify-center gap-2 transition-all ${
-                  activeTab === "Bank"
-                    ? "bg-[#04102e] text-[#f5ba31] border-b-2 border-[#f5ba31] shadow-xs"
-                    : "text-slate-400 hover:text-white"
-                }`}
+                className={`py-3.5 text-sm font-bold flex items-center justify-center gap-2 transition-all ${activeTab === "Bank"
+                  ? "bg-[#04102e] text-[#f5ba31] border-b-2 border-[#f5ba31] shadow-xs"
+                  : "text-slate-400 hover:text-white"
+                  }`}
               >
                 <Building size={16} />
                 <span>Bank</span>
@@ -206,11 +205,10 @@ export default function WithdrawPage() {
               <button
                 type="button"
                 onClick={() => setActiveTab("USDT")}
-                className={`py-3.5 text-sm font-bold flex items-center justify-center gap-2 transition-all ${
-                  activeTab === "USDT"
-                    ? "bg-[#04102e] text-[#f5ba31] border-b-2 border-[#f5ba31] shadow-xs"
-                    : "text-slate-400 hover:text-white"
-                }`}
+                className={`py-3.5 text-sm font-bold flex items-center justify-center gap-2 transition-all ${activeTab === "USDT"
+                  ? "bg-[#04102e] text-[#f5ba31] border-b-2 border-[#f5ba31] shadow-xs"
+                  : "text-slate-400 hover:text-white"
+                  }`}
               >
                 <Coins size={16} />
                 <span>USDT-BEP20</span>

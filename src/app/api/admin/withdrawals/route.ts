@@ -3,6 +3,7 @@ import { connectDB } from "@/lib/mongodb";
 import { Withdrawal } from "@/models/Withdrawal";
 import { User } from "@/models/User";
 import { Transaction } from "@/models/Transaction";
+import { Notification } from "@/models/Notification";
 import { getCurrentAdmin } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
@@ -83,6 +84,15 @@ export async function PATCH(req: NextRequest) {
         { status: "success" }
       );
 
+      await Notification.create({
+        userId: withdrawal.userId,
+        title: "Withdrawal Paid Successfully",
+        message: `Your withdrawal of ${withdrawal.amount} TK (Arrival: ${withdrawal.arrivalAmount} TK) to ${withdrawal.method} (${withdrawal.targetAccount}) has been approved and paid!`,
+        type: "system",
+        actionUrl: "/withdraw-record",
+        actionText: "View Records",
+      });
+
       return NextResponse.json({
         success: true,
         message: `Withdrawal of ${withdrawal.amount} TK (Arrival: ${withdrawal.arrivalAmount} TK) marked as Paid.`,
@@ -104,6 +114,17 @@ export async function PATCH(req: NextRequest) {
         { "metadata.withdrawalId": withdrawal._id.toString() },
         { status: "failed" }
       );
+
+      await Notification.create({
+        userId: withdrawal.userId,
+        title: "Withdrawal Request Rejected",
+        message: `Your withdrawal request of ${withdrawal.amount} TK (${withdrawal.method} - ${withdrawal.targetAccount}) was rejected by admin.\n\nReason: ${
+          adminNote || "Account details mismatch or verification required"
+        }.\n\nThe amount has been refunded back to your balance. Please check your account and apply again.`,
+        type: "withdrawal_rejected",
+        actionUrl: "/withdraw",
+        actionText: "Re-apply Withdrawal",
+      });
 
       return NextResponse.json({
         success: true,

@@ -32,10 +32,28 @@ export interface IAdmin {
 export interface IBankWallet {
   _id?: string;
   userId: string;
+  userPhone?: string;
+  userNickname?: string;
   realName: string;
   bankType: "bKash" | "Nagad" | "USDT-BEP20";
   accountNumber: string;
   usdtAddress?: string;
+  status: "pending" | "approved" | "rejected";
+  rejectionReason?: string;
+  reviewedBy?: string;
+  reviewedAt?: Date;
+  createdAt: Date;
+}
+
+export interface INotification {
+  _id?: string;
+  userId: string;
+  title: string;
+  message: string;
+  type: "wallet_rejected" | "wallet_approved" | "withdrawal_rejected" | "deposit_rejected" | "system";
+  actionUrl?: string;
+  actionText?: string;
+  status: "unread" | "read";
   createdAt: Date;
 }
 

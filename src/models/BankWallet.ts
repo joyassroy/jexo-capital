@@ -8,6 +8,12 @@ const BankWalletSchema = new Schema<IBankWallet>(
       required: true,
       index: true,
     },
+    userPhone: {
+      type: String,
+    },
+    userNickname: {
+      type: String,
+    },
     realName: {
       type: String,
       required: true,
@@ -20,12 +26,28 @@ const BankWalletSchema = new Schema<IBankWallet>(
     },
     accountNumber: {
       type: String,
-      required: true,
+      default: "",
       trim: true,
     },
     usdtAddress: {
       type: String,
       trim: true,
+    },
+    status: {
+      type: String,
+      enum: ["pending", "approved", "rejected"],
+      default: "pending",
+      index: true,
+    },
+    rejectionReason: {
+      type: String,
+      trim: true,
+    },
+    reviewedBy: {
+      type: String,
+    },
+    reviewedAt: {
+      type: Date,
     },
   },
   {
@@ -35,4 +57,3 @@ const BankWalletSchema = new Schema<IBankWallet>(
 
 export const BankWallet: Model<IBankWallet> =
   models.BankWallet || mongoose.model<IBankWallet>("BankWallet", BankWalletSchema);
-

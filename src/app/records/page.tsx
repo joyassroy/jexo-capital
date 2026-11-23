@@ -70,9 +70,8 @@ export default function RecordsPage() {
                     {formatDate(item.createdAt)}
                   </div>
                   <div
-                    className={`font-black text-right text-sm ${
-                      item.amount >= 0 ? "text-[#00e676]" : "text-[#ff4d4f]"
-                    }`}
+                    className={`font-black text-right text-sm ${item.amount >= 0 ? "text-[#00e676]" : "text-[#ff4d4f]"
+                      }`}
                   >
                     {item.amount >= 0
                       ? `+${Number(item.amount).toFixed(2)} USDT`

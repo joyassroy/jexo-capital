@@ -16,6 +16,7 @@ import {
   X,
   ExternalLink,
   UserCheck,
+  CreditCard,
 } from "lucide-react";
 
 export default function AdminLayout({
@@ -44,6 +45,7 @@ export default function AdminLayout({
     { label: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
     { label: "Deposits Queue", href: "/admin/deposits", icon: ArrowDownCircle },
     { label: "Withdrawals Queue", href: "/admin/withdrawals", icon: ArrowUpCircle },
+    { label: "Wallets & Cards", href: "/admin/wallets", icon: CreditCard },
     { label: "User Management", href: "/admin/users", icon: Users },
     { label: "KYC Verification", href: "/admin/kyc", icon: UserCheck },
     { label: "Gift Codes", href: "/admin/gift-codes", icon: Gift },

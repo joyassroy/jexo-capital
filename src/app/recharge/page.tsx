@@ -248,11 +248,10 @@ export default function RechargePage() {
                     key={val}
                     type="button"
                     onClick={() => setAmount(val)}
-                    className={`py-2.5 rounded-xl font-bold text-sm transition-all ${
-                      amount === val
-                        ? "bg-gradient-to-r from-[#f5ba31] via-[#ffd369] to-[#d49002] text-[#020a1f] font-black shadow-[0_0_12px_rgba(245,186,49,0.4)] scale-102"
-                        : "bg-[#020a1f] text-slate-200 border border-slate-700 hover:border-[#f5ba31]/60"
-                    }`}
+                    className={`py-2.5 rounded-xl font-bold text-sm transition-all ${amount === val
+                      ? "bg-gradient-to-r from-[#f5ba31] via-[#ffd369] to-[#d49002] text-[#020a1f] font-black shadow-[0_0_12px_rgba(245,186,49,0.4)] scale-102"
+                      : "bg-[#020a1f] text-slate-200 border border-slate-700 hover:border-[#f5ba31]/60"
+                      }`}
                   >
                     <div>{val} TK</div>
                     <div className="text-[10px] opacity-80 font-normal">
@@ -263,11 +262,10 @@ export default function RechargePage() {
                 <button
                   type="button"
                   onClick={() => setAmount("")}
-                  className={`py-2.5 rounded-xl font-bold text-sm transition-all ${
-                    !["500", "1000", "1270", "2540", "5000"].includes(amount)
-                      ? "bg-gradient-to-r from-[#f5ba31] via-[#ffd369] to-[#d49002] text-[#020a1f] font-black shadow-[0_0_12px_rgba(245,186,49,0.4)]"
-                      : "bg-[#020a1f] text-slate-200 border border-slate-700 hover:border-[#f5ba31]/60"
-                  }`}
+                  className={`py-2.5 rounded-xl font-bold text-sm transition-all ${!["500", "1000", "1270", "2540", "5000"].includes(amount)
+                    ? "bg-gradient-to-r from-[#f5ba31] via-[#ffd369] to-[#d49002] text-[#020a1f] font-black shadow-[0_0_12px_rgba(245,186,49,0.4)]"
+                    : "bg-[#020a1f] text-slate-200 border border-slate-700 hover:border-[#f5ba31]/60"
+                    }`}
                 >
                   Others
                 </button>

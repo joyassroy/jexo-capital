@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import { BankWallet } from "@/models/BankWallet";
+import { User } from "@/models/User";
 import { getCurrentUser } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
@@ -13,7 +14,7 @@ export async function GET() {
     }
 
     await connectDB();
-    const wallets = await BankWallet.find({ userId: userPayload.userId });
+    const wallets = await BankWallet.find({ userId: userPayload.userId }).sort({ createdAt: -1 });
     return NextResponse.json({ success: true, wallets });
   } catch (error: unknown) {
     console.error("Get Wallets Error:", error);
@@ -33,28 +34,52 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { realName, bankType, accountNumber, usdtAddress } = body;
 
-    if (!realName || !bankType) {
+    if (!realName || !realName.trim()) {
       return NextResponse.json(
-        { error: "Please enter your real name and bank/wallet type." },
+        { error: "Please enter your real name." },
         { status: 400 }
       );
     }
 
+    if (!bankType || !["bKash", "Nagad", "USDT-BEP20"].includes(bankType)) {
+      return NextResponse.json(
+        { error: "Please select a valid wallet type (bKash, Nagad, or USDT-BEP20)." },
+        { status: 400 }
+      );
+    }
+
+    const cleanUsdt = usdtAddress ? usdtAddress.trim() : "";
+    const cleanAccount = accountNumber ? accountNumber.trim() : "";
+
     if (bankType === "USDT-BEP20") {
-      if (!usdtAddress || usdtAddress.trim() === "") {
+      if (!cleanUsdt) {
         return NextResponse.json(
           { error: "Please enter your USDT (BEP-20) address." },
           { status: 400 }
         );
       }
+      // BEP-20 address regex check: starts with 0x followed by 40 hexadecimal characters
+      const bep20Regex = /^0x[a-fA-F0-9]{40}$/;
+      if (!bep20Regex.test(cleanUsdt)) {
+        return NextResponse.json(
+          {
+            error:
+              "Invalid USDT (BEP-20) address. It must start with 0x followed by 40 hex characters (e.g. 0x8f83d56dac8403238181a32f4e766d68529d9cad).",
+          },
+          { status: 400 }
+        );
+      }
     } else {
-      if (!accountNumber || accountNumber.trim() === "") {
+      if (!cleanAccount) {
         return NextResponse.json(
           { error: "Please enter your account number." },
           { status: 400 }
         );
       }
     }
+
+    // Fetch user details for phone & nickname
+    const user = await User.findById(userPayload.userId);
 
     // Check if wallet already exists for this user and type
     const existingWallet = await BankWallet.findOne({
@@ -64,28 +89,35 @@ export async function POST(req: NextRequest) {
 
     if (existingWallet) {
       existingWallet.realName = realName.trim();
-      existingWallet.accountNumber = accountNumber?.trim() || "";
-      existingWallet.usdtAddress = usdtAddress?.trim() || "";
+      existingWallet.accountNumber = cleanAccount;
+      existingWallet.usdtAddress = cleanUsdt;
+      existingWallet.status = "pending"; // Reset to pending for admin re-verification
+      existingWallet.rejectionReason = undefined;
+      existingWallet.userPhone = user?.phone || "";
+      existingWallet.userNickname = user?.nickname || "";
       await existingWallet.save();
 
       return NextResponse.json({
         success: true,
-        message: "Wallet updated successfully!",
+        message: "Wallet details updated and submitted for admin verification!",
         wallet: existingWallet,
       });
     }
 
     const newWallet = await BankWallet.create({
       userId: userPayload.userId,
+      userPhone: user?.phone || "",
+      userNickname: user?.nickname || "",
       realName: realName.trim(),
       bankType,
-      accountNumber: accountNumber?.trim() || "",
-      usdtAddress: usdtAddress?.trim() || "",
+      accountNumber: cleanAccount,
+      usdtAddress: cleanUsdt,
+      status: "pending",
     });
 
     return NextResponse.json({
       success: true,
-      message: "Wallet bound successfully!",
+      message: "Wallet bound successfully! Submitted for admin verification.",
       wallet: newWallet,
     });
   } catch (error: unknown) {

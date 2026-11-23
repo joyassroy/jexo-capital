@@ -287,8 +287,20 @@ export default function HomePage() {
           className="text-[#f5ba31] flex-shrink-0 animate-pulse drop-shadow-[0_0_6px_rgba(245,186,49,0.7)]"
         />
         <div className="relative flex-1 overflow-hidden h-5 flex items-center">
-          <div className="absolute inset-y-0 flex items-center whitespace-nowrap animate-marquee-ltr select-none text-xs font-semibold text-white tracking-wide">
-            {tickerText}
+          <div className="flex shrink-0 animate-marquee-ltr-loop whitespace-nowrap select-none text-xs font-semibold text-white tracking-wide">
+            <span className="flex items-center">
+              {tickerText}
+              <span className="mx-6 text-[#f5ba31] font-bold">★</span>
+            </span>
+          </div>
+          <div
+            className="flex shrink-0 animate-marquee-ltr-loop whitespace-nowrap select-none text-xs font-semibold text-white tracking-wide"
+            aria-hidden="true"
+          >
+            <span className="flex items-center">
+              {tickerText}
+              <span className="mx-6 text-[#f5ba31] font-bold">★</span>
+            </span>
           </div>
         </div>
         <ChevronRight size={17} className="text-[#f5ba31] flex-shrink-0" />

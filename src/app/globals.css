@@ -129,44 +129,40 @@ body {
 .animate-floating {
   animation: floatAnimation 3s ease-in-out infinite;
 }
-/* Ticker Left-to-Right Marquee Animation */
-@keyframes marqueeLeftToRight {
-  0% {
-    left: 0%;
-    transform: translate3d(-100%, 0, 0);
+/* Continuous Seamless Loop Marquee (Left to Right) */
+@keyframes marqueeLoopLTR {
+  0%, 8% {
+    transform: translateX(-100%);
   }
   100% {
-    left: 100%;
-    transform: translate3d(0%, 0, 0);
+    transform: translateX(0%);
   }
 }
 
-.animate-marquee-ltr {
-  animation: marqueeLeftToRight 22s linear infinite;
-  will-change: transform, left;
+.animate-marquee-ltr-loop {
+  animation: marqueeLoopLTR 25s linear infinite;
+  will-change: transform;
 }
 
-.animate-marquee-ltr:hover {
+.animate-marquee-ltr-loop:hover {
   animation-play-state: paused;
 }
 
-/* Ticker Right-to-Left Marquee Animation */
-@keyframes marqueeRightToLeft {
-  0% {
-    left: 100%;
-    transform: translate3d(0%, 0, 0);
+/* Continuous Seamless Loop Marquee (Right to Left) */
+@keyframes marqueeLoopRTL {
+  0%, 8% {
+    transform: translateX(0%);
   }
   100% {
-    left: 0%;
-    transform: translate3d(-100%, 0, 0);
+    transform: translateX(-100%);
   }
 }
 
-.animate-marquee-rtl {
-  animation: marqueeRightToLeft 20s linear infinite;
-  will-change: transform, left;
+.animate-marquee-rtl-loop {
+  animation: marqueeLoopRTL 25s linear infinite;
+  will-change: transform;
 }
 
-.animate-marquee-rtl:hover {
+.animate-marquee-rtl-loop:hover {
   animation-play-state: paused;
 }

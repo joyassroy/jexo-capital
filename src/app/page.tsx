@@ -26,6 +26,13 @@ import {
   MessageCircle,
   Send,
   ExternalLink,
+  Megaphone,
+  Building2,
+  HelpCircle,
+  CloudDownload,
+  Smartphone,
+  ArrowLeftRight,
+  Layers,
 } from "lucide-react";
 
 interface UserProfile {
@@ -115,69 +122,78 @@ export default function HomePage() {
       .catch(() => {});
   }, []);
 
-  const actionCards = [
+  const actionItems = [
     {
-      title: "App Download",
-      icon: Download,
-      href: "/app-download",
-      gradient: "from-[#00c853] via-[#00b050] to-[#009624]",
-      shadow: "shadow-[0_4px_16px_rgba(0,200,83,0.35)]",
+      title: "Notice",
+      icon: Megaphone,
+      href: "/notice",
+      circleBg: "bg-gradient-to-tr from-[#ff3366]/20 via-[#ff3366]/30 to-[#ff6699]/15",
+      border: "border-[#ff3366]/40",
+      iconColor: "text-[#ff4d6d]",
+      shadow: "shadow-[0_0_15px_rgba(255,51,102,0.25)]",
     },
     {
-      title: "Records",
-      icon: ClipboardList,
-      href: "/records",
-      gradient: "from-[#ff1744] via-[#e52d27] to-[#b31217]",
-      shadow: "shadow-[0_4px_16px_rgba(255,23,68,0.35)]",
+      title: "Company Info",
+      icon: Building2,
+      href: "/company-info",
+      circleBg: "bg-gradient-to-tr from-[#f59e0b]/20 via-[#f5ba31]/30 to-[#fde68a]/15",
+      border: "border-[#f5ba31]/40",
+      iconColor: "text-[#f5ba31]",
+      shadow: "shadow-[0_0_15px_rgba(245,186,49,0.25)]",
     },
     {
-      title: "Gift Receive",
-      icon: Gift,
-      href: "/gift-receive",
-      gradient: "from-[#e040fb] via-[#c026d3] to-[#9333ea]",
-      shadow: "shadow-[0_4px_16px_rgba(224,64,251,0.35)]",
-    },
-    {
-      title: "password",
-      icon: Lock,
-      href: "/change-password",
-      gradient: "from-[#0091ea] via-[#0066ff] to-[#0044cc]",
-      shadow: "shadow-[0_4px_16px_rgba(0,145,234,0.35)]",
-    },
-    {
-      title: "My Bank",
-      icon: CreditCard,
-      href: "/my-bank",
-      gradient: "from-[#00b0ff] via-[#0284c7] to-[#0369a1]",
-      shadow: "shadow-[0_4px_16px_rgba(0,176,255,0.35)]",
-    },
-    {
-      title: "My team",
-      icon: Users,
-      href: "/share",
-      gradient: "from-[#7c4dff] via-[#7c3aed] to-[#5b21b6]",
-      shadow: "shadow-[0_4px_16px_rgba(124,77,255,0.35)]",
-    },
-    {
-      title: "Recharge",
-      icon: ArrowDownCircle,
-      href: "/recharge",
-      gradient: "from-[#2979ff] via-[#1d4ed8] to-[#1e3a8a]",
-      shadow: "shadow-[0_4px_16px_rgba(41,121,255,0.35)]",
-    },
-    {
-      title: "Withdraw",
-      icon: ArrowUpCircle,
-      href: "/withdraw",
-      gradient: "from-[#ff9100] via-[#f59e0b] to-[#d97706]",
-      shadow: "shadow-[0_4px_16px_rgba(255,145,0,0.35)]",
-    },
-    {
-      title: "Customer Service",
-      icon: Headphones,
+      title: "Help Center",
+      icon: HelpCircle,
       onClick: () => setIsSupportOpen(true),
-      gradient: "from-[#00bfa5] via-[#0d9488] to-[#0f766e]",
-      shadow: "shadow-[0_4px_16px_rgba(0,191,165,0.35)]",
+      circleBg: "bg-gradient-to-tr from-[#ea580c]/20 via-[#f97316]/30 to-[#fed7aa]/15",
+      border: "border-[#f97316]/40",
+      iconColor: "text-[#fb923c]",
+      shadow: "shadow-[0_0_15px_rgba(249,115,22,0.25)]",
+    },
+    {
+      title: "Share",
+      icon: Send,
+      href: "/share",
+      circleBg: "bg-gradient-to-tr from-[#0284c7]/20 via-[#38bdf8]/30 to-[#bae6fd]/15",
+      border: "border-[#38bdf8]/40",
+      iconColor: "text-[#38bdf8]",
+      shadow: "shadow-[0_0_15px_rgba(56,189,248,0.25)]",
+    },
+    {
+      title: "APP download",
+      icon: CloudDownload,
+      href: "/app-download",
+      circleBg: "bg-gradient-to-tr from-slate-700/40 via-slate-600/30 to-white/15",
+      border: "border-white/30",
+      iconColor: "text-white",
+      shadow: "shadow-[0_0_15px_rgba(255,255,255,0.15)]",
+    },
+    {
+      title: "Deposit",
+      icon: Smartphone,
+      href: "/recharge",
+      circleBg: "bg-gradient-to-tr from-[#2563eb]/20 via-[#60a5fa]/30 to-[#bfdbfe]/15",
+      border: "border-[#60a5fa]/40",
+      iconColor: "text-[#60a5fa]",
+      shadow: "shadow-[0_0_15px_rgba(96,165,250,0.25)]",
+    },
+    {
+      title: "Withdrawal",
+      icon: ArrowLeftRight,
+      href: "/withdraw",
+      circleBg: "bg-gradient-to-tr from-[#7c3aed]/20 via-[#a78bfa]/30 to-[#ddd6fe]/15",
+      border: "border-[#a78bfa]/40",
+      iconColor: "text-[#a78bfa]",
+      shadow: "shadow-[0_0_15px_rgba(167,139,250,0.25)]",
+    },
+    {
+      title: "Q&A",
+      icon: Layers,
+      href: "/faq",
+      circleBg: "bg-gradient-to-tr from-[#d97706]/20 via-[#f59e0b]/30 to-[#fef3c7]/15",
+      border: "border-[#f59e0b]/40",
+      iconColor: "text-[#fbbf24]",
+      shadow: "shadow-[0_0_15px_rgba(245,158,11,0.25)]",
     },
   ];
 
@@ -380,53 +396,46 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* 3x3 Action Cards Grid (Vibrant Glossy Pill Buttons) */}
-      <div className="relative z-10 mx-3 mt-3.5 grid grid-cols-3 gap-2.5">
-        {actionCards.map((card, idx) => {
-          const Icon = card.icon;
-          const buttonContent = (
-            <div
-              className={`w-full py-2.5 sm:py-3 px-2 sm:px-2.5 rounded-2xl bg-gradient-to-r ${card.gradient} ${card.shadow} border-t border-white/35 flex items-center justify-between text-white active:scale-95 transition-all duration-200 group relative overflow-hidden`}
-            >
-              {/* Gloss highlight overlay */}
-              <div className="absolute inset-0 bg-gradient-to-b from-white/20 via-transparent to-black/10 pointer-events-none" />
+      {/* Action Icons Grid (Matching Reference Design: Circular Badges with Labels Below) */}
+      <div className="relative z-10 mx-3 mt-4 px-2 py-4 rounded-3xl bg-[#04102e]/60 border border-white/10 shadow-lg">
+        <div className="grid grid-cols-3 gap-y-6 gap-x-2">
+          {actionItems.map((item, idx) => {
+            const Icon = item.icon;
+            const content = (
+              <div className="flex flex-col items-center justify-center group active:scale-95 transition-transform duration-150">
+                {/* Circular Badge */}
+                <div
+                  className={`w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center border ${item.circleBg} ${item.border} ${item.shadow} group-hover:scale-105 transition-all duration-200`}
+                >
+                  <Icon size={26} className={`${item.iconColor} stroke-[2.2]`} />
+                </div>
 
-              {/* Left Circular Badge */}
-              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white/25 flex items-center justify-center flex-shrink-0 border border-white/30 text-white shadow-inner">
-                <Icon size={14} className="stroke-[2.5]" />
+                {/* Name underneath */}
+                <span className="text-xs sm:text-[13px] font-semibold text-slate-200 mt-2 text-center tracking-tight leading-tight group-hover:text-[#f5ba31] transition-colors">
+                  {item.title}
+                </span>
               </div>
-
-              {/* Center Title */}
-              <span className="text-[10px] sm:text-[11.5px] font-bold text-white tracking-tight leading-none px-1 text-center flex-1 truncate drop-shadow-sm">
-                {card.title}
-              </span>
-
-              {/* Right Chevron */}
-              <ChevronRight
-                size={13}
-                className="text-white/85 flex-shrink-0 stroke-[2.5]"
-              />
-            </div>
-          );
-
-          if (card.onClick) {
-            return (
-              <button
-                key={idx}
-                onClick={card.onClick}
-                className="w-full focus:outline-none"
-              >
-                {buttonContent}
-              </button>
             );
-          }
 
-          return (
-            <Link key={idx} href={card.href || "#"} className="w-full">
-              {buttonContent}
-            </Link>
-          );
-        })}
+            if (item.onClick) {
+              return (
+                <button
+                  key={idx}
+                  onClick={item.onClick}
+                  className="w-full focus:outline-none"
+                >
+                  {content}
+                </button>
+              );
+            }
+
+            return (
+              <Link key={idx} href={item.href || "#"} className="w-full">
+                {content}
+              </Link>
+            );
+          })}
+        </div>
       </div>
 
       {/* Bottom Glowing Golden Ribbon Waves (matching reference design) */}

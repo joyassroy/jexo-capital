@@ -181,3 +181,643 @@ body {
 .animate-marquee-rtl-loop:hover {
   animation-play-state: paused;
 }
+
+/* ==========================================================================
+   DAY / LIGHT MODE THEME OVERRIDES
+   ========================================================================== */
+
+html.light,
+html.light body,
+body.light {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+html.light body {
+  background: #eef2f6 !important;
+}
+
+.light .mobile-container {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Page Gradient Backgrounds */
+.light [class*="min-h-screen"][class*="bg-gradient-to-b"] {
+  background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 45%, #e2e8f0 100%) !important;
+  color: #0f172a !important;
+}
+
+/* Light Ambient Glows softening */
+.light .blur-3xl,
+.light [class*="blur-[120px]"],
+.light [class*="blur-[90px]"] {
+  opacity: 0.12 !important;
+}
+
+/* City Silhouette Footer in Day Mode */
+.light .city-silhouette-footer {
+  opacity: 0.3 !important;
+  filter: contrast(0.8);
+}
+
+/* Top Header & Subpage Headers */
+.light [class*="bg-[#030e28]"],
+.light [class*="bg-[#05143a]"] {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+
+.light .border-b[class*="border-[#f5ba31]"] {
+  border-bottom-color: rgba(245, 186, 49, 0.45) !important;
+}
+
+.light .bg-\[\#05143a\]\/90,
+.light .bg-\[\#05143a\]\/80,
+.light [class*="bg-[#05143a]"][class*="backdrop-blur"] {
+  background: #ffffff !important;
+  border-color: rgba(245, 186, 49, 0.6) !important;
+  color: #0f172a !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05) !important;
+}
+
+.light [class*="bg-[#05143a]"] h1,
+.light [class*="bg-[#05143a]"] span {
+  color: #0f172a !important;
+  text-shadow: none !important;
+}
+
+.light [class*="bg-white/10"],
+.light [class*="bg-white/15"] {
+  background: rgba(0, 0, 0, 0.05) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+.light [class*="bg-white/10"] svg,
+.light [class*="bg-white/10"] .text-white {
+  color: #0f172a !important;
+}
+
+/* Marquee Announcement Ticker in Light Mode */
+.light [class*="border-[#00d2ff]"] {
+  background-color: #ffffff !important;
+  border-color: #0284c7 !important;
+  box-shadow: 0 2px 10px rgba(2, 132, 199, 0.12) !important;
+}
+
+.light .animate-marquee-ltr-loop span,
+.light .animate-marquee-rtl-loop span {
+  color: #0f172a !important;
+}
+
+/* Account Balance Summary Card */
+.light [class*="from-[#f5ba31]"][class*="shadow-"] {
+  box-shadow: 0 4px 18px rgba(245, 186, 49, 0.25) !important;
+}
+
+.light [class*="from-[#081944]"] {
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%) !important;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04) !important;
+  border-color: #e2e8f0 !important;
+}
+
+.light [class*="from-[#081944]"] span.text-white,
+.light [class*="from-[#081944]"] div.text-white {
+  color: #0f172a !important;
+}
+
+.light [class*="from-[#081944]"] [class*="text-slate-300"],
+.light [class*="from-[#081944]"] [class*="text-slate-400"] {
+  color: #64748b !important;
+}
+
+.light [class*="from-[#081944]"] [class*="text-slate-100"] {
+  color: #334155 !important;
+}
+
+.light [class*="from-[#081944]"] [class*="divide-white/"] > * {
+  border-color: #e2e8f0 !important;
+}
+
+.light [class*="from-[#081944]"] [class*="border-white/"] {
+  border-color: #e2e8f0 !important;
+}
+
+/* ==========================================================================
+   ALL BOXES & CARDS ACROSS ALL PAGES (VIP, Records, Bank, Share, Notice, etc.)
+   ========================================================================== */
+
+.light [class*="bg-[#04102e]"],
+.light [class*="bg-[#081944]"],
+.light [class*="bg-[#05143a]"],
+.light [class*="bg-[#030e28]"],
+.light [class*="bg-[#031130]"],
+.light [class*="bg-[#07173e]"],
+.light [class*="bg-[#071d4d]"],
+.light [class*="bg-[#0a1b4d]"],
+.light [class*="bg-[#0b192c]"],
+.light [class*="bg-slate-900"],
+.light [class*="bg-slate-950"],
+.light .zexo-card,
+.light .zexo-pill-card {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* VIP Packages Cards in Light Mode */
+.light [class*="from-[#07173e]"] {
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%) !important;
+  border-color: #e2e8f0 !important;
+  color: #0f172a !important;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06) !important;
+}
+
+.light [class*="from-[#07173e]"] h3 {
+  background: linear-gradient(90deg, #b45309 0%, #d97706 50%, #f5ba31 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+.light [class*="from-[#07173e]"] .text-white {
+  color: #0f172a !important;
+}
+
+.light [class*="from-[#07173e]"] [class*="text-slate-300"],
+.light [class*="from-[#07173e]"] [class*="text-slate-400"] {
+  color: #64748b !important;
+}
+
+.light [class*="from-[#07173e]"] [class*="divide-white/"] > * {
+  border-color: #e2e8f0 !important;
+}
+
+.light [class*="from-[#07173e]"] [class*="border-white/"] {
+  border-color: #e2e8f0 !important;
+}
+
+/* Inner Input / Account Number / Address Boxes */
+.light [class*="bg-[#020a1f]"] {
+  background-color: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+.light [class*="bg-[#020a1f]"] .text-slate-200,
+.light [class*="bg-[#020a1f]"] .text-white {
+  color: #0f172a !important;
+}
+
+/* Tabs & Switchers */
+.light .grid[class*="bg-[#020a1f]"] {
+  background-color: #f1f5f9 !important;
+  border-color: #e2e8f0 !important;
+}
+
+.light .grid[class*="bg-[#020a1f]"] button[class*="bg-[#04102e]"] {
+  background-color: #ffffff !important;
+  color: #d97706 !important;
+}
+
+/* General Text Adaptations in Light Mode */
+.light .text-slate-100,
+.light .text-slate-200,
+.light .text-slate-300 {
+  color: #1e293b !important;
+}
+
+.light .text-slate-400,
+.light .text-slate-500 {
+  color: #64748b !important;
+}
+
+.light .text-blue-100,
+.light .text-blue-200,
+.light .text-blue-300 {
+  color: #0369a1 !important;
+}
+
+/* Divider & Border Replacements in Light Mode */
+.light [class*="divide-white/"] > * {
+  border-color: #e2e8f0 !important;
+}
+
+.light [class*="border-white/"] {
+  border-color: #e2e8f0 !important;
+}
+
+/* Ensure Text Remains White on Action Pills & Gradient Buttons */
+.light [class*="rounded-[18px]"] span,
+.light [class*="rounded-[18px]"] svg,
+.light [class*="from-[#22c55e]"] span,
+.light [class*="from-[#ef4444]"] span,
+.light [class*="from-[#d946ef]"] span,
+.light [class*="from-[#3b82f6]"] span,
+.light [class*="from-[#0ea5e9]"] span,
+.light [class*="from-[#8b5cf6]"] span,
+.light [class*="from-[#2563eb]"] span,
+.light [class*="from-[#f97316]"] span,
+.light [class*="from-[#14b8a6]"] span,
+.light [class*="from-[#00b040]"] span,
+.light [class*="from-[#e52d27]"] span,
+.light button[class*="bg-gradient-to"] span {
+  color: #ffffff !important;
+}
+
+/* Introduction Link Bar in Light Mode */
+.light a[href="/company-info"],
+.light [class*="from-[#04102e]"][class*="to-[#071944]"],
+.light [class*="bg-[#05143a]"][class*="rounded-2xl"] {
+  background: #ffffff !important;
+  background-image: none !important;
+  border-color: rgba(245, 186, 49, 0.65) !important;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06), 0 0 12px rgba(245, 186, 49, 0.15) !important;
+}
+
+.light a[href="/company-info"] span,
+.light [class*="from-[#04102e]"][class*="to-[#071944]"] span,
+.light [class*="bg-[#05143a]"][class*="rounded-2xl"] .text-slate-100 {
+  color: #0f172a !important;
+}
+
+.light a[href="/company-info"] svg,
+.light [class*="from-[#04102e]"][class*="to-[#071944]"] svg {
+  color: #d97706 !important;
+}
+
+/* Profile Banner in Light Mode */
+.light .relative.h-36 {
+  background-color: #e2e8f0 !important;
+}
+
+.light .relative.h-36 [class*="bg-gradient-to-t"] {
+  background: linear-gradient(to top, #ffffff, transparent) !important;
+}
+
+/* Modals & Dialogs in Light Mode */
+.light .fixed.inset-0 [class*="from-[#081944]"] {
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%) !important;
+  color: #0f172a !important;
+  border-color: rgba(245, 186, 49, 0.6) !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2) !important;
+}
+
+.light .fixed.inset-0 h1,
+.light .fixed.inset-0 h2,
+.light .fixed.inset-0 h3 {
+  color: #0f172a !important;
+}
+
+.light .fixed.inset-0 p {
+  color: #64748b !important;
+}
+
+.light .fixed.inset-0 a[class*="bg-white/5"] {
+  background-color: #f1f5f9 !important;
+  border-color: #e2e8f0 !important;
+}
+
+.light .fixed.inset-0 a[class*="bg-white/5"] span {
+  color: #0f172a !important;
+}
+
+/* Input Fields & Forms in Light Mode */
+.light input:not([type="checkbox"]):not([type="radio"]),
+.light select,
+.light textarea {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+.light input::placeholder,
+.light textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* Golden Ribbon Waves in Light Mode */
+.light svg[class*="opacity-85"] {
+  opacity: 0.95 !important;
+}
+
+/* ==========================================================================
+   DAY / LIGHT MODE THEME OVERRIDES
+   ========================================================================== */
+
+html.light,
+html.light body,
+body.light {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+html.light body {
+  background: #eef2f6 !important;
+}
+
+.light .mobile-container {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Page Gradient Backgrounds */
+.light [class*="min-h-screen"][class*="bg-gradient-to-b"] {
+  background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 45%, #e2e8f0 100%) !important;
+  color: #0f172a !important;
+}
+
+/* Light Ambient Glows softening */
+.light .blur-3xl,
+.light [class*="blur-[120px]"],
+.light [class*="blur-[90px]"] {
+  opacity: 0.12 !important;
+}
+
+/* City Silhouette Footer in Day Mode */
+.light .city-silhouette-footer {
+  opacity: 0.3 !important;
+  filter: contrast(0.8);
+}
+
+/* Top Header & Subpage Headers */
+.light [class*="bg-[#030e28]"],
+.light [class*="bg-[#05143a]"] {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+
+.light .border-b[class*="border-[#f5ba31]"] {
+  border-bottom-color: rgba(245, 186, 49, 0.45) !important;
+}
+
+.light .bg-\[\#05143a\]\/90,
+.light .bg-\[\#05143a\]\/80,
+.light [class*="bg-[#05143a]"][class*="backdrop-blur"] {
+  background: #ffffff !important;
+  border-color: rgba(245, 186, 49, 0.6) !important;
+  color: #0f172a !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05) !important;
+}
+
+.light [class*="bg-[#05143a]"] h1,
+.light [class*="bg-[#05143a]"] span {
+  color: #0f172a !important;
+  text-shadow: none !important;
+}
+
+.light [class*="bg-white/10"],
+.light [class*="bg-white/15"] {
+  background: rgba(0, 0, 0, 0.05) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+.light [class*="bg-white/10"] svg,
+.light [class*="bg-white/10"] .text-white {
+  color: #0f172a !important;
+}
+
+/* Marquee Announcement Ticker in Light Mode */
+.light [class*="border-[#00d2ff]"] {
+  background-color: #ffffff !important;
+  border-color: #0284c7 !important;
+  box-shadow: 0 2px 10px rgba(2, 132, 199, 0.12) !important;
+}
+
+.light .animate-marquee-ltr-loop span,
+.light .animate-marquee-rtl-loop span {
+  color: #0f172a !important;
+}
+
+/* Account Balance Summary Card */
+.light [class*="from-[#f5ba31]"][class*="shadow-"] {
+  box-shadow: 0 4px 18px rgba(245, 186, 49, 0.25) !important;
+}
+
+.light [class*="from-[#081944]"] {
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%) !important;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04) !important;
+  border-color: #e2e8f0 !important;
+}
+
+.light [class*="from-[#081944]"] span.text-white,
+.light [class*="from-[#081944]"] div.text-white {
+  color: #0f172a !important;
+}
+
+.light [class*="from-[#081944]"] [class*="text-slate-300"],
+.light [class*="from-[#081944]"] [class*="text-slate-400"] {
+  color: #64748b !important;
+}
+
+.light [class*="from-[#081944]"] [class*="text-slate-100"] {
+  color: #334155 !important;
+}
+
+.light [class*="from-[#081944]"] [class*="divide-white/"] > * {
+  border-color: #e2e8f0 !important;
+}
+
+.light [class*="from-[#081944]"] [class*="border-white/"] {
+  border-color: #e2e8f0 !important;
+}
+
+/* ==========================================================================
+   ALL BOXES & CARDS ACROSS ALL PAGES (VIP, Records, Bank, Share, Notice, etc.)
+   ========================================================================== */
+
+.light [class*="bg-[#04102e]"],
+.light [class*="bg-[#081944]"],
+.light [class*="bg-[#05143a]"],
+.light [class*="bg-[#030e28]"],
+.light [class*="bg-[#031130]"],
+.light [class*="bg-[#07173e]"],
+.light [class*="bg-[#071d4d]"],
+.light [class*="bg-[#0a1b4d]"],
+.light [class*="bg-[#0b192c]"],
+.light [class*="bg-slate-900"],
+.light [class*="bg-slate-950"],
+.light .zexo-card,
+.light .zexo-pill-card {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* VIP Packages Cards in Light Mode */
+.light [class*="from-[#07173e]"] {
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%) !important;
+  border-color: #e2e8f0 !important;
+  color: #0f172a !important;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06) !important;
+}
+
+.light [class*="from-[#07173e]"] h3 {
+  background: linear-gradient(90deg, #b45309 0%, #d97706 50%, #f5ba31 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+.light [class*="from-[#07173e]"] .text-white {
+  color: #0f172a !important;
+}
+
+.light [class*="from-[#07173e]"] [class*="text-slate-300"],
+.light [class*="from-[#07173e]"] [class*="text-slate-400"] {
+  color: #64748b !important;
+}
+
+.light [class*="from-[#07173e]"] [class*="divide-white/"] > * {
+  border-color: #e2e8f0 !important;
+}
+
+.light [class*="from-[#07173e]"] [class*="border-white/"] {
+  border-color: #e2e8f0 !important;
+}
+
+/* Inner Input / Account Number / Address Boxes */
+.light [class*="bg-[#020a1f]"] {
+  background-color: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+.light [class*="bg-[#020a1f]"] .text-slate-200,
+.light [class*="bg-[#020a1f]"] .text-white {
+  color: #0f172a !important;
+}
+
+/* Tabs & Switchers */
+.light .grid[class*="bg-[#020a1f]"] {
+  background-color: #f1f5f9 !important;
+  border-color: #e2e8f0 !important;
+}
+
+.light .grid[class*="bg-[#020a1f]"] button[class*="bg-[#04102e]"] {
+  background-color: #ffffff !important;
+  color: #d97706 !important;
+}
+
+/* General Text Adaptations in Light Mode */
+.light .text-slate-100,
+.light .text-slate-200,
+.light .text-slate-300 {
+  color: #1e293b !important;
+}
+
+.light .text-slate-400,
+.light .text-slate-500 {
+  color: #64748b !important;
+}
+
+.light .text-blue-100,
+.light .text-blue-200,
+.light .text-blue-300 {
+  color: #0369a1 !important;
+}
+
+/* Divider & Border Replacements in Light Mode */
+.light [class*="divide-white/"] > * {
+  border-color: #e2e8f0 !important;
+}
+
+.light [class*="border-white/"] {
+  border-color: #e2e8f0 !important;
+}
+
+/* Ensure Text Remains White on Action Pills & Gradient Buttons */
+.light [class*="rounded-[18px]"] span,
+.light [class*="rounded-[18px]"] svg,
+.light [class*="from-[#22c55e]"] span,
+.light [class*="from-[#ef4444]"] span,
+.light [class*="from-[#d946ef]"] span,
+.light [class*="from-[#3b82f6]"] span,
+.light [class*="from-[#0ea5e9]"] span,
+.light [class*="from-[#8b5cf6]"] span,
+.light [class*="from-[#2563eb]"] span,
+.light [class*="from-[#f97316]"] span,
+.light [class*="from-[#14b8a6]"] span,
+.light [class*="from-[#00b040]"] span,
+.light [class*="from-[#e52d27]"] span,
+.light button[class*="bg-gradient-to"] span {
+  color: #ffffff !important;
+}
+
+/* Introduction Link Bar in Light Mode */
+.light a[href="/company-info"],
+.light [class*="from-[#04102e]"][class*="to-[#071944]"],
+.light [class*="bg-[#05143a]"][class*="rounded-2xl"] {
+  background: #ffffff !important;
+  background-image: none !important;
+  border-color: rgba(245, 186, 49, 0.65) !important;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06), 0 0 12px rgba(245, 186, 49, 0.15) !important;
+}
+
+.light a[href="/company-info"] span,
+.light [class*="from-[#04102e]"][class*="to-[#071944]"] span,
+.light [class*="bg-[#05143a]"][class*="rounded-2xl"] .text-slate-100 {
+  color: #0f172a !important;
+}
+
+.light a[href="/company-info"] svg,
+.light [class*="from-[#04102e]"][class*="to-[#071944]"] svg {
+  color: #d97706 !important;
+}
+
+/* Profile Banner in Light Mode */
+.light .relative.h-36 {
+  background-color: #e2e8f0 !important;
+}
+
+.light .relative.h-36 [class*="bg-gradient-to-t"] {
+  background: linear-gradient(to top, #ffffff, transparent) !important;
+}
+
+/* Modals & Dialogs in Light Mode */
+.light .fixed.inset-0 [class*="from-[#081944]"] {
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%) !important;
+  color: #0f172a !important;
+  border-color: rgba(245, 186, 49, 0.6) !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2) !important;
+}
+
+.light .fixed.inset-0 h1,
+.light .fixed.inset-0 h2,
+.light .fixed.inset-0 h3 {
+  color: #0f172a !important;
+}
+
+.light .fixed.inset-0 p {
+  color: #64748b !important;
+}
+
+.light .fixed.inset-0 a[class*="bg-white/5"] {
+  background-color: #f1f5f9 !important;
+  border-color: #e2e8f0 !important;
+}
+
+.light .fixed.inset-0 a[class*="bg-white/5"] span {
+  color: #0f172a !important;
+}
+
+/* Input Fields & Forms in Light Mode */
+.light input:not([type="checkbox"]):not([type="radio"]),
+.light select,
+.light textarea {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+.light input::placeholder,
+.light textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* Golden Ribbon Waves in Light Mode */
+.light svg[class*="opacity-85"] {
+  opacity: 0.95 !important;
+}

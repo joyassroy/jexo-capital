@@ -3,6 +3,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import ThemeToggle from "@/components/common/ThemeToggle";
 import {
   FileText,
   Info,
@@ -170,6 +171,9 @@ export default function ProfilePage() {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#020a1f] via-[#020a1f]/50 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-transparent" />
+        <div className="absolute top-3 right-3 z-20">
+          <ThemeToggle compact />
+        </div>
       </div>
 
       {/* User Avatar & Identity Card */}

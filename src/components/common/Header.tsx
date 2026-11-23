@@ -3,6 +3,7 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
+import ThemeToggle from "@/components/common/ThemeToggle";
 
 interface HeaderProps {
   title: string;
@@ -39,9 +40,9 @@ export default function Header({
         </h1>
       </div>
 
-      {/* Right action placeholder or component */}
+      {/* Right action placeholder or ThemeToggle */}
       <div className="w-9 h-9 flex items-center justify-end">
-        {rightAction || null}
+        {rightAction !== undefined ? rightAction : <ThemeToggle compact />}
       </div>
     </div>
   );

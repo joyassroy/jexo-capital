@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import CityFooter from "@/components/common/CityFooter";
-import CustomerServiceModal from "@/components/common/CustomerServiceModal";
+import ThemeToggle from "@/components/common/ThemeToggle";
 import {
   ChevronLeft,
   Crown,
@@ -205,7 +205,9 @@ export default function VipPage() {
             <span className="h-[1px] w-5 bg-[#f5ba31]/60" />
           </div>
 
-          <div className="w-9" />
+          <div className="w-9 flex items-center justify-end">
+            <ThemeToggle compact />
+          </div>
         </div>
 
         {/* User Balance & Level Quick Bar */}
@@ -514,9 +516,6 @@ export default function VipPage() {
           </div>
         </div>
       )}
-
-      {/* Floating Customer Service Modal */}
-      <CustomerServiceModal />
 
       <CityFooter />
     </div>

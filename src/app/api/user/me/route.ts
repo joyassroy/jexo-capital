@@ -19,13 +19,16 @@ export async function GET() {
 
     await connectDB();
 
-    const user = await User.findById(userPayload.userId).select(
-      "-passwordHash -withdrawPasswordHash"
-    );
+    const user = await User.findById(userPayload.userId);
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
+
+    const hasWithdrawPassword = Boolean(user.withdrawPasswordHash);
+    const userObj = user.toObject();
+    delete userObj.passwordHash;
+    delete userObj.withdrawPasswordHash;
 
     // Check KYC status
     const kyc = await Kyc.findOne({ userId: user._id.toString() });
@@ -35,8 +38,8 @@ export async function GET() {
 
     return NextResponse.json({
       success: true,
-      user,
-      hasWithdrawPassword: Boolean(userPayload.userId), // or check user document
+      user: userObj,
+      hasWithdrawPassword,
       kycStatus: kyc ? kyc.status : "not_submitted",
       wallets,
     });

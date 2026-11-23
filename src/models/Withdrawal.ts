@@ -23,6 +23,12 @@ const WithdrawalSchema = new Schema<IWithdrawal>(
       type: Number,
       required: true,
     },
+    amountUSDT: {
+      type: Number,
+    },
+    amountBDT: {
+      type: Number,
+    },
     feePercentage: {
       type: Number,
       default: 10,
@@ -34,6 +40,9 @@ const WithdrawalSchema = new Schema<IWithdrawal>(
     arrivalAmount: {
       type: Number,
       required: true,
+    },
+    arrivalAmountBDT: {
+      type: Number,
     },
     targetAccount: {
       type: String,

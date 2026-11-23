@@ -10,9 +10,12 @@ interface WithdrawItem {
   userNickname: string;
   method: string;
   amount: number;
+  amountUSDT?: number;
+  amountBDT?: number;
   feePercentage: number;
   charge: number;
   arrivalAmount: number;
+  arrivalAmountBDT?: number;
   targetAccount: string;
   status: "pending" | "approved" | "rejected";
   createdAt: string;
@@ -155,15 +158,23 @@ export default function AdminWithdrawalsPage() {
                     </td>
 
                     <td className="p-4 font-black text-white text-sm">
-                      {item.amount} TK
+                      <div>{item.amount} USDT</div>
+                      <div className="text-[10px] text-slate-400 font-normal">
+                        ≈ {item.amountBDT || (item.amount * 127).toFixed(0)} BDT
+                      </div>
                     </td>
 
-                    <td className="p-4 text-amber-400 font-semibold">
-                      -{item.charge} TK
+                    <td className="p-4 text-amber-400 font-semibold text-xs">
+                      -{item.charge} USDT (10%)
                     </td>
 
                     <td className="p-4 font-black text-emerald-400 text-sm">
-                      {item.arrivalAmount} TK
+                      <div>{item.arrivalAmount} USDT</div>
+                      {item.method !== "USDT-BEP20" && (
+                        <div className="text-[11px] text-[#E2136E] font-bold">
+                          Send: {item.arrivalAmountBDT || (item.arrivalAmount * 127).toFixed(2)} BDT
+                        </div>
+                      )}
                     </td>
 
                     <td className="p-4 text-[11px] text-slate-400">

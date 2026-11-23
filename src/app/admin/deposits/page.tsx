@@ -11,6 +11,7 @@ interface DepositItem {
   method: string;
   amount: number;
   amountBDT: number;
+  amountUSDT?: number;
   senderNumber: string;
   transferType: string;
   transactionId: string;
@@ -156,9 +157,12 @@ export default function AdminDepositsPage() {
                     </td>
 
                     <td className="p-4">
-                      <span className="font-black text-white text-sm">
-                        {item.amountBDT || item.amount} TK
-                      </span>
+                      <div className="font-black text-white text-sm">
+                        {item.amountBDT || item.amount} BDT
+                      </div>
+                      <div className="text-[11px] font-bold text-emerald-400">
+                        ≈ {(item.amountUSDT || (item.amountBDT / 127)).toFixed(2)} USDT
+                      </div>
                     </td>
 
                     <td className="p-4 font-mono text-slate-300">

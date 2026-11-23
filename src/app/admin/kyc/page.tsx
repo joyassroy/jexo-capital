@@ -294,19 +294,37 @@ export default function AdminKycPage() {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="max-w-xl w-full bg-slate-900 border border-slate-700 rounded-2xl overflow-hidden p-3 relative"
+            className="max-w-2xl w-full bg-slate-900 border border-slate-700 rounded-2xl overflow-hidden p-4 relative shadow-2xl"
           >
-            <button
-              onClick={() => setPreviewImage(null)}
-              className="absolute top-4 right-4 p-1.5 rounded-full bg-black/60 text-white hover:bg-black/80"
-            >
-              <X size={18} />
-            </button>
-            <img
-              src={previewImage}
-              alt="Preview"
-              className="w-full max-h-[70vh] object-contain rounded-xl"
-            />
+            <div className="flex items-center justify-between pb-3 border-b border-slate-800 mb-3">
+              <span className="text-xs font-extrabold text-slate-200 uppercase tracking-wide">
+                National ID Document Preview
+              </span>
+              <div className="flex items-center gap-2">
+                <a
+                  href={previewImage}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all"
+                >
+                  <ExternalLink size={13} />
+                  <span>Open Full Size (Cloudinary)</span>
+                </a>
+                <button
+                  onClick={() => setPreviewImage(null)}
+                  className="p-1.5 rounded-xl bg-slate-800 text-slate-300 hover:text-white transition-all"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+            </div>
+            <div className="w-full max-h-[75vh] flex items-center justify-center bg-slate-950 rounded-xl overflow-hidden p-2">
+              <img
+                src={previewImage}
+                alt="NID Document Preview"
+                className="max-w-full max-h-[70vh] object-contain rounded-lg"
+              />
+            </div>
           </div>
         </div>
       )}

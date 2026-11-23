@@ -224,21 +224,26 @@ export default function RechargePage() {
           <div className="p-4 space-y-4">
             {/* Live Balance Card */}
             <div className="flex items-center justify-between px-4 py-3 rounded-2xl bg-white shadow-sm border border-blue-100">
-              <span className="text-sm font-bold text-gray-600">Balance</span>
-              <span className="text-xl font-black text-blue-900">
-                {Number(balance).toFixed(2)}
-              </span>
+              <span className="text-sm font-bold text-gray-600">Account Balance</span>
+              <div className="text-right">
+                <span className="text-xl font-black text-blue-900">
+                  {Number(balance).toFixed(2)} USDT
+                </span>
+                <span className="text-xs text-gray-500 font-semibold block">
+                  ≈ {(Number(balance) * usdtRate).toFixed(2)} BDT
+                </span>
+              </div>
             </div>
 
             {/* Amount Selection Card */}
             <div className="p-4 rounded-3xl bg-white shadow-md border border-blue-200">
               <h2 className="text-base font-bold text-orange-600 mb-3 text-center">
-                Please select the amount
+                Please select the recharge amount (in BDT)
               </h2>
 
               {/* Quick Preset Buttons */}
               <div className="grid grid-cols-3 gap-2.5 mb-4">
-                {["300", "500", "1000", "5000", "10000"].map((val) => (
+                {["500", "1000", "1270", "2540", "5000"].map((val) => (
                   <button
                     key={val}
                     type="button"
@@ -249,14 +254,17 @@ export default function RechargePage() {
                         : "bg-blue-50/80 text-blue-900 border border-blue-200 hover:bg-blue-100"
                     }`}
                   >
-                    {val}
+                    <div>{val} TK</div>
+                    <div className="text-[10px] opacity-80 font-normal">
+                      ≈ ${(Number(val) / usdtRate).toFixed(1)}
+                    </div>
                   </button>
                 ))}
                 <button
                   type="button"
                   onClick={() => setAmount("")}
                   className={`py-2.5 rounded-xl font-bold text-sm transition-all ${
-                    !["300", "500", "1000", "5000", "10000"].includes(amount)
+                    !["500", "1000", "1270", "2540", "5000"].includes(amount)
                       ? "bg-blue-600 text-white shadow-md"
                       : "bg-blue-50/80 text-blue-900 border border-blue-200 hover:bg-blue-100"
                   }`}
@@ -269,7 +277,7 @@ export default function RechargePage() {
               <div className="flex items-center gap-2 bg-blue-50/50 p-1 rounded-2xl border border-blue-200 focus-within:border-blue-500">
                 <input
                   type="number"
-                  placeholder="Enter your Amount"
+                  placeholder="Enter amount in BDT (Taka)"
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
                   className="w-full px-3 py-2 bg-transparent text-sm font-semibold text-gray-800 placeholder-gray-400 outline-none"
@@ -281,6 +289,16 @@ export default function RechargePage() {
                   Recharge
                 </button>
               </div>
+
+              {/* Real-time conversion badge */}
+              {amount && Number(amount) > 0 && (
+                <div className="mt-3 p-3 rounded-2xl bg-blue-50/80 border border-blue-200 text-xs font-bold text-blue-950 flex flex-col sm:flex-row sm:items-center justify-between gap-1 shadow-inner">
+                  <span>Recharge Amount: {amount} BDT</span>
+                  <span className="text-emerald-600 font-black">
+                    Account receives: ≈ {(Number(amount) / usdtRate).toFixed(2)} USDT (1$ = {usdtRate} Tk)
+                  </span>
+                </div>
+              )}
             </div>
 
             {/* Instruction Box 1 */}
@@ -410,8 +428,13 @@ export default function RechargePage() {
         {step === "bank_step2" && (
           <div className="p-4 space-y-5">
             {/* Amount Badge */}
-            <div className="w-full py-4 rounded-2xl bg-red-600 text-white text-center font-black text-3xl shadow-lg border-2 border-red-400">
-              {amount} TK
+            <div className="w-full py-4 rounded-2xl bg-gradient-to-r from-blue-700 to-indigo-800 text-white text-center shadow-lg border-2 border-blue-400/50">
+              <div className="font-black text-3xl tracking-tight font-mono">
+                {amount} BDT
+              </div>
+              <div className="text-xs font-bold text-cyan-300 mt-1">
+                ≈ {(Number(amount) / usdtRate).toFixed(2)} USDT will be added to your account (1$ = {usdtRate} Tk)
+              </div>
             </div>
 
             {/* Form */}
@@ -518,9 +541,14 @@ export default function RechargePage() {
 
                 <div className="flex items-center justify-between py-1.5">
                   <span className="text-gray-500">Amount:</span>
-                  <span className="text-lg font-black text-red-600">
-                    {amount} Tk
-                  </span>
+                  <div className="text-right">
+                    <span className="text-lg font-black text-red-600">
+                      {amount} BDT
+                    </span>
+                    <span className="text-xs font-bold text-emerald-600 block">
+                      ≈ {(Number(amount) / usdtRate).toFixed(2)} USDT credited to account
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>

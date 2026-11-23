@@ -59,8 +59,17 @@ export async function POST(req: NextRequest) {
     const usdtRate = setting?.usdtRateBDT || 127;
 
     const depositAmount = Number(amount);
-    const amountBDT =
-      method === "USDT-BEP20" ? depositAmount * usdtRate : depositAmount;
+    let amountBDT = 0;
+    let amountUSDT = 0;
+
+    if (method === "USDT-BEP20") {
+      amountUSDT = depositAmount;
+      amountBDT = Number((depositAmount * usdtRate).toFixed(2));
+    } else {
+      // Local mobile bank: user sent BDT via bKash/Nagad
+      amountBDT = depositAmount;
+      amountUSDT = Number((depositAmount / usdtRate).toFixed(4));
+    }
 
     const user = await User.findById(userPayload.userId);
     if (!user) {
@@ -74,6 +83,7 @@ export async function POST(req: NextRequest) {
       method,
       amount: depositAmount,
       amountBDT,
+      amountUSDT,
       senderNumber: senderNumber.trim(),
       transferType: transferType || "send_money",
       transactionId: cleanTxId,

@@ -245,10 +245,14 @@ export default function ProfilePage() {
           <div className="flex items-center justify-between pb-3 border-b border-gray-100">
             <div>
               <span className="text-xs font-semibold text-gray-500">
-                My total assets:(TK)
+                My total assets: (USDT)
               </span>
-              <div className="text-2xl font-black text-blue-950">
-                {user ? Number(user.balance).toFixed(2) : "0.00"}
+              <div className="text-2xl font-black text-blue-950 flex items-baseline gap-1">
+                <span>{user ? Number(user.balance).toFixed(2) : "0.00"}</span>
+                <span className="text-xs font-bold text-blue-600">USDT</span>
+              </div>
+              <div className="text-[11px] font-semibold text-gray-400 mt-0.5">
+                ≈ {user ? (Number(user.balance) * 127).toFixed(2) : "0.00"} BDT (Rate: 1$ = 127 Tk)
               </div>
             </div>
 

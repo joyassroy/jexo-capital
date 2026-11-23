@@ -9,6 +9,7 @@ interface RechargeItem {
   _id: string;
   amount: number;
   amountBDT: number;
+  amountUSDT?: number;
   method: string;
   senderNumber: string;
   transactionId: string;
@@ -66,9 +67,12 @@ export default function RechargeRecordPage() {
               >
                 <div>
                   <div className="text-lg font-black text-blue-950">
-                    {item.amountBDT || item.amount}
+                    {item.amountBDT || item.amount} BDT
                   </div>
-                  <div className="text-[11px] text-gray-500 font-semibold">
+                  <div className="text-[11px] text-emerald-600 font-bold">
+                    ≈ {(item.amountUSDT || ((item.amountBDT || item.amount) / 127)).toFixed(2)} USDT
+                  </div>
+                  <div className="text-[11px] text-gray-500 font-semibold mt-0.5">
                     Recharge Amount
                   </div>
                   <div className="mt-1 text-xs text-gray-700 font-medium">

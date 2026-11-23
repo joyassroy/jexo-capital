@@ -158,13 +158,17 @@ export default function WithdrawPage() {
           {/* Withdrawal Amount Header & Rate Pill */}
           <div className="text-center py-2">
             <span className="text-xs font-bold text-gray-600 uppercase tracking-wider">
-              Withdrawal Ammount
+              Available Balance
             </span>
-            <div className="text-3xl font-black text-blue-950 mt-1">
-              {Number(balance).toFixed(2)}
+            <div className="text-3xl font-black text-blue-950 mt-1 flex items-baseline justify-center gap-1">
+              <span>{Number(balance).toFixed(2)}</span>
+              <span className="text-sm font-bold text-blue-600">USDT</span>
+            </div>
+            <div className="text-xs text-gray-500 font-semibold mt-0.5">
+              ≈ {(Number(balance) * usdtRate).toFixed(2)} BDT
             </div>
             <div className="mt-2 inline-block px-4 py-1 rounded-full bg-blue-100/90 text-blue-800 text-xs font-bold shadow-inner">
-              1 USDT (BEP-20) = {usdtRate} BDT
+              1 USDT = {usdtRate} BDT (Min: 5 USDT)
             </div>
           </div>
 
@@ -247,20 +251,49 @@ export default function WithdrawPage() {
 
               {/* Withdrawal Amount Input */}
               <div>
-                <input
-                  type="number"
-                  placeholder="Withdrawal amount"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  className="w-full px-3.5 py-3 rounded-2xl bg-blue-50/50 border border-blue-200 text-sm font-semibold text-gray-800 placeholder-gray-400 outline-none focus:border-blue-500"
-                  required
-                />
+                <label className="block text-xs font-bold text-blue-900 mb-1">
+                  Withdrawal Amount (in USDT)
+                </label>
+                <div className="relative">
+                  <input
+                    type="number"
+                    step="any"
+                    placeholder="Enter amount in USDT (Min: 5)"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    className="w-full px-3.5 py-3 rounded-2xl bg-blue-50/50 border border-blue-200 text-sm font-semibold text-gray-800 placeholder-gray-400 outline-none focus:border-blue-500"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setAmount(String(balance))}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 px-2.5 py-1 rounded-xl bg-blue-600 text-white text-[10px] font-bold"
+                  >
+                    All
+                  </button>
+                </div>
                 {amount && Number(amount) > 0 && (
-                  <div className="mt-1.5 px-2 text-[11px] font-semibold text-gray-500 flex justify-between">
-                    <span>10% fee: {(Number(amount) * 0.1).toFixed(2)} TK</span>
-                    <span className="text-emerald-600 font-bold">
-                      Arrival: {(Number(amount) * 0.9).toFixed(2)} TK
-                    </span>
+                  <div className="mt-2 p-2.5 rounded-xl bg-blue-50/80 border border-blue-200 text-xs space-y-1">
+                    <div className="flex justify-between font-semibold text-gray-600">
+                      <span>10% Platform Fee:</span>
+                      <span className="text-rose-600 font-bold">
+                        -{(Number(amount) * 0.1).toFixed(2)} USDT
+                      </span>
+                    </div>
+                    <div className="flex justify-between font-bold text-blue-950 border-t border-blue-200/60 pt-1">
+                      <span>Arrival Amount:</span>
+                      <span className="text-emerald-600 font-black">
+                        {(Number(amount) * 0.9).toFixed(2)} USDT
+                      </span>
+                    </div>
+                    {activeTab === "Bank" && (
+                      <div className="flex justify-between font-black text-blue-900 text-[11px] bg-white/70 p-1.5 rounded-lg border border-blue-200">
+                        <span>bKash / Nagad Arrival:</span>
+                        <span className="text-[#E2136E]">
+                          {((Number(amount) * 0.9) * usdtRate).toFixed(2)} BDT
+                        </span>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

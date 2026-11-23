@@ -47,6 +47,7 @@ export interface IDeposit {
   method: "bKash" | "Nagad" | "USDT-BEP20";
   amount: number;
   amountBDT: number;
+  amountUSDT: number;
   senderNumber: string;
   transferType?: "send_money" | "payment";
   transactionId: string;
@@ -64,9 +65,12 @@ export interface IWithdrawal {
   userNickname?: string;
   method: "bKash" | "Nagad" | "USDT-BEP20";
   amount: number;
+  amountUSDT?: number;
+  amountBDT?: number;
   feePercentage: number;
   charge: number;
   arrivalAmount: number;
+  arrivalAmountBDT?: number;
   targetAccount: string;
   targetName?: string;
   status: "pending" | "approved" | "rejected";

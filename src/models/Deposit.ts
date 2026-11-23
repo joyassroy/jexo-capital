@@ -27,6 +27,11 @@ const DepositSchema = new Schema<IDeposit>(
       type: Number,
       required: true,
     },
+    amountUSDT: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
     senderNumber: {
       type: String,
       required: true,

@@ -17,6 +17,7 @@ import {
   LogOut,
   Globe,
   ChevronRight,
+  Sparkles,
 } from "lucide-react";
 
 interface UserProfile {
@@ -34,6 +35,33 @@ export default function HomePage() {
   const [tickerText, setTickerText] = useState(
     "Zexo Capital is a USA-based International Investment Platform."
   );
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const bannerSlides = [
+    {
+      src: "/homepage-banner.jpg",
+      alt: "Zexo Capital Global Conference",
+      tag: "Live Summit",
+      badge: "USA Official",
+      title: "Zexo Capital International Conference",
+      subtitle: "Invest • Grow • Prosper | Keynote Session",
+    },
+    {
+      src: "/homepage-banner-2.jpg",
+      alt: "Zexo Capital Global Investor Delegation",
+      tag: "500+ Delegates",
+      badge: "Global Forum",
+      title: "Global Investor Delegation Summit",
+      subtitle: "International institutional & retail partners",
+    },
+  ];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % bannerSlides.length);
+    }, 4500);
+    return () => clearInterval(timer);
+  }, [bannerSlides.length]);
 
   useEffect(() => {
     // Fetch live user info
@@ -136,16 +164,75 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Main Conference/Hero Banner */}
-      <div className="relative mx-3 mt-3 rounded-2xl overflow-hidden shadow-lg border-2 border-white/80 bg-blue-900">
-        <div className="relative aspect-[580/235] w-full">
-          <Image
-            src="/homepage-banner.jpg"
-            alt="Zexo Capital Conference"
-            fill
-            className="object-cover"
-            priority
-          />
+      {/* Main Conference/Hero Banner Carousel */}
+      <div className="relative mx-3 mt-3.5 rounded-[24px] p-[2px] bg-gradient-to-b from-white via-blue-200/60 to-cyan-400/50 shadow-[0_14px_35px_-8px_rgba(0,102,255,0.32),0_4px_12px_rgba(0,0,0,0.06)] group">
+        <div className="relative aspect-[825/325] w-full rounded-[22px] overflow-hidden bg-slate-950">
+          {bannerSlides.map((slide, idx) => (
+            <div
+              key={idx}
+              className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
+                currentSlide === idx ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"
+              }`}
+            >
+              <Image
+                src={slide.src}
+                alt={slide.alt}
+                fill
+                className={`object-cover transition-transform duration-700 ease-out ${
+                  currentSlide === idx ? "scale-100" : "scale-105"
+                }`}
+                priority={idx === 0}
+              />
+            </div>
+          ))}
+
+          {/* Top-left Live badge */}
+          <div className="absolute top-2.5 left-2.5 z-20 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/45 backdrop-blur-md border border-white/20 text-white shadow-sm">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <span className="text-[10px] font-extrabold tracking-wide uppercase text-white/95">
+              {bannerSlides[currentSlide].tag}
+            </span>
+          </div>
+
+          {/* Top-right verified badge */}
+          <div className="absolute top-2.5 right-2.5 z-20 flex items-center gap-1 px-2 py-0.5 rounded-full bg-blue-600/70 backdrop-blur-md border border-white/25 text-white text-[10px] font-bold shadow-sm">
+            <Sparkles size={11} className="text-amber-300" />
+            <span>{bannerSlides[currentSlide].badge}</span>
+          </div>
+
+          {/* Bottom title & dots */}
+          <div className="absolute inset-x-0 bottom-0 z-20 pt-8 pb-2.5 px-3 bg-gradient-to-t from-black/85 via-black/40 to-transparent flex items-end justify-between pointer-events-auto">
+            <div className="text-white pr-2">
+              <div className="text-[11px] sm:text-xs font-black tracking-tight text-white drop-shadow-sm leading-tight line-clamp-1">
+                {bannerSlides[currentSlide].title}
+              </div>
+              <div className="text-[9.5px] text-blue-200/90 font-medium line-clamp-1">
+                {bannerSlides[currentSlide].subtitle}
+              </div>
+            </div>
+
+            {/* Pagination Dots */}
+            <div className="flex items-center gap-1.5 mb-0.5 flex-shrink-0">
+              {bannerSlides.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentSlide(i)}
+                  className={`transition-all duration-300 rounded-full ${
+                    currentSlide === i
+                      ? "w-5 h-1.5 bg-white shadow-sm"
+                      : "w-1.5 h-1.5 bg-white/40 hover:bg-white/70"
+                  }`}
+                  aria-label={`Slide ${i + 1}`}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Glass sheen highlight */}
+          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-white/15 pointer-events-none z-10" />
         </div>
       </div>
 
@@ -161,24 +248,36 @@ export default function HomePage() {
       <div className="mx-3 mt-3 p-4 rounded-2xl bg-white shadow-md border border-blue-100">
         <div className="grid grid-cols-3 divide-x divide-gray-100 text-center">
           <div>
-            <div className="text-lg font-black text-blue-900">
-              {user ? Number(user.balance).toFixed(2) : "0.00"}
+            <div className="text-base font-black text-blue-900 flex items-baseline justify-center gap-0.5">
+              <span>{user ? Number(user.balance).toFixed(2) : "0.00"}</span>
+              <span className="text-[10px] font-bold text-blue-600">USDT</span>
+            </div>
+            <div className="text-[10px] font-medium text-gray-400">
+              ≈ {user ? (Number(user.balance) * 127).toFixed(0) : "0"} Tk
             </div>
             <div className="text-[11px] font-semibold text-gray-500 mt-0.5">
               Balance
             </div>
           </div>
           <div>
-            <div className="text-lg font-black text-blue-900">
-              {user ? Number(user.totalFund).toFixed(2) : "0.00"}
+            <div className="text-base font-black text-blue-900 flex items-baseline justify-center gap-0.5">
+              <span>{user ? Number(user.totalFund).toFixed(2) : "0.00"}</span>
+              <span className="text-[10px] font-bold text-blue-600">USDT</span>
+            </div>
+            <div className="text-[10px] font-medium text-gray-400">
+              ≈ {user ? (Number(user.totalFund) * 127).toFixed(0) : "0"} Tk
             </div>
             <div className="text-[11px] font-semibold text-gray-500 mt-0.5">
               Total Fund
             </div>
           </div>
           <div>
-            <div className="text-lg font-black text-blue-900">
-              {user ? Number(user.fundIncome).toFixed(2) : "0.00"}
+            <div className="text-base font-black text-blue-900 flex items-baseline justify-center gap-0.5">
+              <span>{user ? Number(user.fundIncome).toFixed(2) : "0.00"}</span>
+              <span className="text-[10px] font-bold text-blue-600">USDT</span>
+            </div>
+            <div className="text-[10px] font-medium text-gray-400">
+              ≈ {user ? (Number(user.fundIncome) * 127).toFixed(0) : "0"} Tk
             </div>
             <div className="text-[11px] font-semibold text-gray-500 mt-0.5">
               Fund Income

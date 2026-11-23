@@ -74,7 +74,9 @@ export default function RecordsPage() {
                       item.amount >= 0 ? "text-blue-900" : "text-red-600"
                     }`}
                   >
-                    {item.amount >= 0 ? `+${item.amount}` : item.amount}
+                    {item.amount >= 0
+                      ? `+${Number(item.amount).toFixed(2)} USDT`
+                      : `${Number(item.amount).toFixed(2)} USDT`}
                   </div>
                 </div>
               ))}

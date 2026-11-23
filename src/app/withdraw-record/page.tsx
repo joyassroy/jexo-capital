@@ -69,10 +69,10 @@ export default function WithdrawRecordPage() {
                 <div className="grid grid-cols-3 divide-x divide-gray-100 text-center pb-2 border-b border-gray-100">
                   <div>
                     <div className="text-base font-black text-blue-950">
-                      {item.amount}
+                      {item.amount} USDT
                     </div>
                     <div className="text-[10px] text-gray-500 font-semibold">
-                      Withdraw&apos;l Amount
+                      Withdraw Amount
                     </div>
                   </div>
 
@@ -81,16 +81,18 @@ export default function WithdrawRecordPage() {
                       {item.feePercentage || 10}%
                     </div>
                     <div className="text-[10px] text-gray-500 font-semibold">
-                      Charge
+                      10% Charge
                     </div>
                   </div>
 
                   <div>
                     <div className="text-base font-black text-emerald-600">
-                      {item.arrivalAmount}
+                      {item.arrivalAmount} USDT
                     </div>
-                    <div className="text-[10px] text-gray-500 font-semibold">
-                      Arrival Amount
+                    <div className="text-[10px] text-emerald-700 font-semibold">
+                      {item.method !== "USDT-BEP20"
+                        ? `≈ ${(item.arrivalAmount * 127).toFixed(0)} BDT`
+                        : "Arrival"}
                     </div>
                   </div>
                 </div>

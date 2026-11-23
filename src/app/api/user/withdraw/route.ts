@@ -79,26 +79,24 @@ export async function POST(req: NextRequest) {
       setting = await Setting.create({ key: "default_settings" });
     }
 
-    // Validate Minimum Amount
-    const minLimit =
-      method === "USDT-BEP20" ? setting.minWithdrawUSDT : setting.minWithdrawBDT;
+    // Validate Minimum Amount in USDT (min 5 USDT)
+    const usdtRate = setting.usdtRateBDT || 127;
+    const minLimitUSDT = 5;
 
-    if (withdrawAmount < minLimit) {
+    if (withdrawAmount < minLimitUSDT) {
       return NextResponse.json(
         {
-          error: `Minimum withdrawal amount is ${minLimit} ${
-            method === "USDT-BEP20" ? "USDT" : "BDT"
-          }.`,
+          error: `Minimum withdrawal amount is ${minLimitUSDT} USDT (≈ ${(minLimitUSDT * usdtRate).toFixed(0)} BDT).`,
         },
         { status: 400 }
       );
     }
 
-    // Validate User Balance
+    // Validate User Balance (balance is in USDT)
     if (user.balance < withdrawAmount) {
       return NextResponse.json(
         {
-          error: `Insufficient balance. Your current balance is ${user.balance} TK.`,
+          error: `Insufficient balance. Your current balance is ${user.balance.toFixed(2)} USDT (≈ ${(user.balance * usdtRate).toFixed(2)} BDT).`,
         },
         { status: 400 }
       );
@@ -143,10 +141,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 4. Calculate 10% fee and arrival amount
+    // 4. Calculate 10% fee and arrival amount in USDT & BDT
     const feePercent = setting.withdrawFeePercent || 10;
-    const charge = (withdrawAmount * feePercent) / 100;
-    const arrivalAmount = withdrawAmount - charge;
+    const charge = Number(((withdrawAmount * feePercent) / 100).toFixed(4));
+    const arrivalAmountUSDT = Number((withdrawAmount - charge).toFixed(4));
+    const arrivalAmountBDT = Number((arrivalAmountUSDT * usdtRate).toFixed(2));
 
     // 5. Deduct balance immediately & create records
     user.balance -= withdrawAmount;
@@ -158,9 +157,12 @@ export async function POST(req: NextRequest) {
       userNickname: user.nickname,
       method,
       amount: withdrawAmount,
+      amountUSDT: withdrawAmount,
+      amountBDT: Number((withdrawAmount * usdtRate).toFixed(2)),
       feePercentage: feePercent,
       charge,
-      arrivalAmount,
+      arrivalAmount: arrivalAmountUSDT,
+      arrivalAmountBDT,
       targetAccount: targetAccount.trim(),
       status: "pending",
     });
@@ -174,13 +176,14 @@ export async function POST(req: NextRequest) {
       metadata: {
         withdrawalId: withdrawal._id.toString(),
         charge,
-        arrivalAmount,
+        arrivalAmountUSDT,
+        arrivalAmountBDT,
       },
     });
 
     return NextResponse.json({
       success: true,
-      message: `Withdrawal request for ${withdrawAmount} submitted! Net arrival: ${arrivalAmount} after 10% fee.`,
+      message: `Withdrawal request for ${withdrawAmount} USDT submitted! Net arrival: ${arrivalAmountUSDT} USDT (${arrivalAmountBDT} BDT) after 10% fee.`,
       withdrawal,
       newBalance: user.balance,
     });

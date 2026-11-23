@@ -74,8 +74,13 @@ export async function PATCH(req: NextRequest) {
       deposit.reviewedAt = new Date();
       await deposit.save();
 
-      // Credit user's balance
-      user.balance += deposit.amountBDT;
+      // Determine USDT credit amount (1 USDT = 127 BDT)
+      const creditUSDT = deposit.amountUSDT > 0
+        ? deposit.amountUSDT
+        : Number((deposit.amountBDT / (deposit.method === "USDT-BEP20" ? 1 : 127)).toFixed(4));
+
+      // Credit user's balance in USDT
+      user.balance += creditUSDT;
       await user.save();
 
       // Create transaction record
@@ -83,22 +88,25 @@ export async function PATCH(req: NextRequest) {
         userId: user._id.toString(),
         type: "recharge",
         title: `Recharge (${deposit.method})`,
-        amount: deposit.amountBDT,
+        amount: creditUSDT,
         status: "success",
         metadata: {
           depositId: deposit._id.toString(),
           method: deposit.method,
           transactionId: deposit.transactionId,
+          amountBDT: deposit.amountBDT,
+          amountUSDT: creditUSDT,
         },
       });
 
-      // 3-Tier Referral Commission Check on Deposit
+      // 3-Tier Referral Commission Check on Deposit (calculated in USDT)
       // Level 1: 10%
       if (user.referredBy) {
         const level1User = await User.findById(user.referredBy);
         if (level1User) {
-          const l1Bonus = (deposit.amountBDT * 10) / 100;
+          const l1Bonus = Number(((creditUSDT * 10) / 100).toFixed(4));
           level1User.balance += l1Bonus;
+          level1User.fundIncome += l1Bonus;
           await level1User.save();
 
           await Transaction.create({
@@ -114,8 +122,9 @@ export async function PATCH(req: NextRequest) {
           if (level1User.referredBy) {
             const level2User = await User.findById(level1User.referredBy);
             if (level2User) {
-              const l2Bonus = (deposit.amountBDT * 5) / 100;
+              const l2Bonus = Number(((creditUSDT * 5) / 100).toFixed(4));
               level2User.balance += l2Bonus;
+              level2User.fundIncome += l2Bonus;
               await level2User.save();
 
               await Transaction.create({
@@ -131,8 +140,9 @@ export async function PATCH(req: NextRequest) {
               if (level2User.referredBy) {
                 const level3User = await User.findById(level2User.referredBy);
                 if (level3User) {
-                  const l3Bonus = (deposit.amountBDT * 3) / 100;
+                  const l3Bonus = Number(((creditUSDT * 3) / 100).toFixed(4));
                   level3User.balance += l3Bonus;
+                  level3User.fundIncome += l3Bonus;
                   await level3User.save();
 
                   await Transaction.create({
@@ -152,7 +162,7 @@ export async function PATCH(req: NextRequest) {
 
       return NextResponse.json({
         success: true,
-        message: `Deposit of ${deposit.amountBDT} TK approved and credited successfully.`,
+        message: `Deposit of ${deposit.amountBDT} BDT (${creditUSDT.toFixed(2)} USDT) approved and credited to user account.`,
         deposit,
       });
     } else {

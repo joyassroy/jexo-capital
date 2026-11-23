@@ -236,11 +236,13 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Marquee Announcement Ticker */}
-      <div className="mx-3 mt-3 flex items-center gap-2 px-3 py-2.5 rounded-xl bg-white/90 backdrop-blur-sm border border-blue-200 shadow-sm text-xs text-blue-900 font-semibold overflow-hidden">
-        <Volume2 size={18} className="text-blue-600 flex-shrink-0 animate-pulse" />
-        <div className="whitespace-nowrap overflow-hidden">
-          <div className="animate-marquee inline-block">{tickerText}</div>
+      {/* Marquee Announcement Ticker (Left to Right) */}
+      <div className="mx-3 mt-3 flex items-center gap-2.5 px-3 py-2.5 rounded-2xl bg-white/95 backdrop-blur-sm border border-blue-200 shadow-sm text-xs text-[#0a2558] font-bold overflow-hidden">
+        <Volume2 size={18} className="text-[#0066FF] flex-shrink-0 animate-pulse" />
+        <div className="relative flex-1 overflow-hidden h-5 flex items-center">
+          <div className="absolute inset-y-0 flex items-center whitespace-nowrap animate-marquee-ltr select-none">
+            {tickerText}
+          </div>
         </div>
       </div>
 

@@ -3,27 +3,40 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Crown, Share2, User } from "lucide-react";
+import { Home, Crown, ClipboardList, User } from "lucide-react";
 
 export default function BottomNav() {
   const pathname = usePathname();
 
+  // Do not show bottom nav on admin portal or auth screens
+  if (
+    pathname.startsWith("/admin") ||
+    pathname === "/login" ||
+    pathname === "/register"
+  ) {
+    return null;
+  }
+
   const navItems = [
     { label: "Homepage", href: "/", icon: Home },
     { label: "VIP level", href: "/vip", icon: Crown },
-    { label: "Share", href: "/share", icon: Share2 },
+    { label: "Order", href: "/records", icon: ClipboardList },
     { label: "Personal Center", href: "/profile", icon: User },
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 max-w-[440px] mx-auto bg-white/95 backdrop-blur-md border-t border-blue-100 shadow-[0_-4px_20px_rgba(0,102,255,0.08)]">
+    <nav
+      aria-label="Bottom Navigation"
+      className="fixed bottom-0 left-0 right-0 z-40 max-w-[440px] mx-auto bg-white/95 backdrop-blur-md border-t border-blue-100 shadow-[0_-4px_20px_rgba(0,102,255,0.09)] transition-all"
+    >
       <div className="flex items-center justify-around py-2 px-1">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive =
             item.href === "/"
               ? pathname === "/"
-              : pathname.startsWith(item.href);
+              : pathname.startsWith(item.href) ||
+                (item.href === "/records" && pathname === "/orders");
 
           return (
             <Link
@@ -49,7 +62,6 @@ export default function BottomNav() {
           );
         })}
       </div>
-    </div>
+    </nav>
   );
 }
-

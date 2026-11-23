@@ -23,6 +23,10 @@ const UserSchema = new Schema<IUser>(
       type: String,
       default: undefined,
     },
+    avatarUrl: {
+      type: String,
+      default: "",
+    },
     balance: {
       type: Number,
       default: 0,

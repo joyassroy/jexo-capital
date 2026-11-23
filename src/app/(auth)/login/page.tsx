@@ -1,14 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Logo from "@/components/common/Logo";
 import CityFooter from "@/components/common/CityFooter";
 import { Eye, EyeOff, Lock, Phone, Globe } from "lucide-react";
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -35,7 +36,8 @@ export default function LoginPage() {
         return;
       }
 
-      router.push("/");
+      const redirectUrl = searchParams.get("redirect") || "/profile";
+      router.push(redirectUrl);
       router.refresh();
     } catch {
       setError("An unexpected error occurred. Please try again.");
@@ -99,8 +101,8 @@ export default function LoginPage() {
                 placeholder="Mobile Number"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
+                className="w-full py-2.5 text-sm font-semibold text-gray-900 placeholder:text-gray-400 placeholder:font-normal bg-transparent outline-none"
                 required
-                className="w-full py-3 bg-transparent text-sm text-gray-800 placeholder-gray-400 outline-none font-medium"
               />
             </div>
           </div>
@@ -113,8 +115,8 @@ export default function LoginPage() {
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              className="w-full py-2 text-sm font-semibold text-gray-900 placeholder:text-gray-400 placeholder:font-normal bg-transparent outline-none"
               required
-              className="w-full py-3 bg-transparent text-sm text-gray-800 placeholder-gray-400 outline-none font-medium"
             />
             <button
               type="button"
@@ -175,3 +177,16 @@ export default function LoginPage() {
   );
 }
 
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-[#dcf0ff] flex items-center justify-center">
+          Loading...
+        </div>
+      }
+    >
+      <LoginForm />
+    </Suspense>
+  );
+}

@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import Header from "@/components/common/Header";
-import BottomNav from "@/components/layout/BottomNav";
 import CityFooter from "@/components/common/CityFooter";
 import { Crown, Sparkles } from "lucide-react";
 
@@ -136,7 +135,6 @@ export default function VipPage() {
       </div>
 
       <CityFooter />
-      <BottomNav />
     </div>
   );
 }

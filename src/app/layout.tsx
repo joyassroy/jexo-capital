@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
-import CustomerServiceModal from "@/components/common/CustomerServiceModal";
+import AppShell from "@/components/layout/AppShell";
 
 export const metadata: Metadata = {
   title: "Zexo Capital - Invest • Grow • Prosper",
@@ -25,14 +25,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased min-h-screen bg-[#0b192c] flex justify-center items-center">
-        {/* Mobile centered app viewport container */}
-        <main className="mobile-container overflow-hidden min-h-screen relative flex flex-col justify-between">
-          <div className="flex-1 w-full pb-16">{children}</div>
-          <CustomerServiceModal />
-        </main>
+      <body className="antialiased min-h-screen bg-[#0b192c] flex justify-center items-start">
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );
 }
-

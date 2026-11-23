@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import BottomNav from "@/components/layout/BottomNav";
 import {
   Volume2,
   Download,
@@ -137,23 +136,15 @@ export default function HomePage() {
       </div>
 
       {/* Main Conference/Hero Banner */}
-      <div className="relative mx-3 mt-3 rounded-2xl overflow-hidden shadow-lg border-2 border-white/60 bg-blue-900">
-        <div className="relative h-44 w-full">
+      <div className="relative mx-3 mt-3 rounded-2xl overflow-hidden shadow-lg border-2 border-white/80 bg-blue-900">
+        <div className="relative aspect-[580/235] w-full">
           <Image
-            src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&auto=format&fit=crop&q=80"
+            src="/homepage-banner.jpg"
             alt="Zexo Capital Conference"
             fill
-            className="object-cover opacity-85"
+            className="object-cover"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-blue-950/80 via-transparent to-transparent flex flex-col justify-end p-4">
-            <span className="text-xl font-black text-white drop-shadow-md">
-              Zexo Capital
-            </span>
-            <span className="text-xs font-bold text-blue-200 tracking-wider">
-              Invest • Grow • Prosper
-            </span>
-          </div>
         </div>
       </div>
 
@@ -243,8 +234,6 @@ export default function HomePage() {
           <ChevronRight size={18} className="text-blue-500" />
         </Link>
       </div>
-
-      <BottomNav />
     </div>
   );
 }

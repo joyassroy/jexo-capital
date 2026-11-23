@@ -64,7 +64,7 @@ function RegisterForm() {
         return;
       }
 
-      router.push("/");
+      router.push("/profile");
       router.refresh();
     } catch {
       setError("An unexpected error occurred. Please try again.");

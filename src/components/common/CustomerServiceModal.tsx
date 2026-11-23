@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { Headphones, MessageCircle, Send, X, ExternalLink } from "lucide-react";
 
 interface CustomerServiceProps {
@@ -16,6 +17,11 @@ export default function CustomerServiceModal({
   telegramChannelUrl = "https://t.me/zexocapital_channel",
 }: CustomerServiceProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
+
+  if (pathname.startsWith("/admin")) {
+    return null;
+  }
 
   return (
     <>

@@ -1,9 +1,8 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import BottomNav from "@/components/layout/BottomNav";
 import {
   FileText,
   Info,
@@ -21,11 +20,15 @@ import {
   LogOut,
   ChevronRight,
   ShieldCheck,
+  Camera,
+  Loader2,
+  Trash2,
 } from "lucide-react";
 
 interface UserData {
   phone: string;
   nickname: string;
+  avatarUrl?: string;
   balance: number;
   referralCode: string;
   vipLevel: number;
@@ -38,13 +41,18 @@ interface UserData {
 export default function ProfilePage() {
   const [user, setUser] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     fetch("/api/user/me")
       .then((res) => {
-        if (!res.ok) {
+        if (res.status === 401) {
           window.location.href = "/login";
           return null;
+        }
+        if (!res.ok) {
+          throw new Error("Failed to fetch user");
         }
         return res.json();
       })
@@ -52,13 +60,85 @@ export default function ProfilePage() {
         if (data?.user) setUser(data.user);
         setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch((err) => {
+        console.error("Profile load error:", err);
+        setLoading(false);
+      });
   }, []);
 
   const handleLogout = async () => {
     if (confirm("Are you sure you want to log out?")) {
       await fetch("/api/auth/logout", { method: "POST" });
       window.location.href = "/login";
+    }
+  };
+
+  const getInitials = (name?: string) => {
+    if (!name) return "ZC";
+    const trimmed = name.trim();
+    const parts = trimmed.split(/\s+/);
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+    return trimmed.slice(0, 2).toUpperCase();
+  };
+
+  const handleAvatarFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      alert("Please select a valid image file (JPG, PNG, WEBP).");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert("Image size should not exceed 5MB.");
+      return;
+    }
+
+    setUploadingAvatar(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/user/avatar", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.error || "Failed to upload profile picture.");
+        return;
+      }
+
+      setUser((prev) => (prev ? { ...prev, avatarUrl: data.avatarUrl } : null));
+    } catch {
+      alert("An unexpected network error occurred while uploading.");
+    } finally {
+      setUploadingAvatar(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
+
+  const handleRemoveAvatar = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!confirm("Remove your profile picture and show name initials?")) return;
+
+    setUploadingAvatar(true);
+    try {
+      const res = await fetch("/api/user/avatar", { method: "DELETE" });
+      if (res.ok) {
+        setUser((prev) => (prev ? { ...prev, avatarUrl: "" } : null));
+      } else {
+        alert("Failed to remove profile picture.");
+      }
+    } catch {
+      alert("Network error.");
+    } finally {
+      setUploadingAvatar(false);
     }
   };
 
@@ -92,12 +172,58 @@ export default function ProfilePage() {
       {/* User Avatar & Identity Card */}
       <div className="relative px-4 -mt-12">
         <div className="flex flex-col items-center">
-          <div className="relative w-24 h-24 rounded-full p-1 bg-gradient-to-tr from-[#00C6FF] via-[#0072FF] to-blue-800 shadow-xl border-2 border-white">
-            <div className="w-full h-full rounded-full bg-gradient-to-tr from-blue-600 to-cyan-400 flex items-center justify-center text-white text-3xl font-black shadow-inner">
-              Z
+          {/* Avatar Container with Upload & Initials fallback */}
+          <div className="relative group">
+            <div className="relative w-24 h-24 rounded-full p-1 bg-gradient-to-tr from-[#00C6FF] via-[#0072FF] to-blue-800 shadow-xl border-2 border-white overflow-hidden flex items-center justify-center">
+              {uploadingAvatar ? (
+                <div className="w-full h-full rounded-full bg-blue-900/80 flex items-center justify-center text-white">
+                  <Loader2 size={28} className="animate-spin text-cyan-300" />
+                </div>
+              ) : user?.avatarUrl ? (
+                <img
+                  src={user.avatarUrl}
+                  alt={user.nickname}
+                  className="w-full h-full object-cover rounded-full"
+                />
+              ) : (
+                <div className="w-full h-full rounded-full bg-gradient-to-tr from-blue-600 to-cyan-400 flex items-center justify-center text-white text-2xl font-black shadow-inner tracking-wider select-none">
+                  {getInitials(user?.nickname)}
+                </div>
+              )}
             </div>
+
+            {/* Camera Upload Button Badge */}
+            <label
+              htmlFor="avatar-file-upload"
+              title="Upload profile picture"
+              className="absolute bottom-0 right-0 p-2 rounded-full bg-gradient-to-tr from-blue-600 to-cyan-500 text-white shadow-md border-2 border-white cursor-pointer hover:scale-110 active:scale-95 transition-all"
+            >
+              <Camera size={14} className="stroke-[2.5]" />
+            </label>
+
+            <input
+              ref={fileInputRef}
+              id="avatar-file-upload"
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleAvatarFileSelect}
+              disabled={uploadingAvatar}
+            />
           </div>
 
+          {/* Remove Photo action if user has photo */}
+          {user?.avatarUrl && !uploadingAvatar && (
+            <button
+              onClick={handleRemoveAvatar}
+              className="mt-1 flex items-center gap-1 text-[11px] font-bold text-rose-500 hover:text-rose-700 transition-colors"
+            >
+              <Trash2 size={12} />
+              <span>Remove Photo</span>
+            </button>
+          )}
+
+          {/* User Nickname */}
           <div className="mt-2 px-6 py-1 rounded-full bg-white/90 backdrop-blur-md border border-blue-200 shadow-sm flex items-center gap-1.5">
             <User size={14} className="text-blue-600" />
             <span className="font-extrabold text-blue-950 text-sm">
@@ -247,9 +373,6 @@ export default function ProfilePage() {
           <span>Log Out</span>
         </button>
       </div>
-
-      <BottomNav />
     </div>
   );
 }
-

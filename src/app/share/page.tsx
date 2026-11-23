@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import Header from "@/components/common/Header";
-import BottomNav from "@/components/layout/BottomNav";
 import CityFooter from "@/components/common/CityFooter";
 import { Share2, Link as LinkIcon, Check, Shield } from "lucide-react";
 
@@ -144,7 +143,6 @@ export default function SharePage() {
       </div>
 
       <CityFooter />
-      <BottomNav />
     </div>
   );
 }

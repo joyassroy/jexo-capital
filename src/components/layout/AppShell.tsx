@@ -19,7 +19,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <main className="mobile-container overflow-hidden min-h-screen relative flex flex-col justify-between bg-[#020a1f] text-slate-100">
+    <main className="mobile-container min-h-screen relative flex flex-col justify-between bg-[#020a1f] text-slate-100">
       <div className="flex-1 w-full flex flex-col">{children}</div>
       <CustomerServiceModal />
       {!isAuth && <BottomNav />}

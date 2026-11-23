@@ -25,10 +25,10 @@ export default function BottomNav() {
   ];
 
   return (
-    <div className="fixed bottom-3 inset-x-0 z-40 px-3 max-w-[440px] mx-auto pointer-events-none">
+    <div className="fixed bottom-3 inset-x-0 z-40 px-3 max-w-[440px] mx-auto pointer-events-none transform-gpu">
       <nav
         aria-label="Bottom Navigation"
-        className="pointer-events-auto rounded-full bg-[#031130]/55 backdrop-blur-xl border border-[#f5ba31]/75 shadow-[0_8px_32px_rgba(0,0,0,0.5),0_0_18px_rgba(245,186,49,0.22)] py-2 px-3 transition-all duration-300"
+        className="pointer-events-auto rounded-full bg-[#031130]/75 backdrop-blur-md border border-[#f5ba31]/75 shadow-[0_4px_20px_rgba(0,0,0,0.5),0_0_14px_rgba(245,186,49,0.2)] py-2 px-3 transition-all duration-300 transform-gpu will-change-transform"
       >
         <div className="flex items-center justify-around">
           {navItems.map((item) => {

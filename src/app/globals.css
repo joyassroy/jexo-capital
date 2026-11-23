@@ -9,6 +9,7 @@
 
 html {
   background-color: #020a1f;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
@@ -18,6 +19,8 @@ body {
   overflow-x: hidden;
   margin: 0;
   padding: 0;
+  -webkit-overflow-scrolling: touch;
+  touch-action: manipulation;
 }
 
 /* Custom Scrollbar */
@@ -47,9 +50,23 @@ body {
   margin: 0 auto;
   background-color: #020a1f;
   position: relative;
-  box-shadow: 0 0 60px rgba(0, 0, 0, 0.85);
   display: flex;
   flex-direction: column;
+}
+
+@media (min-width: 640px) {
+  .mobile-container {
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.85);
+  }
+}
+
+/* Mobile Performance Optimizations */
+@media (max-width: 640px) {
+  .backdrop-blur-2xl,
+  .backdrop-blur-xl {
+    backdrop-filter: blur(6px) !important;
+    -webkit-backdrop-filter: blur(6px) !important;
+  }
 }
 
 /* Zexo Wave Header Background */
@@ -94,21 +111,19 @@ body {
 }
 
 .zexo-card {
-  background: rgba(7, 23, 62, 0.85);
+  background: rgba(7, 23, 62, 0.95);
   border: 1px solid rgba(245, 186, 49, 0.25);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
   border-radius: 18px;
-  backdrop-filter: blur(12px);
   color: #ffffff;
 }
 
 .zexo-pill-card {
-  background: rgba(5, 20, 58, 0.85);
+  background: rgba(5, 20, 58, 0.95);
   border: 1.5px solid rgba(245, 186, 49, 0.4);
   border-radius: 30px;
-  backdrop-filter: blur(10px);
   color: #ffffff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
 /* Floating animation */

@@ -246,10 +246,10 @@ export default function VipPage() {
             return (
               <div
                 key={item.id}
-                className={`p-3 sm:p-3.5 rounded-2xl bg-gradient-to-b from-[#07173e]/90 to-[#030e28]/95 backdrop-blur-xl border transition-all relative overflow-hidden ${
+                className={`p-3 sm:p-3.5 rounded-2xl bg-gradient-to-b from-[#07173e] to-[#030e28] border transition-all relative overflow-hidden transform-gpu ${
                   isActive
-                    ? "border-[#f5ba31] shadow-[0_0_18px_rgba(245,186,49,0.35)] ring-1 ring-[#f5ba31]/30"
-                    : "border-slate-700/70 hover:border-[#f5ba31]/40 shadow-md"
+                    ? "border-[#f5ba31] shadow-[0_0_15px_rgba(245,186,49,0.3)] ring-1 ring-[#f5ba31]/30"
+                    : "border-slate-700/70 hover:border-[#f5ba31]/40 shadow-sm"
                 }`}
               >
                 {/* Active Level glowing badge */}

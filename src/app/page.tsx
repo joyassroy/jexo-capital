@@ -222,16 +222,14 @@ export default function HomePage() {
                 src={slide.src}
                 alt={slide.alt}
                 fill
-                className={`object-cover transition-transform duration-700 ease-out ${
-                  currentSlide === idx ? "scale-100" : "scale-105"
-                }`}
+                className="object-cover"
                 priority={idx === 0}
               />
             </div>
           ))}
 
           {/* Top-left LIVE SUMMIT badge */}
-          <div className="absolute top-2.5 left-2.5 z-20 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-white shadow-sm">
+          <div className="absolute top-2.5 left-2.5 z-20 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/70 border border-white/20 text-white shadow-sm">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
@@ -242,7 +240,7 @@ export default function HomePage() {
           </div>
 
           {/* Top-right USA Official badge */}
-          <div className="absolute top-2.5 right-2.5 z-20 flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#071d4d]/85 backdrop-blur-md border border-[#f5ba31]/70 text-white text-[10.5px] font-bold shadow-sm">
+          <div className="absolute top-2.5 right-2.5 z-20 flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#071d4d] border border-[#f5ba31]/70 text-white text-[10.5px] font-bold shadow-sm">
             <Star size={11} className="fill-[#f5ba31] text-[#f5ba31]" />
             <span>{bannerSlides[currentSlide].badge}</span>
           </div>
@@ -281,7 +279,7 @@ export default function HomePage() {
       </div>
 
       {/* Marquee Announcement Ticker (Pill with Neon Blue Outline) */}
-      <div className="relative z-10 mx-3 mt-3 flex items-center gap-2.5 px-3.5 py-2 rounded-full bg-[#030e28]/90 backdrop-blur-md border border-[#00d2ff]/80 shadow-[0_0_16px_rgba(0,210,255,0.25)] overflow-hidden">
+      <div className="relative z-10 mx-3 mt-3 flex items-center gap-2.5 px-3.5 py-2 rounded-full bg-[#030e28] border border-[#00d2ff]/80 shadow-[0_0_12px_rgba(0,210,255,0.2)] overflow-hidden transform-gpu">
         <Volume2
           size={19}
           className="text-[#f5ba31] flex-shrink-0 animate-pulse drop-shadow-[0_0_6px_rgba(245,186,49,0.7)]"
@@ -307,8 +305,8 @@ export default function HomePage() {
       </div>
 
       {/* Account Balance Summary Card (Gold Neon Glowing Card) */}
-      <div className="relative z-10 mx-3 mt-3 p-[2px] rounded-[26px] bg-gradient-to-b from-[#f5ba31] via-[#ffd778] to-[#c98600] shadow-[0_0_28px_rgba(245,186,49,0.35),inset_0_0_12px_rgba(245,186,49,0.1)]">
-        <div className="rounded-[24px] bg-gradient-to-b from-[#081944]/95 via-[#04102e]/98 to-[#02091c] backdrop-blur-2xl p-4 sm:p-5">
+      <div className="relative z-10 mx-3 mt-3 p-[2px] rounded-[26px] bg-gradient-to-b from-[#f5ba31] via-[#ffd778] to-[#c98600] shadow-[0_0_20px_rgba(245,186,49,0.3)]">
+        <div className="rounded-[24px] bg-gradient-to-b from-[#081944] via-[#04102e] to-[#02091c] p-4 sm:p-5 transform-gpu">
           <div className="grid grid-cols-3 divide-x divide-white/10 text-center">
             {/* Balance */}
             <div className="px-1">
@@ -394,7 +392,7 @@ export default function HomePage() {
               <div className="absolute inset-0 bg-gradient-to-b from-white/20 via-transparent to-black/10 pointer-events-none" />
 
               {/* Left Circular Badge */}
-              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0 backdrop-blur-sm border border-white/30 text-white shadow-inner">
+              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white/25 flex items-center justify-center flex-shrink-0 border border-white/30 text-white shadow-inner">
                 <Icon size={14} className="stroke-[2.5]" />
               </div>
 

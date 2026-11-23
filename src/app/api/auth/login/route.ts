@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
     await connectDB();
 
     const body = await req.json();
-    const { phone, password, keepSignedIn } = body;
+    const { countryCode = "+880", phone, password, keepSignedIn } = body;
 
     if (!phone || !password) {
       return NextResponse.json(
@@ -25,17 +25,28 @@ export async function POST(req: NextRequest) {
 
     // Clean and normalize phone number for any international or local format
     const rawTrimmed = phone.trim();
-    const cleanDigits = rawTrimmed.replace(/[^0-9]/g, "");
+    const cleanCountryCode = countryCode.replace(/[^0-9]/g, "");
+    let numDigits = rawTrimmed.replace(/[^0-9]/g, "");
+    if (cleanCountryCode && numDigits.startsWith(cleanCountryCode)) {
+      numDigits = numDigits.slice(cleanCountryCode.length);
+    }
+    const numWithoutZero = numDigits.replace(/^0+/, "");
+    const localWithZero = `0${numWithoutZero}`;
+    const intlFormat = `+${cleanCountryCode}${numWithoutZero}`;
+    const intlDigits = `${cleanCountryCode}${numWithoutZero}`;
 
     const possiblePhones = Array.from(
       new Set(
         [
           rawTrimmed,
-          cleanDigits,
-          `+${cleanDigits}`,
-          cleanDigits.startsWith("880") ? "0" + cleanDigits.slice(3) : null,
-          cleanDigits.startsWith("0") ? "880" + cleanDigits.slice(1) : null,
-          cleanDigits.startsWith("0") ? cleanDigits.slice(1) : null,
+          numDigits,
+          numWithoutZero,
+          localWithZero,
+          intlFormat,
+          intlDigits,
+          `+${numDigits}`,
+          `+${rawTrimmed.replace(/^\+/, "")}`,
+          rawTrimmed.replace(/[^0-9]/g, ""),
         ].filter(Boolean) as string[]
       )
     );

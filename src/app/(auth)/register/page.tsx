@@ -5,12 +5,17 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import Logo from "@/components/common/Logo";
 import CityFooter from "@/components/common/CityFooter";
+import CountryCodeDropdown, {
+  COUNTRY_LIST,
+  CountryItem,
+} from "@/components/common/CountryCodeDropdown";
 import { Eye, EyeOff, Lock, Phone, User, UserPlus, Globe } from "lucide-react";
 
 function RegisterForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  const [country, setCountry] = useState<CountryItem>(COUNTRY_LIST[0]);
   const [nickname, setNickname] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
@@ -28,6 +33,16 @@ function RegisterForm() {
     }
   }, [searchParams]);
 
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let val = e.target.value.replace(/[^0-9]/g, "");
+    // If user accidentally typed country code digits, strip them
+    const codeDigits = country.code.replace(/[^0-9]/g, "");
+    if (val.startsWith(codeDigits)) {
+      val = val.slice(codeDigits.length);
+    }
+    setPhone(val);
+  };
+
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -42,6 +57,12 @@ function RegisterForm() {
       return;
     }
 
+    const cleanDigits = phone.trim().replace(/[^0-9]/g, "");
+    if (!cleanDigits || cleanDigits.length < 5 || cleanDigits.length > 15) {
+      setError("Please enter a valid mobile number.");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -50,7 +71,8 @@ function RegisterForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           nickname,
-          phone,
+          countryCode: country.code,
+          phone: cleanDigits,
           password,
           confirmPassword,
           referralCode,
@@ -82,7 +104,7 @@ function RegisterForm() {
       )}
 
       {/* Nickname */}
-      <div className="flex items-center bg-white rounded-2xl border-2 border-blue-200 px-3.5 py-1 shadow-sm focus-within:border-blue-500 focus-within:shadow-md transition-all">
+      <div className="flex items-center bg-white rounded-2xl border-2 border-blue-200 px-3.5 h-[48px] shadow-sm focus-within:border-blue-500 focus-within:shadow-md transition-all">
         <User size={18} className="text-blue-500 mr-2.5 flex-shrink-0" />
         <input
           type="text"
@@ -90,34 +112,38 @@ function RegisterForm() {
           value={nickname}
           onChange={(e) => setNickname(e.target.value)}
           required
-          className="w-full py-2.5 bg-transparent text-sm text-gray-800 placeholder-gray-400 outline-none font-medium"
+          className="w-full bg-transparent text-sm text-gray-800 placeholder-gray-400 outline-none font-medium"
         />
       </div>
 
-      {/* Mobile Number (Any country) */}
-      <div className="flex items-center bg-white rounded-2xl border-2 border-blue-200 px-3.5 py-1 shadow-sm focus-within:border-blue-500 focus-within:shadow-md transition-all">
-        <Phone size={18} className="text-blue-500 mr-2.5 flex-shrink-0" />
-        <input
-          type="tel"
-          placeholder="Mobile Number"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          required
-          className="w-full py-2.5 bg-transparent text-sm text-gray-800 placeholder-gray-400 outline-none font-medium"
-        />
+      {/* Country Code + Mobile Number in one row */}
+      <div className="flex items-center gap-2">
+        <CountryCodeDropdown selected={country} onSelect={setCountry} />
+
+        <div className="flex-1 flex items-center bg-white rounded-2xl border-2 border-blue-200 px-3.5 h-[48px] shadow-sm focus-within:border-blue-500 focus-within:shadow-md transition-all">
+          <Phone size={18} className="text-blue-500 mr-2.5 flex-shrink-0" />
+          <input
+            type="tel"
+            placeholder="Mobile Number"
+            value={phone}
+            onChange={handlePhoneChange}
+            required
+            className="w-full bg-transparent text-sm text-gray-800 placeholder-gray-400 outline-none font-semibold"
+          />
+        </div>
       </div>
 
       {/* Password (4-10 digits) */}
-      <div className="flex items-center bg-white rounded-2xl border-2 border-blue-200 px-3.5 py-1 shadow-sm focus-within:border-blue-500 focus-within:shadow-md transition-all">
+      <div className="flex items-center bg-white rounded-2xl border-2 border-blue-200 px-3.5 h-[48px] shadow-sm focus-within:border-blue-500 focus-within:shadow-md transition-all">
         <Lock size={18} className="text-blue-500 mr-2.5 flex-shrink-0" />
         <input
           type={showPassword ? "text" : "password"}
-          placeholder="Enter a password of 4-10 digits."
+          placeholder="Password of 4–10 digits."
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
           maxLength={10}
-          className="w-full py-2.5 bg-transparent text-sm text-gray-800 placeholder-gray-400 outline-none font-medium"
+          className="w-full bg-transparent text-sm text-gray-800 placeholder-gray-400 outline-none font-medium"
         />
         <button
           type="button"
@@ -129,16 +155,16 @@ function RegisterForm() {
       </div>
 
       {/* Confirm Password */}
-      <div className="flex items-center bg-white rounded-2xl border-2 border-blue-200 px-3.5 py-1 shadow-sm focus-within:border-blue-500 focus-within:shadow-md transition-all">
+      <div className="flex items-center bg-white rounded-2xl border-2 border-blue-200 px-3.5 h-[48px] shadow-sm focus-within:border-blue-500 focus-within:shadow-md transition-all">
         <Lock size={18} className="text-blue-500 mr-2.5 flex-shrink-0" />
         <input
           type={showConfirmPassword ? "text" : "password"}
-          placeholder="Confirm Password"
+          placeholder="Confirm password"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           required
           maxLength={10}
-          className="w-full py-2.5 bg-transparent text-sm text-gray-800 placeholder-gray-400 outline-none font-medium"
+          className="w-full bg-transparent text-sm text-gray-800 placeholder-gray-400 outline-none font-medium"
         />
         <button
           type="button"
@@ -149,15 +175,15 @@ function RegisterForm() {
         </button>
       </div>
 
-      {/* Referral Code (Optional) */}
-      <div className="flex items-center bg-white rounded-2xl border-2 border-blue-200 px-3.5 py-1 shadow-sm focus-within:border-blue-500 focus-within:shadow-md transition-all">
+      {/* Invite Code (Optional) */}
+      <div className="flex items-center bg-white rounded-2xl border-2 border-blue-200 px-3.5 h-[48px] shadow-sm focus-within:border-blue-500 focus-within:shadow-md transition-all">
         <UserPlus size={18} className="text-blue-500 mr-2.5 flex-shrink-0" />
         <input
           type="text"
-          placeholder="Referral Code (Optional)"
+          placeholder="Invite Code (Optional)"
           value={referralCode}
           onChange={(e) => setReferralCode(e.target.value)}
-          className="w-full py-2.5 bg-transparent text-sm text-gray-800 placeholder-gray-400 outline-none font-medium"
+          className="w-full bg-transparent text-sm text-gray-800 placeholder-gray-400 outline-none font-medium"
         />
       </div>
 

@@ -15,7 +15,14 @@ export async function POST(req: NextRequest) {
     await connectDB();
 
     const body = await req.json();
-    const { nickname, phone, password, confirmPassword, referralCode } = body;
+    const {
+      nickname,
+      countryCode = "+880",
+      phone,
+      password,
+      confirmPassword,
+      referralCode,
+    } = body;
 
     // 1. Validation
     if (!nickname || !phone || !password) {
@@ -39,25 +46,37 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Clean and validate mobile number for any country
+    // Clean and validate mobile number
     const rawTrimmed = phone.trim();
-    const cleanDigits = rawTrimmed.replace(/[^0-9]/g, "");
+    const cleanCountryCode = countryCode.replace(/[^0-9]/g, "");
+    let numDigits = rawTrimmed.replace(/[^0-9]/g, "");
+    if (cleanCountryCode && numDigits.startsWith(cleanCountryCode)) {
+      numDigits = numDigits.slice(cleanCountryCode.length);
+    }
+    const numWithoutZero = numDigits.replace(/^0+/, "");
 
-    if (cleanDigits.length < 6 || cleanDigits.length > 16) {
+    if (numWithoutZero.length < 4 || numWithoutZero.length > 15) {
       return NextResponse.json(
-        { error: "Please enter a valid mobile number (6 to 16 digits)." },
+        { error: "Please enter a valid mobile number." },
         { status: 400 }
       );
     }
+
+    const localWithZero = `0${numWithoutZero}`;
+    const intlFormat = `+${cleanCountryCode}${numWithoutZero}`;
+    const intlDigits = `${cleanCountryCode}${numWithoutZero}`;
 
     const possiblePhones = Array.from(
       new Set(
         [
           rawTrimmed,
-          cleanDigits,
-          `+${cleanDigits}`,
-          cleanDigits.startsWith("880") ? "0" + cleanDigits.slice(3) : null,
-          cleanDigits.startsWith("0") ? "880" + cleanDigits.slice(1) : null,
+          numDigits,
+          numWithoutZero,
+          localWithZero,
+          intlFormat,
+          intlDigits,
+          `+${numDigits}`,
+          `+${rawTrimmed.replace(/^\+/, "")}`,
         ].filter(Boolean) as string[]
       )
     );
@@ -88,9 +107,12 @@ export async function POST(req: NextRequest) {
     }
 
     // 5. Create User
+    // For Bangladesh (+880), save in the local 017xxxxxxxx format (e.g. 01712345678).
+    // For international countries, save in the full +[code][number] format (e.g. +14155552671).
+    const savedPhone = cleanCountryCode === "880" ? localWithZero : intlFormat;
     const passwordHash = await hashPassword(password);
     const newUser = await User.create({
-      phone: cleanDigits,
+      phone: savedPhone,
       nickname: nickname.trim(),
       passwordHash,
       balance: 0,

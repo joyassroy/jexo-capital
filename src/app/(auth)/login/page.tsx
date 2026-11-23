@@ -5,11 +5,16 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import Logo from "@/components/common/Logo";
 import CityFooter from "@/components/common/CityFooter";
+import CountryCodeDropdown, {
+  COUNTRY_LIST,
+  CountryItem,
+} from "@/components/common/CountryCodeDropdown";
 import { Eye, EyeOff, Lock, Phone, Globe } from "lucide-react";
 
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [country, setCountry] = useState<CountryItem>(COUNTRY_LIST[0]);
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -17,16 +22,37 @@ function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let val = e.target.value.replace(/[^0-9]/g, "");
+    const codeDigits = country.code.replace(/[^0-9]/g, "");
+    if (val.startsWith(codeDigits)) {
+      val = val.slice(codeDigits.length);
+    }
+    setPhone(val);
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
+    const cleanDigits = phone.trim().replace(/[^0-9]/g, "");
+    if (!cleanDigits) {
+      setError("Please enter your mobile number.");
+      return;
+    }
+
     setLoading(true);
 
     try {
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone, password, keepSignedIn }),
+        body: JSON.stringify({
+          countryCode: country.code,
+          phone: cleanDigits,
+          password,
+          keepSignedIn,
+        }),
       });
 
       const data = await res.json();
@@ -88,17 +114,21 @@ function LoginForm() {
 
         {/* Form */}
         <form onSubmit={handleLogin} className="space-y-4">
-          {/* Mobile number input - any country */}
-          <div className="flex items-center bg-white rounded-2xl border-2 border-blue-200 px-3.5 py-1 shadow-sm focus-within:border-blue-500 focus-within:shadow-md transition-all">
-            <Phone size={18} className="text-blue-500 mr-2.5 flex-shrink-0" />
-            <input
-              type="tel"
-              placeholder="Mobile Number"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              className="w-full py-2.5 text-sm font-semibold text-gray-900 placeholder:text-gray-400 placeholder:font-normal bg-transparent outline-none"
-              required
-            />
+          {/* Country Code + Mobile Number in one row */}
+          <div className="flex items-center gap-2">
+            <CountryCodeDropdown selected={country} onSelect={setCountry} />
+
+            <div className="flex-1 flex items-center bg-white rounded-2xl border-2 border-blue-200 px-3.5 h-[48px] shadow-sm focus-within:border-blue-500 focus-within:shadow-md transition-all">
+              <Phone size={18} className="text-blue-500 mr-2.5 flex-shrink-0" />
+              <input
+                type="tel"
+                placeholder="Mobile Number"
+                value={phone}
+                onChange={handlePhoneChange}
+                className="w-full bg-transparent text-sm font-semibold text-gray-900 placeholder:text-gray-400 placeholder:font-normal outline-none"
+                required
+              />
+            </div>
           </div>
 
           {/* Password input */}

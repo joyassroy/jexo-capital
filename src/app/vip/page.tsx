@@ -237,8 +237,8 @@ export default function VipPage() {
           </div>
         </div>
 
-        {/* VIP Packages List (4 Tiers) */}
-        <div className="p-3.5 space-y-3.5 max-w-[440px] mx-auto">
+        {/* VIP Packages List (4 Tiers) - Compact & Sleek */}
+        <div className="px-3 py-2 space-y-2.5 max-w-[440px] mx-auto">
           {VIP_PLANS.map((item) => {
             const isActive = user?.vipLevel === item.level;
             const isCompleted = user ? user.vipLevel > item.level : false;
@@ -246,71 +246,71 @@ export default function VipPage() {
             return (
               <div
                 key={item.id}
-                className={`p-4 sm:p-5 rounded-3xl bg-gradient-to-b from-[#07173e]/90 to-[#030e28]/95 backdrop-blur-xl border-2 transition-all relative overflow-hidden ${
+                className={`p-3 sm:p-3.5 rounded-2xl bg-gradient-to-b from-[#07173e]/90 to-[#030e28]/95 backdrop-blur-xl border transition-all relative overflow-hidden ${
                   isActive
-                    ? "border-[#f5ba31] shadow-[0_0_25px_rgba(245,186,49,0.4)] ring-2 ring-[#f5ba31]/30"
-                    : "border-slate-700/80 hover:border-[#f5ba31]/50 shadow-lg"
+                    ? "border-[#f5ba31] shadow-[0_0_18px_rgba(245,186,49,0.35)] ring-1 ring-[#f5ba31]/30"
+                    : "border-slate-700/70 hover:border-[#f5ba31]/40 shadow-md"
                 }`}
               >
                 {/* Active Level glowing badge */}
                 {isActive && (
-                  <div className="absolute top-0 right-0 bg-gradient-to-l from-emerald-500 to-emerald-600 text-white text-[9px] font-black uppercase px-3 py-0.5 rounded-bl-xl shadow-[0_0_8px_rgba(16,185,129,0.5)] flex items-center gap-1">
-                    <Sparkles size={10} /> Active Plan
+                  <div className="absolute top-0 right-0 bg-gradient-to-l from-emerald-500 to-emerald-600 text-white text-[8.5px] font-black uppercase px-2.5 py-0.5 rounded-bl-lg shadow-[0_0_8px_rgba(16,185,129,0.5)] flex items-center gap-1">
+                    <Sparkles size={9} /> Active
                   </div>
                 )}
 
                 {/* VIP Title Header with decorative lines */}
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <span className="h-[1.5px] w-12 bg-[#f5ba31]/50" />
-                  <h3 className="text-xl font-black bg-gradient-to-r from-[#ffe58f] via-[#f5ba31] to-[#e69e05] bg-clip-text text-transparent tracking-tight">
+                <div className="flex items-center justify-center gap-2 mb-1">
+                  <span className="h-[1px] w-8 sm:w-10 bg-[#f5ba31]/50" />
+                  <h3 className="text-base sm:text-lg font-black bg-gradient-to-r from-[#ffe58f] via-[#f5ba31] to-[#e69e05] bg-clip-text text-transparent tracking-tight">
                     {item.name}
                   </h3>
-                  <span className="h-[1.5px] w-12 bg-[#f5ba31]/50" />
+                  <span className="h-[1px] w-8 sm:w-10 bg-[#f5ba31]/50" />
                 </div>
 
                 {/* 3 Metrics: Daily return | Number of Order | Commission per order */}
-                <div className="grid grid-cols-3 divide-x divide-white/10 text-center py-2.5">
+                <div className="grid grid-cols-3 divide-x divide-white/10 text-center py-1.5">
                   <div>
-                    <div className="text-xl sm:text-2xl font-black text-[#ff4d4f] tracking-tight drop-shadow-sm">
+                    <div className="text-base sm:text-lg font-black text-[#ff4d4f] tracking-tight drop-shadow-sm">
                       {item.dailyReturn}
                     </div>
-                    <div className="text-[11px] font-bold text-slate-300 mt-0.5">
+                    <div className="text-[10px] font-semibold text-slate-300 mt-0.5">
                       Daily return
                     </div>
                   </div>
 
                   <div>
-                    <div className="text-xl sm:text-2xl font-black text-[#00e676] tracking-tight drop-shadow-sm">
+                    <div className="text-base sm:text-lg font-black text-[#00e676] tracking-tight drop-shadow-sm">
                       {item.numberOfOrders}
                     </div>
-                    <div className="text-[11px] font-bold text-slate-300 mt-0.5">
+                    <div className="text-[10px] font-semibold text-slate-300 mt-0.5">
                       Number of Order
                     </div>
                   </div>
 
                   <div>
-                    <div className="text-xl sm:text-2xl font-black text-[#38bdf8] tracking-tight drop-shadow-sm">
+                    <div className="text-base sm:text-lg font-black text-[#38bdf8] tracking-tight drop-shadow-sm">
                       {item.commissionPerOrder}
                     </div>
-                    <div className="text-[11px] font-bold text-slate-300 mt-0.5">
+                    <div className="text-[10px] font-semibold text-slate-300 mt-0.5">
                       Commission per order
                     </div>
                   </div>
                 </div>
 
                 {/* Divider Line */}
-                <div className="border-t border-white/10 my-2.5" />
+                <div className="border-t border-white/10 my-1.5" />
 
                 {/* Investment Amount & Action Button Row */}
-                <div className="flex items-center justify-between pt-1">
+                <div className="flex items-center justify-between pt-0.5">
                   <div>
-                    <div className="text-[11px] font-bold text-slate-400">
+                    <div className="text-[10px] font-semibold text-slate-400 leading-tight">
                       Investment amount
                     </div>
-                    <div className="text-base sm:text-lg font-black text-white font-mono tracking-tight">
-                      {item.minBDT.toLocaleString()}-{item.maxBDT.toLocaleString()} Tk
+                    <div className="text-sm sm:text-base font-black text-white font-mono tracking-tight mt-0.5">
+                      {item.minBDT.toLocaleString()}–{item.maxBDT.toLocaleString()} Tk
                     </div>
-                    <div className="text-[11px] font-extrabold text-[#f5ba31] flex items-center gap-1">
+                    <div className="text-[10px] font-extrabold text-[#f5ba31] flex items-center gap-1 mt-0.5">
                       <span>≈ {item.minUSDT} - {item.maxUSDT} USDT</span>
                     </div>
                   </div>
@@ -320,15 +320,15 @@ export default function VipPage() {
                     {isActive ? (
                       <button
                         disabled
-                        className="px-5 py-2 rounded-full bg-gradient-to-b from-[#00b040] to-[#008a30] text-white font-black text-xs shadow-[0_0_12px_rgba(0,176,64,0.4)] flex items-center gap-1 cursor-default"
+                        className="px-4 py-1.5 rounded-full bg-gradient-to-b from-[#00b040] to-[#008a30] text-white font-black text-[11px] shadow-[0_0_10px_rgba(0,176,64,0.35)] flex items-center gap-1 cursor-default"
                       >
-                        <Check size={14} className="stroke-[3]" />
+                        <Check size={13} className="stroke-[3]" />
                         <span>Active</span>
                       </button>
                     ) : isCompleted ? (
                       <button
                         disabled
-                        className="px-4 py-2 rounded-full bg-slate-700 text-slate-400 font-black text-xs shadow-sm cursor-default"
+                        className="px-3.5 py-1.5 rounded-full bg-slate-700 text-slate-400 font-bold text-[11px] shadow-sm cursor-default"
                       >
                         Completed
                       </button>
@@ -336,7 +336,7 @@ export default function VipPage() {
                       <button
                         type="button"
                         onClick={() => openBuyModal(item)}
-                        className="px-5 py-2 rounded-full bg-gradient-to-b from-[#e52d27] to-[#b31217] text-white font-black text-xs shadow-[0_0_12px_rgba(229,45,39,0.4)] hover:brightness-110 active:scale-95 transition-all flex items-center gap-1 cursor-pointer"
+                        className="px-4 py-1.5 rounded-full bg-gradient-to-b from-[#e52d27] to-[#b31217] text-white font-black text-[11px] shadow-[0_0_10px_rgba(229,45,39,0.35)] hover:brightness-110 active:scale-95 transition-all flex items-center gap-1 cursor-pointer"
                       >
                         <span>Not Active</span>
                       </button>

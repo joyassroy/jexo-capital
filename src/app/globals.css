@@ -129,6 +129,27 @@ body {
 .animate-floating {
   animation: floatAnimation 3s ease-in-out infinite;
 }
+/* Ticker Left-to-Right Marquee Animation */
+@keyframes marqueeLeftToRight {
+  0% {
+    left: 0%;
+    transform: translate3d(-100%, 0, 0);
+  }
+  100% {
+    left: 100%;
+    transform: translate3d(0%, 0, 0);
+  }
+}
+
+.animate-marquee-ltr {
+  animation: marqueeLeftToRight 22s linear infinite;
+  will-change: transform, left;
+}
+
+.animate-marquee-ltr:hover {
+  animation-play-state: paused;
+}
+
 /* Ticker Right-to-Left Marquee Animation */
 @keyframes marqueeRightToLeft {
   0% {

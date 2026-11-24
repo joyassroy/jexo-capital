@@ -147,7 +147,7 @@ export default function HomePage() {
     {
       title: t("my_team"),
       icon: Users,
-      href: "/share",
+      href: "/team",
       gradient: "bg-gradient-to-tr from-[#7c3aed] via-[#8b5cf6] to-[#a855f7]",
       shadow: "shadow-[0_4px_12px_rgba(124,58,237,0.35)]",
     },
@@ -214,7 +214,7 @@ export default function HomePage() {
     {
       title: t("my_team"),
       icon: Users,
-      href: "/share",
+      href: "/team",
       gradient: "from-[#8b5cf6] via-[#7c3aed] to-[#6d28d9]",
       shadow: "shadow-[0_4px_14px_rgba(139,92,246,0.35)]",
     },
@@ -350,8 +350,8 @@ export default function HomePage() {
             {/* Top-left LIVE SUMMIT badge */}
             <div className="absolute top-2 left-2 z-20 flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-black/60 border border-white/20 text-white shadow-sm">
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
               </span>
               <span className="text-[9.5px] font-extrabold tracking-wide uppercase text-white/95">
                 {bannerSlides[currentSlide].tag}
@@ -419,8 +419,8 @@ export default function HomePage() {
             {/* Top-left LIVE SUMMIT badge */}
             <div className="absolute top-2.5 left-2.5 z-20 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/70 border border-white/20 text-white shadow-sm">
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
               </span>
               <span className="text-[10px] font-extrabold tracking-wide uppercase text-white/95">
                 {bannerSlides[currentSlide].tag}

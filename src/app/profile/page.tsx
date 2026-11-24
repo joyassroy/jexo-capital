@@ -156,7 +156,7 @@ export default function ProfilePage() {
   const menuItems = [
     { label: t("records"), icon: ClipboardList, href: "/records" },
     { label: t("nav_vip"), icon: Crown, href: "/vip" },
-    { label: t("team_details"), icon: Users, href: "/share" },
+    { label: t("team_details"), icon: Users, href: "/team" },
     { label: t("invite_friends"), icon: Share2, href: "/share" },
     { label: t("recharge_records"), icon: ArrowDownCircle, href: "/recharge-record" },
     { label: t("withdrawal_records"), icon: ArrowUpCircle, href: "/withdraw-record" },

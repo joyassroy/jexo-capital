@@ -275,65 +275,6 @@ export default function WithdrawPage() {
               </div>
             </div>
 
-            {/* Total Balance vs Bonus pill breakdown */}
-            <div
-              className={`grid grid-cols-2 gap-2 pt-2 border-t text-xs ${isLight ? "border-slate-100" : "border-white/10"
-                }`}
-            >
-              <div
-                className={`p-2 rounded-xl text-left border ${isLight
-                  ? "bg-slate-50 border-slate-200/80"
-                  : "bg-white/5 border-white/10"
-                  }`}
-              >
-                <div
-                  className={`text-[10px] font-bold uppercase ${isLight ? "text-slate-500" : "text-slate-400"
-                    }`}
-                >
-                  Total Assets
-                </div>
-                <div
-                  className={`font-mono font-bold text-xs mt-0.5 ${isLight ? "text-slate-900" : "text-white"
-                    }`}
-                >
-                  TK {totalBalanceBDT.toLocaleString("en-US", { minimumFractionDigits: 2 })}
-                </div>
-                <div
-                  className={`text-[10px] font-medium ${isLight ? "text-slate-500" : "text-slate-400"
-                    }`}
-                >
-                  {totalBalanceUSDT.toFixed(2)} USDT
-                </div>
-              </div>
-
-              <div
-                className={`p-2 rounded-xl text-left border ${isLight
-                  ? "bg-amber-500/10 border-amber-300 text-amber-900"
-                  : "bg-amber-500/10 border-amber-500/30 text-amber-300"
-                  }`}
-              >
-                <div
-                  className={`text-[10px] font-bold uppercase flex items-center gap-1 ${isLight ? "text-amber-700" : "text-[#ffd369]"
-                    }`}
-                >
-                  <Gift size={11} className={isLight ? "text-amber-600 shrink-0" : "text-amber-400 shrink-0"} />
-                  <span>Reserve Bonus</span>
-                </div>
-                <div
-                  className={`font-mono font-bold text-xs mt-0.5 ${isLight ? "text-amber-800" : "text-amber-300"
-                    }`}
-                >
-                  TK {signupBonusBDT.toFixed(2)}
-                </div>
-                <div
-                  className={`text-[10px] font-medium ${isLight ? "text-amber-600" : "text-amber-400/80"
-                    }`}
-                >
-                  Non-Withdrawable
-                </div>
-              </div>
-            </div>
-
             {/* Min Withdrawal Pill */}
             <div
               className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[11px] font-semibold border ${isLight

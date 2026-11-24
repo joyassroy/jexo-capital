@@ -212,7 +212,7 @@ export default function AdminUsersPage() {
       {/* Adjust Balance Modal */}
       {selectedUser && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-xs p-4">
-          <div className="w-full max-w-sm rounded-3xl bg-[#1E293B] border border-slate-700 p-6 shadow-2xl space-y-4">
+          <div className="admin-modal w-full max-w-sm rounded-3xl bg-[#1E293B] border border-slate-700 p-6 shadow-2xl space-y-4">
             <h3 className="text-base font-black text-white">
               Adjust Balance for {selectedUser.nickname}
             </h3>

@@ -525,3 +525,106 @@ button[class*="from-red"] svg,
   stroke: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
 }
+
+/* ==========================================================================
+   ADMIN PANEL ISOLATION - ALWAYS PURE CRISP DARK THEME
+   Guarantees that admin inputs, modals, labels, and text are never affected
+   by consumer light mode styles.
+   ========================================================================== */
+.admin-root,
+.admin-modal,
+[data-admin-root="true"] {
+  color-scheme: dark !important;
+}
+
+/* Admin Input Fields: Always dark background with crisp borders & white text */
+.admin-input,
+.admin-root input:not([type="checkbox"]):not([type="radio"]),
+.admin-modal input:not([type="checkbox"]):not([type="radio"]),
+.light .admin-input,
+.light .admin-root input:not([type="checkbox"]):not([type="radio"]),
+.light .admin-modal input:not([type="checkbox"]):not([type="radio"]) {
+  background-color: #0c1427 !important;
+  color: #ffffff !important;
+  border-color: #334155 !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+.admin-input:focus,
+.admin-root input:focus,
+.admin-modal input:focus,
+.light .admin-input:focus,
+.light .admin-root input:focus,
+.light .admin-modal input:focus {
+  border-color: #00d2ff !important;
+  box-shadow: 0 0 0 1px #00d2ff !important;
+}
+
+/* Admin Form Labels */
+.admin-label,
+.admin-root label,
+.admin-modal label,
+.light .admin-label,
+.light .admin-root label,
+.light .admin-modal label {
+  color: #cbd5e1 !important;
+  -webkit-text-fill-color: #cbd5e1 !important;
+}
+
+/* Admin Headings & Text */
+.admin-root h1,
+.admin-root h2,
+.admin-root h3,
+.admin-root h4,
+.admin-modal h1,
+.admin-modal h2,
+.admin-modal h3,
+.admin-modal h4,
+.light .admin-root h1,
+.light .admin-root h2,
+.light .admin-root h3,
+.light .admin-root h4,
+.light .admin-modal h1,
+.light .admin-modal h2,
+.light .admin-modal h3,
+.light .admin-modal h4 {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+.admin-root p,
+.admin-modal p,
+.light .admin-root p,
+.light .admin-modal p {
+  color: #94a3b8 !important;
+  -webkit-text-fill-color: #94a3b8 !important;
+}
+
+/* Admin Cards & Modals */
+.admin-modal,
+.light .admin-modal {
+  background-color: #111c38 !important;
+  color: #ffffff !important;
+  border-color: #334155 !important;
+}
+
+.light .admin-root [class*="bg-slate-900"],
+.light .admin-modal [class*="bg-slate-900"] {
+  background-color: #0c1427 !important;
+  color: #ffffff !important;
+  border-color: #334155 !important;
+}
+
+.light .admin-root [class*="bg-slate-800"],
+.light .admin-modal [class*="bg-slate-800"] {
+  background-color: #1e293b !important;
+  color: #ffffff !important;
+  border-color: #334155 !important;
+}
+
+.light .admin-root [class*="bg-[#1E293B]"],
+.light .admin-modal [class*="bg-[#1E293B]"] {
+  background-color: #1e293b !important;
+  color: #ffffff !important;
+  border-color: #334155 !important;
+}

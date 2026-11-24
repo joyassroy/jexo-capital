@@ -29,6 +29,17 @@ export default function AdminLayout({
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // Enforce dark mode on document element when inside admin panel
+  React.useEffect(() => {
+    const root = document.documentElement;
+    const body = document.body;
+    root.classList.remove("light");
+    root.classList.add("dark");
+    root.setAttribute("data-theme", "dark");
+    body.classList.remove("light");
+    body.classList.add("dark");
+  }, [pathname]);
+
   // If on admin login page, render children directly without dashboard chrome
   if (pathname === "/admin/login") {
     return <>{children}</>;
@@ -55,7 +66,10 @@ export default function AdminLayout({
   ];
 
   return (
-    <div className="min-h-screen bg-[#0F172A] text-slate-100 flex flex-col md:flex-row w-full">
+    <div
+      data-admin-root="true"
+      className="admin-root min-h-screen bg-[#0F172A] text-slate-100 flex flex-col md:flex-row w-full"
+    >
       {/* Mobile Top Header */}
       <div className="md:hidden flex items-center justify-between p-4 bg-[#1E293B] border-b border-slate-800">
         <div className="flex items-center gap-2.5">

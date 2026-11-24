@@ -23,6 +23,12 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     setMounted(true);
     try {
+      // Admin dashboard is always dark
+      if (typeof window !== "undefined" && window.location.pathname.startsWith("/admin")) {
+        setThemeState("dark");
+        applyTheme("dark");
+        return;
+      }
       const saved = localStorage.getItem("zexo_theme") as Theme | null;
       const initialTheme: Theme = saved === "light" ? "light" : "dark";
       setThemeState(initialTheme);
@@ -35,6 +41,17 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const applyTheme = (t: Theme) => {
     const root = document.documentElement;
     const body = document.body;
+
+    // Never apply light mode inside admin panel
+    if (typeof window !== "undefined" && window.location.pathname.startsWith("/admin")) {
+      root.classList.remove("light");
+      root.classList.add("dark");
+      root.setAttribute("data-theme", "dark");
+      body.classList.remove("light");
+      body.classList.add("dark");
+      return;
+    }
+
     if (t === "light") {
       root.classList.remove("dark");
       root.classList.add("light");

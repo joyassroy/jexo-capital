@@ -355,7 +355,7 @@ export default function AdminWalletsPage() {
       {/* Rejection Modal */}
       {rejectModalWallet && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-in fade-in duration-150">
-          <div className="bg-[#1E293B] border border-slate-700 rounded-2xl w-full max-w-md p-5 shadow-2xl text-white space-y-4">
+          <div className="admin-modal bg-[#1E293B] border border-slate-700 rounded-2xl w-full max-w-md p-5 shadow-2xl text-white space-y-4">
             <div className="flex items-center justify-between pb-2 border-b border-slate-700">
               <h3 className="font-black text-base text-rose-400 flex items-center gap-1.5">
                 <AlertCircle size={18} />

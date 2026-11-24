@@ -294,7 +294,7 @@ export default function AdminKycPage() {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="max-w-2xl w-full bg-slate-900 border border-slate-700 rounded-2xl overflow-hidden p-4 relative shadow-2xl"
+            className="admin-modal max-w-2xl w-full bg-slate-900 border border-slate-700 rounded-2xl overflow-hidden p-4 relative shadow-2xl"
           >
             <div className="flex items-center justify-between pb-3 border-b border-slate-800 mb-3">
               <span className="text-xs font-extrabold text-slate-200 uppercase tracking-wide">

@@ -124,7 +124,7 @@ export default function OrdersPage() {
     }
 
     if (data.todayOrdersCount >= data.maxOrders) {
-      alert("You have completed all 5 daily orders! New orders reset after midnight (12:00 AM).");
+      alert(`You have completed all ${data.maxOrders} daily orders! New orders reset after midnight (12:00 AM).`);
       return;
     }
 
@@ -464,7 +464,7 @@ export default function OrdersPage() {
             </div>
             <div className="flex items-center gap-1.5 font-mono font-black text-sm text-white">
               <span className="order-stat-count">{data ? data.todayOrdersCount : 0}</span>
-              <span className="text-xs text-slate-400 font-semibold">/ {data ? data.maxOrders : 5}</span>
+              <span className="text-xs text-slate-400 font-semibold">/ {data ? data.maxOrders : 0}</span>
               <ChevronRight size={15} className="text-slate-400 ml-1" />
             </div>
           </Link>
@@ -486,7 +486,9 @@ export default function OrdersPage() {
               className="w-full py-3.5 rounded-2xl bg-slate-800 text-slate-400 border border-slate-700 font-black text-sm flex items-center justify-center gap-2 cursor-not-allowed shadow-inner"
             >
               <CheckCircle2 size={18} className="text-emerald-500" />
-              <span>Daily Limit Completed (5/5) — Resets at Midnight</span>
+              <span>
+                Daily Limit Completed ({data ? data.todayOrdersCount : 0}/{data ? data.maxOrders : 0}) — Resets at Midnight
+              </span>
             </button>
           ) : (
             <button
@@ -498,7 +500,7 @@ export default function OrdersPage() {
               <span>
                 {isProcessing
                   ? `Queueing Order (${countdown}s)...`
-                  : `Add to Queue (${data ? data.todayOrdersCount : 0}/5)`}
+                  : `Add to Queue (${data ? data.todayOrdersCount : 0}/${data ? data.maxOrders : 0})`}
               </span>
               <ArrowRight size={18} className="stroke-[2.5]" />
             </button>

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import { User } from "@/models/User";
 import { Transaction } from "@/models/Transaction";
+import { Deposit } from "@/models/Deposit";
 import { Setting } from "@/models/Setting";
 import { getCurrentUser } from "@/lib/auth";
 
@@ -54,27 +55,75 @@ export async function GET() {
             .lean()
         : [];
 
-    // Helper: Active user has deposited or balance above signup reserve or completed orders
-    const isUserActive = (u: {
-      totalFund?: number;
-      balance?: number;
-      todayOrdersCount?: number;
-    }) => {
-      return (
-        (u.totalFund || 0) > 0 ||
-        (u.balance || 0) > bonusUSDT ||
-        (u.todayOrdersCount || 0) > 0
-      );
+    const allMemberIds = [
+      ...level1Ids,
+      ...level2Ids,
+      level3Users.map((u) => u._id.toString()),
+    ].flat();
+
+    // Query approved deposits for all team members
+    const approvedDeposits =
+      allMemberIds.length > 0
+        ? await Deposit.find({
+            userId: { $in: allMemberIds },
+            status: "approved",
+          })
+            .select("userId amount amountUSDT")
+            .lean()
+        : [];
+
+    const depositMap = new Map<string, number>();
+    for (const dep of approvedDeposits) {
+      const prev = depositMap.get(dep.userId) || 0;
+      const amount = dep.amountUSDT > 0 ? dep.amountUSDT : dep.amount || 0;
+      depositMap.set(dep.userId, prev + amount);
+    }
+
+    const maskPhone = (phone?: string) => {
+      if (!phone) return "User";
+      const clean = phone.trim();
+      if (clean.length <= 6) return clean;
+      return clean.slice(0, 3) + "****" + clean.slice(-3);
     };
 
-    const l1Total = level1Users.length;
-    const l1Active = level1Users.filter(isUserActive).length;
+    // Helper: Determine if user is active via approved deposit or active trading/balance
+    const mapMember = (u: any) => {
+      const uId = u._id.toString();
+      const depAmt = depositMap.get(uId) || 0;
+      const totalDep = Math.max(depAmt, u.totalFund || 0);
+      const hasDeposited = totalDep > 0;
+      const isActive = hasDeposited || (u.balance || 0) > bonusUSDT || (u.todayOrdersCount || 0) > 0;
 
-    const l2Total = level2Users.length;
-    const l2Active = level2Users.filter(isUserActive).length;
+      return {
+        id: uId,
+        phone: maskPhone(u.phone),
+        nickname: u.nickname || "User",
+        hasDeposited,
+        isActive,
+        depositAmount: Number(totalDep.toFixed(2)),
+        balance: Number((u.balance || 0).toFixed(2)),
+        joinedAt: u.createdAt
+          ? new Date(u.createdAt).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+            })
+          : "",
+      };
+    };
 
-    const l3Total = level3Users.length;
-    const l3Active = level3Users.filter(isUserActive).length;
+    const l1Members = level1Users.map(mapMember);
+    const l2Members = level2Users.map(mapMember);
+    const l3Members = level3Users.map(mapMember);
+
+    const l1Total = l1Members.length;
+    const l1Active = l1Members.filter((m) => m.hasDeposited || m.isActive).length;
+
+    const l2Total = l2Members.length;
+    const l2Active = l2Members.filter((m) => m.hasDeposited || m.isActive).length;
+
+    const l3Total = l3Members.length;
+    const l3Active = l3Members.filter((m) => m.hasDeposited || m.isActive).length;
 
     const totalMembers = l1Total + l2Total + l3Total;
     const activeMembers = l1Active + l2Active + l3Active;
@@ -126,9 +175,9 @@ export async function GET() {
       team: {
         totalMembers,
         activeMembers,
-        level1: { total: l1Total, active: l1Active },
-        level2: { total: l2Total, active: l2Active },
-        level3: { total: l3Total, active: l3Active },
+        level1: { total: l1Total, active: l1Active, members: l1Members },
+        level2: { total: l2Total, active: l2Active, members: l2Members },
+        level3: { total: l3Total, active: l3Active, members: l3Members },
         referralRewardsUSDT,
         referralRewardsBDT,
         cashbackRewardsUSDT,

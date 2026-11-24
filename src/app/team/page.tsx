@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   ChevronLeft,
+  ChevronDown,
   CheckCircle2,
   AlertCircle,
   Gift,
@@ -15,12 +16,23 @@ import {
 import ThemeToggle from "@/components/common/ThemeToggle";
 import { useTheme } from "@/context/ThemeContext";
 
+interface TeamMember {
+  id: string;
+  phone: string;
+  nickname: string;
+  hasDeposited: boolean;
+  isActive: boolean;
+  depositAmount: number;
+  balance: number;
+  joinedAt: string;
+}
+
 interface TeamData {
   totalMembers: number;
   activeMembers: number;
-  level1: { total: number; active: number };
-  level2: { total: number; active: number };
-  level3: { total: number; active: number };
+  level1: { total: number; active: number; members?: TeamMember[] };
+  level2: { total: number; active: number; members?: TeamMember[] };
+  level3: { total: number; active: number; members?: TeamMember[] };
   referralRewardsUSDT: number;
   referralRewardsBDT: number;
   cashbackRewardsUSDT: number;
@@ -102,9 +114,9 @@ export default function TeamPage() {
   const [team, setTeam] = useState<TeamData>({
     totalMembers: 0,
     activeMembers: 0,
-    level1: { total: 0, active: 0 },
-    level2: { total: 0, active: 0 },
-    level3: { total: 0, active: 0 },
+    level1: { total: 0, active: 0, members: [] },
+    level2: { total: 0, active: 0, members: [] },
+    level3: { total: 0, active: 0, members: [] },
     referralRewardsUSDT: 0,
     referralRewardsBDT: 0,
     cashbackRewardsUSDT: 0,
@@ -112,6 +124,19 @@ export default function TeamPage() {
     milestoneClaimed: false,
     canClaimMilestone: false,
   });
+
+  const [expandedLevels, setExpandedLevels] = useState<{ [key: number]: boolean }>({
+    1: false,
+    2: false,
+    3: false,
+  });
+
+  const toggleLevel = (lvl: number) => {
+    setExpandedLevels((prev) => ({
+      ...prev,
+      [lvl]: !prev[lvl],
+    }));
+  };
 
   const [loading, setLoading] = useState<boolean>(true);
   const [claiming, setClaiming] = useState<boolean>(false);
@@ -423,91 +448,340 @@ export default function TeamPage() {
                 </span>
               </div>
 
-              {/* Row 3: Level -1 */}
-              <div
-                className={`p-2.5 px-4 rounded-2xl flex items-center justify-between border shadow-xs transition-all ${
-                  isLight
-                    ? "bg-gradient-to-r from-[#f8fafc] via-[#f1f5f9] to-[#f8fafc] border-slate-200/90 hover:border-amber-300/80 hover:bg-white text-slate-800"
-                    : "bg-gradient-to-r from-[#07193f] via-[#0a2358] to-[#07193f] border-amber-400/20 text-white hover:border-amber-400/40"
-                }`}
-              >
-                <div className="flex items-center gap-2.5">
-                  <span
-                    className={`text-[11px] font-black px-2 py-0.5 rounded-md ${
-                      isLight
-                        ? "bg-amber-100 text-amber-800"
-                        : "bg-amber-900/40 text-amber-300"
-                    }`}
-                  >
-                    L1
-                  </span>
-                  <span className="font-extrabold text-xs sm:text-sm tracking-wide">
-                    Level -1
-                  </span>
-                </div>
-                <span className="px-5 py-1 rounded-full bg-[#020a1f] text-amber-300 font-black font-mono text-sm sm:text-base border-2 border-amber-400/70 shadow-[0_2px_8px_rgba(0,0,0,0.25)]">
-                  {loading
-                    ? "..."
-                    : `${team.level1.total}/${team.level1.active}`}
-                </span>
+              {/* Row 3: Level -1 (Interactive Accordion) */}
+              <div className="space-y-1.5">
+                <button
+                  type="button"
+                  onClick={() => toggleLevel(1)}
+                  className={`w-full p-2.5 px-4 rounded-2xl flex items-center justify-between border shadow-xs transition-all text-left cursor-pointer active:scale-[0.99] ${
+                    isLight
+                      ? "bg-gradient-to-r from-[#f8fafc] via-[#f1f5f9] to-[#f8fafc] border-slate-200/90 hover:border-amber-300/80 hover:bg-white text-slate-800"
+                      : "bg-gradient-to-r from-[#07193f] via-[#0a2358] to-[#07193f] border-amber-400/20 text-white hover:border-amber-400/40"
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <span
+                      className={`text-[11px] font-black px-2 py-0.5 rounded-md ${
+                        isLight
+                          ? "bg-amber-100 text-amber-800"
+                          : "bg-amber-900/40 text-amber-300"
+                      }`}
+                    >
+                      L1
+                    </span>
+                    <span className="font-extrabold text-xs sm:text-sm tracking-wide">
+                      Level -1
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="px-5 py-1 rounded-full bg-[#020a1f] text-amber-300 font-black font-mono text-sm sm:text-base border-2 border-amber-400/70 shadow-[0_2px_8px_rgba(0,0,0,0.25)]">
+                      {loading
+                        ? "..."
+                        : `${team.level1.total}/${team.level1.active}`}
+                    </span>
+                    <ChevronDown
+                      size={18}
+                      className={`text-amber-500 transition-transform duration-200 shrink-0 ${
+                        expandedLevels[1] ? "rotate-180" : ""
+                      }`}
+                    />
+                  </div>
+                </button>
+
+                {/* Level 1 Members List Dropdown */}
+                {expandedLevels[1] && (
+                  <div className="space-y-2 pt-1 pb-1 animate-in fade-in slide-in-from-top-1 duration-200">
+                    {team.level1.members && team.level1.members.length > 0 ? (
+                      team.level1.members.map((member) => (
+                        <div
+                          key={member.id}
+                          className={`p-2.5 sm:p-3 rounded-2xl border flex items-center justify-between transition-all ${
+                            isLight
+                              ? "bg-slate-50 border-slate-200/90 hover:bg-white shadow-2xs"
+                              : "bg-[#040e2b] border-amber-400/20 shadow-2xs"
+                          }`}
+                        >
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <div
+                              className={`w-8 h-8 rounded-full flex items-center justify-center font-black text-xs shrink-0 ${
+                                member.hasDeposited || member.isActive
+                                  ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-300 border border-emerald-400/40"
+                                  : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-white/10"
+                              }`}
+                            >
+                              {member.nickname.slice(0, 1).toUpperCase()}
+                            </div>
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-1.5 flex-wrap">
+                                <span className="font-extrabold text-xs text-slate-800 dark:text-white truncate">
+                                  {member.nickname}
+                                </span>
+                                <span className="text-[10px] text-slate-400 font-mono">
+                                  ({member.phone})
+                                </span>
+                              </div>
+                              <div className="text-[10px] text-slate-400 font-medium mt-0.5 flex items-center gap-1.5 flex-wrap">
+                                <span>{member.joinedAt ? `Joined: ${member.joinedAt}` : ""}</span>
+                                {member.depositAmount > 0 && (
+                                  <span className="text-amber-600 dark:text-amber-400 font-bold">
+                                    • Dep: {member.depositAmount} USDT
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="shrink-0 ml-2">
+                            {member.hasDeposited || member.isActive ? (
+                              <span className="px-3 py-1 rounded-full text-[11px] font-black bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/40 shadow-2xs flex items-center gap-1">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                Active
+                              </span>
+                            ) : (
+                              <span className="px-3 py-1 rounded-full text-[11px] font-bold bg-slate-100 dark:bg-white/10 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-white/10">
+                                Inactive
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="py-4 px-3 text-center rounded-2xl bg-slate-50/70 dark:bg-[#040e2b]/70 border border-dashed border-slate-200 dark:border-white/10">
+                        <Users size={20} className="mx-auto text-slate-300 dark:text-slate-600 mb-1" />
+                        <p className="text-xs font-bold text-slate-600 dark:text-slate-400">
+                          No members in Level 1 yet
+                        </p>
+                        <p className="text-[10.5px] text-slate-400 dark:text-slate-500 mt-0.5">
+                          Share your invite link to build your team!
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
-              {/* Row 4: Level -2 */}
-              <div
-                className={`p-2.5 px-4 rounded-2xl flex items-center justify-between border shadow-xs transition-all ${
-                  isLight
-                    ? "bg-gradient-to-r from-[#f8fafc] via-[#f1f5f9] to-[#f8fafc] border-slate-200/90 hover:border-amber-300/80 hover:bg-white text-slate-800"
-                    : "bg-gradient-to-r from-[#07193f] via-[#0a2358] to-[#07193f] border-amber-400/20 text-white hover:border-amber-400/40"
-                }`}
-              >
-                <div className="flex items-center gap-2.5">
-                  <span
-                    className={`text-[11px] font-black px-2 py-0.5 rounded-md ${
-                      isLight
-                        ? "bg-slate-200 text-slate-700"
-                        : "bg-slate-800 text-slate-300"
-                    }`}
-                  >
-                    L2
-                  </span>
-                  <span className="font-extrabold text-xs sm:text-sm tracking-wide">
-                    Level -2
-                  </span>
-                </div>
-                <span className="px-5 py-1 rounded-full bg-[#020a1f] text-amber-300 font-black font-mono text-sm sm:text-base border-2 border-amber-400/70 shadow-[0_2px_8px_rgba(0,0,0,0.25)]">
-                  {loading
-                    ? "..."
-                    : `${team.level2.total}/${team.level2.active}`}
-                </span>
+              {/* Row 4: Level -2 (Interactive Accordion) */}
+              <div className="space-y-1.5">
+                <button
+                  type="button"
+                  onClick={() => toggleLevel(2)}
+                  className={`w-full p-2.5 px-4 rounded-2xl flex items-center justify-between border shadow-xs transition-all text-left cursor-pointer active:scale-[0.99] ${
+                    isLight
+                      ? "bg-gradient-to-r from-[#f8fafc] via-[#f1f5f9] to-[#f8fafc] border-slate-200/90 hover:border-amber-300/80 hover:bg-white text-slate-800"
+                      : "bg-gradient-to-r from-[#07193f] via-[#0a2358] to-[#07193f] border-amber-400/20 text-white hover:border-amber-400/40"
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <span
+                      className={`text-[11px] font-black px-2 py-0.5 rounded-md ${
+                        isLight
+                          ? "bg-slate-200 text-slate-700"
+                          : "bg-slate-800 text-slate-300"
+                      }`}
+                    >
+                      L2
+                    </span>
+                    <span className="font-extrabold text-xs sm:text-sm tracking-wide">
+                      Level -2
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="px-5 py-1 rounded-full bg-[#020a1f] text-amber-300 font-black font-mono text-sm sm:text-base border-2 border-amber-400/70 shadow-[0_2px_8px_rgba(0,0,0,0.25)]">
+                      {loading
+                        ? "..."
+                        : `${team.level2.total}/${team.level2.active}`}
+                    </span>
+                    <ChevronDown
+                      size={18}
+                      className={`text-amber-500 transition-transform duration-200 shrink-0 ${
+                        expandedLevels[2] ? "rotate-180" : ""
+                      }`}
+                    />
+                  </div>
+                </button>
+
+                {/* Level 2 Members List Dropdown */}
+                {expandedLevels[2] && (
+                  <div className="space-y-2 pt-1 pb-1 animate-in fade-in slide-in-from-top-1 duration-200">
+                    {team.level2.members && team.level2.members.length > 0 ? (
+                      team.level2.members.map((member) => (
+                        <div
+                          key={member.id}
+                          className={`p-2.5 sm:p-3 rounded-2xl border flex items-center justify-between transition-all ${
+                            isLight
+                              ? "bg-slate-50 border-slate-200/90 hover:bg-white shadow-2xs"
+                              : "bg-[#040e2b] border-amber-400/20 shadow-2xs"
+                          }`}
+                        >
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <div
+                              className={`w-8 h-8 rounded-full flex items-center justify-center font-black text-xs shrink-0 ${
+                                member.hasDeposited || member.isActive
+                                  ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-300 border border-emerald-400/40"
+                                  : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-white/10"
+                              }`}
+                            >
+                              {member.nickname.slice(0, 1).toUpperCase()}
+                            </div>
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-1.5 flex-wrap">
+                                <span className="font-extrabold text-xs text-slate-800 dark:text-white truncate">
+                                  {member.nickname}
+                                </span>
+                                <span className="text-[10px] text-slate-400 font-mono">
+                                  ({member.phone})
+                                </span>
+                              </div>
+                              <div className="text-[10px] text-slate-400 font-medium mt-0.5 flex items-center gap-1.5 flex-wrap">
+                                <span>{member.joinedAt ? `Joined: ${member.joinedAt}` : ""}</span>
+                                {member.depositAmount > 0 && (
+                                  <span className="text-amber-600 dark:text-amber-400 font-bold">
+                                    • Dep: {member.depositAmount} USDT
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="shrink-0 ml-2">
+                            {member.hasDeposited || member.isActive ? (
+                              <span className="px-3 py-1 rounded-full text-[11px] font-black bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/40 shadow-2xs flex items-center gap-1">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                Active
+                              </span>
+                            ) : (
+                              <span className="px-3 py-1 rounded-full text-[11px] font-bold bg-slate-100 dark:bg-white/10 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-white/10">
+                                Inactive
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="py-4 px-3 text-center rounded-2xl bg-slate-50/70 dark:bg-[#040e2b]/70 border border-dashed border-slate-200 dark:border-white/10">
+                        <Users size={20} className="mx-auto text-slate-300 dark:text-slate-600 mb-1" />
+                        <p className="text-xs font-bold text-slate-600 dark:text-slate-400">
+                          No members in Level 2 yet
+                        </p>
+                        <p className="text-[10.5px] text-slate-400 dark:text-slate-500 mt-0.5">
+                          Members referred by your Level 1 will appear here.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
-              {/* Row 5: Level -3 */}
-              <div
-                className={`p-2.5 px-4 rounded-2xl flex items-center justify-between border shadow-xs transition-all ${
-                  isLight
-                    ? "bg-gradient-to-r from-[#f8fafc] via-[#f1f5f9] to-[#f8fafc] border-slate-200/90 hover:border-amber-300/80 hover:bg-white text-slate-800"
-                    : "bg-gradient-to-r from-[#07193f] via-[#0a2358] to-[#07193f] border-amber-400/20 text-white hover:border-amber-400/40"
-                }`}
-              >
-                <div className="flex items-center gap-2.5">
-                  <span
-                    className={`text-[11px] font-black px-2 py-0.5 rounded-md ${
-                      isLight
-                        ? "bg-amber-100 text-amber-900"
-                        : "bg-amber-950/40 text-amber-400"
-                    }`}
-                  >
-                    L3
-                  </span>
-                  <span className="font-extrabold text-xs sm:text-sm tracking-wide">
-                    Level -3
-                  </span>
-                </div>
-                <span className="px-5 py-1 rounded-full bg-[#020a1f] text-amber-300 font-black font-mono text-sm sm:text-base border-2 border-amber-400/70 shadow-[0_2px_8px_rgba(0,0,0,0.25)]">
-                  {loading
-                    ? "..."
-                    : `${team.level3.total}/${team.level3.active}`}
-                </span>
+              {/* Row 5: Level -3 (Interactive Accordion) */}
+              <div className="space-y-1.5">
+                <button
+                  type="button"
+                  onClick={() => toggleLevel(3)}
+                  className={`w-full p-2.5 px-4 rounded-2xl flex items-center justify-between border shadow-xs transition-all text-left cursor-pointer active:scale-[0.99] ${
+                    isLight
+                      ? "bg-gradient-to-r from-[#f8fafc] via-[#f1f5f9] to-[#f8fafc] border-slate-200/90 hover:border-amber-300/80 hover:bg-white text-slate-800"
+                      : "bg-gradient-to-r from-[#07193f] via-[#0a2358] to-[#07193f] border-amber-400/20 text-white hover:border-amber-400/40"
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <span
+                      className={`text-[11px] font-black px-2 py-0.5 rounded-md ${
+                        isLight
+                          ? "bg-amber-100 text-amber-900"
+                          : "bg-amber-950/40 text-amber-400"
+                      }`}
+                    >
+                      L3
+                    </span>
+                    <span className="font-extrabold text-xs sm:text-sm tracking-wide">
+                      Level -3
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="px-5 py-1 rounded-full bg-[#020a1f] text-amber-300 font-black font-mono text-sm sm:text-base border-2 border-amber-400/70 shadow-[0_2px_8px_rgba(0,0,0,0.25)]">
+                      {loading
+                        ? "..."
+                        : `${team.level3.total}/${team.level3.active}`}
+                    </span>
+                    <ChevronDown
+                      size={18}
+                      className={`text-amber-500 transition-transform duration-200 shrink-0 ${
+                        expandedLevels[3] ? "rotate-180" : ""
+                      }`}
+                    />
+                  </div>
+                </button>
+
+                {/* Level 3 Members List Dropdown */}
+                {expandedLevels[3] && (
+                  <div className="space-y-2 pt-1 pb-1 animate-in fade-in slide-in-from-top-1 duration-200">
+                    {team.level3.members && team.level3.members.length > 0 ? (
+                      team.level3.members.map((member) => (
+                        <div
+                          key={member.id}
+                          className={`p-2.5 sm:p-3 rounded-2xl border flex items-center justify-between transition-all ${
+                            isLight
+                              ? "bg-slate-50 border-slate-200/90 hover:bg-white shadow-2xs"
+                              : "bg-[#040e2b] border-amber-400/20 shadow-2xs"
+                          }`}
+                        >
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <div
+                              className={`w-8 h-8 rounded-full flex items-center justify-center font-black text-xs shrink-0 ${
+                                member.hasDeposited || member.isActive
+                                  ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-300 border border-emerald-400/40"
+                                  : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-white/10"
+                              }`}
+                            >
+                              {member.nickname.slice(0, 1).toUpperCase()}
+                            </div>
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-1.5 flex-wrap">
+                                <span className="font-extrabold text-xs text-slate-800 dark:text-white truncate">
+                                  {member.nickname}
+                                </span>
+                                <span className="text-[10px] text-slate-400 font-mono">
+                                  ({member.phone})
+                                </span>
+                              </div>
+                              <div className="text-[10px] text-slate-400 font-medium mt-0.5 flex items-center gap-1.5 flex-wrap">
+                                <span>{member.joinedAt ? `Joined: ${member.joinedAt}` : ""}</span>
+                                {member.depositAmount > 0 && (
+                                  <span className="text-amber-600 dark:text-amber-400 font-bold">
+                                    • Dep: {member.depositAmount} USDT
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="shrink-0 ml-2">
+                            {member.hasDeposited || member.isActive ? (
+                              <span className="px-3 py-1 rounded-full text-[11px] font-black bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/40 shadow-2xs flex items-center gap-1">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                Active
+                              </span>
+                            ) : (
+                              <span className="px-3 py-1 rounded-full text-[11px] font-bold bg-slate-100 dark:bg-white/10 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-white/10">
+                                Inactive
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="py-4 px-3 text-center rounded-2xl bg-slate-50/70 dark:bg-[#040e2b]/70 border border-dashed border-slate-200 dark:border-white/10">
+                        <Users size={20} className="mx-auto text-slate-300 dark:text-slate-600 mb-1" />
+                        <p className="text-xs font-bold text-slate-600 dark:text-slate-400">
+                          No members in Level 3 yet
+                        </p>
+                        <p className="text-[10.5px] text-slate-400 dark:text-slate-500 mt-0.5">
+                          Members referred by your Level 2 will appear here.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </div>

@@ -397,18 +397,14 @@ export default function OrdersPage() {
         <div className="mx-3 mt-3">
           <div className="relative py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 via-[#ffd369] to-amber-500 text-[#020a1f] font-extrabold text-xs shadow-md shadow-amber-500/25 flex items-center justify-center gap-2">
             <Zap size={15} className="text-red-600 fill-red-600 shrink-0" />
-            <span className="tracking-tight">
-              {isProcessing
-                ? "Processing in Queue (10s)..."
-                : data && data.todayOrdersCount > 0
-                ? "Already added to the queue"
-                : "Ready to Add to Queue"}
+            <span className="tracking-tight text-sm font-black">
+              {isProcessing ? "Processing in Queue (10s)..." : "Order"}
             </span>
             <CheckCircle2 size={15} className="text-emerald-700 stroke-[3] shrink-0" />
           </div>
         </div>
 
-        {/* 4 Stats Rows (matching screenshot) */}
+        {/* 3 Stats Rows (Total assets, Today's commission, Today's order) */}
         <div className="order-stats-card mx-3 mt-3 rounded-2xl bg-[#04102e]/90 backdrop-blur-md border border-[#f5ba31]/30 shadow-lg overflow-hidden divide-y divide-white/10 text-xs">
           {/* Row 1: Total Assets */}
           <Link
@@ -431,25 +427,7 @@ export default function OrdersPage() {
             </div>
           </Link>
 
-          {/* Row 2: Freeze Funds */}
-          <div className="flex items-center justify-between p-3.5 hover:bg-white/5 transition-colors group">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center border border-emerald-500/30">
-                <Lock size={17} />
-              </div>
-              <span className="order-stat-label font-bold text-slate-200 group-hover:text-white">
-                Freeze funds
-              </span>
-            </div>
-            <div className="flex items-center gap-1.5 font-mono font-black text-sm text-[#f5ba31]">
-              <span className="order-stat-freeze">
-                TK {data ? data.freezeFundsBDT.toLocaleString("en-US", { minimumFractionDigits: 2 }) : "0.00"}
-              </span>
-              <ChevronRight size={15} className="text-slate-400" />
-            </div>
-          </div>
-
-          {/* Row 3: Today's Commission */}
+          {/* Row 2: Today's Commission */}
           <div className="flex items-center justify-between p-3.5 hover:bg-white/5 transition-colors group">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center border border-purple-500/30">
@@ -467,7 +445,7 @@ export default function OrdersPage() {
             </div>
           </div>
 
-          {/* Row 4: Today's Order Count */}
+          {/* Row 3: Today's Order Count */}
           <div className="flex items-center justify-between p-3.5 hover:bg-white/5 transition-colors group">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-xl bg-yellow-500/20 text-yellow-400 flex items-center justify-center border border-yellow-500/30">

@@ -19,6 +19,7 @@ import {
   X,
   Loader2,
   Sparkles,
+  Clock,
 } from "lucide-react";
 
 export default function RechargePage() {
@@ -53,6 +54,10 @@ export default function RechargePage() {
   const [transferType, setTransferType] = useState<"send_money" | "payment">("send_money");
   const [transactionId, setTransactionId] = useState<string>("");
 
+  // USDT 10-Minute Countdown Timer State
+  const [usdtExpiryTime, setUsdtExpiryTime] = useState<number | null>(null);
+  const [timerSeconds, setTimerSeconds] = useState<number>(600); // 10 minutes (600s)
+
   // Payment Proof Voucher State
   const [proofImage, setProofImage] = useState<string>("");
   const [proofPreview, setProofPreview] = useState<string>("");
@@ -64,6 +69,68 @@ export default function RechargePage() {
   const [copied, setCopied] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [successMessage, setSuccessMessage] = useState<string>("");
+
+  // 1-Step Back Navigation Handler
+  const handleBackStep = () => {
+    if (step === "bank_step3") {
+      setStep("bank_step2");
+    } else if (step === "bank_step2" || step === "usdt_step2") {
+      setStep("select_amount");
+    } else {
+      router.back();
+    }
+  };
+
+  // Browser / Phone PopState handler so hardware back button also steps back 1 step
+  useEffect(() => {
+    const handlePopState = () => {
+      if (step === "bank_step3") {
+        setStep("bank_step2");
+      } else if (step === "bank_step2" || step === "usdt_step2") {
+        setStep("select_amount");
+      }
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, [step]);
+
+  // USDT 10-Minute Countdown Timer Hook with Auto-Cancel & Redirect
+  useEffect(() => {
+    if (step === "usdt_step2") {
+      const expiry = Date.now() + 10 * 60 * 1000; // 10 minutes from now
+      setUsdtExpiryTime(expiry);
+      setTimerSeconds(600);
+    } else {
+      setUsdtExpiryTime(null);
+    }
+  }, [step]);
+
+  useEffect(() => {
+    if (step !== "usdt_step2" || !usdtExpiryTime) return;
+
+    const interval = setInterval(() => {
+      const now = Date.now();
+      const remainingMs = usdtExpiryTime - now;
+      const remainingSec = Math.max(0, Math.ceil(remainingMs / 1000));
+      setTimerSeconds(remainingSec);
+
+      if (remainingSec <= 0) {
+        clearInterval(interval);
+        // Session expired: Alert user, cancel order and redirect to Home
+        alert("Payment session expired (10 minutes limit). Recharge order has been canceled.");
+        router.push("/");
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [step, usdtExpiryTime, router]);
+
+  // Format seconds into MM:SS
+  const formatTimer = (totalSeconds: number) => {
+    const mins = Math.floor(totalSeconds / 60);
+    const secs = totalSeconds % 60;
+    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+  };
 
   useEffect(() => {
     setMounted(true);
@@ -120,8 +187,14 @@ export default function RechargePage() {
   const handleConfirmMethod = () => {
     setShowMethodModal(false);
     if (selectedMethod === "bank") {
+      try {
+        window.history.pushState({ rechargeStep: "bank_step2" }, "");
+      } catch { }
       setStep("bank_step2");
     } else {
+      try {
+        window.history.pushState({ rechargeStep: "usdt_step2" }, "");
+      } catch { }
       setStep("usdt_step2");
     }
   };
@@ -291,6 +364,7 @@ export default function RechargePage() {
                   : "USDT"
           }
           showBack={true}
+          onBack={handleBackStep}
         />
 
         {/* Global Notifications */}
@@ -728,6 +802,9 @@ export default function RechargePage() {
                     return;
                   }
                   setError("");
+                  try {
+                    window.history.pushState({ rechargeStep: "bank_step3" }, "");
+                  } catch { }
                   setStep("bank_step3");
                 }}
                 className="w-full py-4 mt-2 rounded-2xl bg-gradient-to-r from-[#e69e05] via-[#ffd369] to-[#e69e05] text-[#020a1f] font-black text-base shadow-[0_4px_25px_rgba(245,186,49,0.45)] hover:brightness-105 active:scale-98 transition-all"
@@ -1050,45 +1127,109 @@ export default function RechargePage() {
         ========================================================================= */}
         {step === "usdt_step2" && (
           <div className="p-4 space-y-4 max-w-[440px] mx-auto">
+            {/* 10-Minute Countdown Timer Card */}
+            <div
+              className={`p-3.5 sm:p-4 rounded-3xl border shadow-lg flex items-center justify-between transition-all ${
+                isLight
+                  ? "bg-white border-amber-300 shadow-amber-500/10"
+                  : "bg-gradient-to-r from-[#04102e] via-[#081b4d] to-[#04102e] border-[#f5ba31]/40 shadow-[0_0_20px_rgba(245,186,49,0.2)]"
+              }`}
+            >
+              <div className="flex items-center gap-2.5">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#e69e05] to-[#ffd369] text-[#020a1f] flex items-center justify-center shadow-md shrink-0">
+                  <Clock size={20} className="stroke-[2.5]" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-1.5">
+                    <span
+                      className={`text-xs font-black tracking-tight ${
+                        isLight ? "text-slate-800" : "text-white"
+                      }`}
+                    >
+                      Payment Time Remaining
+                    </span>
+                    <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-red-500/15 text-red-500 border border-red-500/30 whitespace-nowrap">
+                      10 Min
+                    </span>
+                  </div>
+                  <p
+                    className={`text-[9.5px] font-medium mt-0.5 ${
+                      isLight ? "text-slate-500" : "text-slate-400"
+                    }`}
+                  >
+                    Auto-cancels if not completed in time
+                  </p>
+                </div>
+              </div>
+
+              <div className="text-right shrink-0">
+                <div
+                  className={`font-mono text-xl font-black tracking-wider ${
+                    timerSeconds <= 60
+                      ? "text-red-500 animate-pulse"
+                      : isLight
+                        ? "text-amber-600"
+                        : "text-[#ffd369]"
+                  }`}
+                >
+                  {formatTimer(timerSeconds)}
+                </div>
+                <span
+                  className={`text-[9px] font-bold block ${
+                    timerSeconds <= 60 ? "text-red-500" : "text-emerald-500"
+                  }`}
+                >
+                  {timerSeconds <= 60 ? "Expiring soon!" : "Expires to Home"}
+                </span>
+              </div>
+            </div>
+
             {/* Cautions Notice Card */}
             <div
-              className={`p-4 rounded-3xl border text-xs space-y-2.5 transition-all ${
+              className={`p-3.5 sm:p-4 rounded-3xl border text-xs space-y-2 transition-all ${
                 isLight
                   ? "bg-white border-amber-200/90 shadow-md text-slate-700"
                   : "bg-[#04102e]/85 backdrop-blur-md border-[#f5ba31]/30 shadow-lg text-slate-300"
               }`}
             >
               <div
-                className={`flex items-center justify-between pb-2 border-b ${
+                className={`flex items-center justify-between gap-1 pb-2 border-b ${
                   isLight ? "border-slate-100" : "border-white/10"
                 }`}
               >
-                <h4 className="font-black text-[#f5ba31] flex items-center gap-1.5 text-xs">
-                  <ShieldAlert size={16} className="text-[#f5ba31] shrink-0" />
+                <h4 className="font-black text-[#f5ba31] flex items-center gap-1.5 text-[10px] sm:text-xs whitespace-nowrap shrink-0">
+                  <ShieldAlert size={15} className="text-[#f5ba31] shrink-0" />
                   <span>Deposit Instructions & Cautions</span>
                 </h4>
-                <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-[#f5ba31]/15 text-[#f5ba31] border border-[#f5ba31]/30">
+                <span className="text-[8.5px] sm:text-[10px] font-black px-2 py-0.5 rounded-full bg-[#f5ba31]/15 text-[#f5ba31] border border-[#f5ba31]/30 whitespace-nowrap shrink-0">
                   {adminUsdtNetwork}
                 </span>
               </div>
 
               {adminUsdtInstructions ? (
                 <div
-                  className={`font-medium whitespace-pre-line leading-relaxed text-[11.5px] ${
+                  className={`font-medium whitespace-pre-line leading-relaxed text-[10px] sm:text-[11px] ${
                     isLight ? "text-slate-600" : "text-slate-300"
                   }`}
                 >
                   {adminUsdtInstructions}
                 </div>
               ) : (
-                <div className="space-y-1">
-                  <p>• Send the exact calculated USDT amount via BEP-20 network.</p>
-                  <p>• Please do not deposit non-USDT assets to this address.</p>
+                <div className="space-y-1 text-[10px] sm:text-[11px]">
+                  <p className="whitespace-nowrap overflow-hidden text-ellipsis sm:whitespace-normal">
+                    • This address only accepts USDT ({adminUsdtNetwork.split(" ")[0]}) deposits.
+                  </p>
+                  <p className="whitespace-nowrap overflow-hidden text-ellipsis sm:whitespace-normal">
+                    • Please do not make duplicate payments or amend amounts.
+                  </p>
+                  <p className="whitespace-nowrap overflow-hidden text-ellipsis sm:whitespace-normal">
+                    • Send the exact calculated USDT amount.
+                  </p>
                 </div>
               )}
 
               <p
-                className={`font-black pt-2 border-t text-[#f5ba31] ${
+                className={`font-black pt-2 border-t text-[#f5ba31] text-[9.5px] sm:text-[11px] whitespace-nowrap tracking-tight ${
                   isLight ? "border-slate-100" : "border-white/10"
                 }`}
               >

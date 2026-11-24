@@ -285,21 +285,6 @@ export default function VipPage() {
           </div>
         </div>
 
-        {/* Auto-Activation Informative Banner */}
-        {vipAutoActiveEnabled && (
-          <div className="vip-auto-banner mx-3 mt-2.5 p-3 rounded-2xl flex items-center gap-2.5 transition-all">
-            <div className="vip-banner-icon w-6 h-6 rounded-lg flex items-center justify-center shrink-0">
-              <Zap size={14} />
-            </div>
-            <p className="vip-banner-text text-[11px] leading-snug">
-              <strong className="vip-banner-title">Auto-Activation Active: </strong>
-              <span className="vip-banner-desc">
-                Your VIP tier automatically unlocks and upgrades as your wallet balance grows!
-              </span>
-            </p>
-          </div>
-        )}
-
         {/* VIP Packages List - Dynamically Loaded */}
         <div className="px-3 py-2 space-y-2.5 max-w-[440px] mx-auto mt-1">
           {loading ? (

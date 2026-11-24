@@ -9,12 +9,14 @@ import { useTheme } from "@/context/ThemeContext";
 interface HeaderProps {
   title: string;
   showBack?: boolean;
+  onBack?: () => void;
   rightAction?: React.ReactNode;
 }
 
 export default function Header({
   title,
   showBack = true,
+  onBack,
   rightAction,
 }: HeaderProps) {
   const router = useRouter();
@@ -26,6 +28,14 @@ export default function Header({
   }, []);
 
   const isLight = mounted && theme === "light";
+
+  const handleBack = () => {
+    if (onBack) {
+      onBack();
+    } else {
+      router.back();
+    }
+  };
 
   return (
     <div
@@ -39,7 +49,7 @@ export default function Header({
       <div className="w-9 h-9 flex items-center">
         {showBack && (
           <button
-            onClick={() => router.back()}
+            onClick={handleBack}
             className={`w-8 h-8 rounded-full border flex items-center justify-center active:scale-95 transition-all shadow-xs ${
               isLight
                 ? "bg-slate-100 hover:bg-slate-200 border-slate-200 text-slate-700"

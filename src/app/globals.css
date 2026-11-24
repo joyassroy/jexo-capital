@@ -408,22 +408,29 @@ html.light body {
   border-color: #e2e8f0 !important;
 }
 
-/* Ensure Text Remains White on Action Pills & Gradient Buttons */
-.light [class*="rounded-[18px]"] span,
-.light [class*="rounded-[18px]"] svg,
-.light [class*="from-[#22c55e]"] span,
-.light [class*="from-[#ef4444]"] span,
-.light [class*="from-[#d946ef]"] span,
-.light [class*="from-[#3b82f6]"] span,
-.light [class*="from-[#0ea5e9]"] span,
-.light [class*="from-[#8b5cf6]"] span,
-.light [class*="from-[#2563eb]"] span,
-.light [class*="from-[#f97316]"] span,
-.light [class*="from-[#14b8a6]"] span,
-.light [class*="from-[#00b040]"] span,
-.light [class*="from-[#e52d27]"] span,
-.light button[class*="bg-gradient-to"] span {
+/* Ensure Text Remains White on Dark Mode Action Pills & Gradient Buttons */
+.light [class*="from-[#22c55e]"]:not(.day-action-badge) span,
+.light [class*="from-[#ef4444]"]:not(.day-action-badge) span,
+.light [class*="from-[#d946ef]"]:not(.day-action-badge) span,
+.light [class*="from-[#3b82f6]"]:not(.day-action-badge) span,
+.light [class*="from-[#0ea5e9]"]:not(.day-action-badge) span,
+.light [class*="from-[#8b5cf6]"]:not(.day-action-badge) span,
+.light [class*="from-[#2563eb]"]:not(.day-action-badge) span,
+.light [class*="from-[#f97316]"]:not(.day-action-badge) span,
+.light [class*="from-[#14b8a6]"]:not(.day-action-badge) span,
+.light [class*="from-[#00b040]"]:not(.day-action-badge) span,
+.light [class*="from-[#e52d27]"]:not(.day-action-badge) span {
   color: #ffffff !important;
+}
+
+/* Day Mode Action Card Label - Always Dark Slate & Bold on White Cards */
+.day-action-label,
+.light .day-action-label,
+span.day-action-label,
+.light span.day-action-label {
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+  font-weight: 700 !important;
 }
 
 /* Introduction Link Bar in Light Mode (Vibrant Blue Glow & Border) */

@@ -661,7 +661,7 @@ export default function HomePage() {
           {dayActionCards.map((item, idx) => {
             const Icon = item.icon;
             const cardInner = (
-              <div className="w-full bg-white rounded-[18px] shadow-[0_2px_12px_rgba(0,0,0,0.04)] border border-slate-100 py-2.5 px-1 sm:px-1.5 flex flex-col items-center justify-center hover:shadow-md transition-all active:scale-95 group">
+              <div className="day-action-card w-full bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] border border-slate-100 py-2.5 px-1 sm:px-1.5 flex flex-col items-center justify-center hover:shadow-md transition-all active:scale-95 group">
                 <div
                   className={`day-action-badge w-11 h-11 sm:w-11.5 sm:h-11.5 rounded-xl flex items-center justify-center text-white !text-white ${item.gradient} ${item.shadow} transition-transform group-hover:scale-105 flex-shrink-0`}
                   style={{ color: "#ffffff" }}
@@ -673,7 +673,10 @@ export default function HomePage() {
                     className="stroke-[2.4] text-white !text-white"
                   />
                 </div>
-                <span className="text-[10.5px] sm:text-[11px] font-bold text-slate-800 mt-1.5 text-center tracking-tight leading-tight whitespace-nowrap block w-full">
+                <span
+                  style={{ color: "#0f172a", WebkitTextFillColor: "#0f172a" }}
+                  className="day-action-label text-[10.5px] sm:text-[11px] font-bold text-slate-900 !text-slate-900 mt-1.5 text-center tracking-tight leading-tight whitespace-nowrap block w-full select-none"
+                >
                   {item.title}
                 </span>
               </div>

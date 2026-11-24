@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import { User } from "@/models/User";
 import { Transaction } from "@/models/Transaction";
@@ -27,10 +27,11 @@ export async function GET() {
     }
 
     const usdtRate = setting?.usdtRateBDT || 127;
+    const bonusUSDT = 500 / usdtRate;
 
     // 1. Level 1: Users referred directly by currentUser
     const level1Users = await User.find({ referredBy: currentUserId })
-      .select("_id phone nickname totalFund balance status createdAt")
+      .select("_id phone nickname totalFund balance todayOrdersCount status createdAt")
       .lean();
 
     const level1Ids = level1Users.map((u) => u._id.toString());
@@ -39,7 +40,7 @@ export async function GET() {
     const level2Users =
       level1Ids.length > 0
         ? await User.find({ referredBy: { $in: level1Ids } })
-            .select("_id phone nickname totalFund balance status createdAt")
+            .select("_id phone nickname totalFund balance todayOrdersCount status createdAt")
             .lean()
         : [];
 
@@ -49,13 +50,21 @@ export async function GET() {
     const level3Users =
       level2Ids.length > 0
         ? await User.find({ referredBy: { $in: level2Ids } })
-            .select("_id phone nickname totalFund balance status createdAt")
+            .select("_id phone nickname totalFund balance todayOrdersCount status createdAt")
             .lean()
         : [];
 
-    // Helper: Active user has totalFund > 0 or has active balance
-    const isUserActive = (u: { totalFund?: number; balance?: number }) => {
-      return (u.totalFund || 0) > 0 || (u.balance || 0) > 4;
+    // Helper: Active user has deposited or balance above signup reserve or completed orders
+    const isUserActive = (u: {
+      totalFund?: number;
+      balance?: number;
+      todayOrdersCount?: number;
+    }) => {
+      return (
+        (u.totalFund || 0) > 0 ||
+        (u.balance || 0) > bonusUSDT ||
+        (u.todayOrdersCount || 0) > 0
+      );
     };
 
     const l1Total = level1Users.length;
@@ -71,7 +80,7 @@ export async function GET() {
     const activeMembers = l1Active + l2Active + l3Active;
 
     // 4. Rewards aggregation from Transactions
-    const [referralAgg, cashbackAgg] = await Promise.all([
+    const [referralAgg, cashbackAgg, milestoneTx] = await Promise.all([
       Transaction.aggregate([
         {
           $match: {
@@ -92,6 +101,11 @@ export async function GET() {
         },
         { $group: { _id: null, total: { $sum: "$amount" } } },
       ]),
+      Transaction.findOne({
+        userId: currentUserId,
+        type: "bonus",
+        title: { $regex: /10.*referral/i },
+      }),
     ]);
 
     const referralRewardsUSDT = referralAgg[0]?.total
@@ -103,6 +117,9 @@ export async function GET() {
       ? Number(cashbackAgg[0].total.toFixed(4))
       : 0;
     const cashbackRewardsBDT = Number((cashbackRewardsUSDT * usdtRate).toFixed(2));
+
+    const milestoneClaimed = Boolean(milestoneTx);
+    const canClaimMilestone = !milestoneClaimed && l1Total >= 10;
 
     return NextResponse.json({
       success: true,
@@ -116,6 +133,8 @@ export async function GET() {
         referralRewardsBDT,
         cashbackRewardsUSDT,
         cashbackRewardsBDT,
+        milestoneClaimed,
+        canClaimMilestone,
       },
       usdtRate,
     });
@@ -123,6 +142,92 @@ export async function GET() {
     console.error("Team API Error:", error);
     const message =
       error instanceof Error ? error.message : "Failed to load team data.";
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    const userPayload = await getCurrentUser();
+    if (!userPayload) {
+      return NextResponse.json({ error: "Unauthenticated" }, { status: 401 });
+    }
+
+    await connectDB();
+    const currentUserId = userPayload.userId;
+    const body = await req.json().catch(() => ({}));
+    const { action } = body;
+
+    const [currentUser, setting] = await Promise.all([
+      User.findById(currentUserId),
+      Setting.findOne({ key: "default_settings" }).lean(),
+    ]);
+
+    if (!currentUser) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    const usdtRate = setting?.usdtRateBDT || 127;
+
+    if (action === "claim_milestone") {
+      // Check Level 1 count
+      const l1Count = await User.countDocuments({ referredBy: currentUserId });
+      if (l1Count < 10) {
+        return NextResponse.json(
+          { error: `You have referred ${l1Count}/10 members. Refer at least 10 members to claim 300 BDT!` },
+          { status: 400 }
+        );
+      }
+
+      // Check if already claimed
+      const existing = await Transaction.findOne({
+        userId: currentUserId,
+        type: "bonus",
+        title: { $regex: /10.*referral/i },
+      });
+
+      if (existing) {
+        return NextResponse.json(
+          { error: "You have already claimed your 10-member referral bonus." },
+          { status: 400 }
+        );
+      }
+
+      const bonusAmountBDT = 300;
+      const bonusAmountUSDT = Number((bonusAmountBDT / usdtRate).toFixed(4));
+
+      currentUser.balance = Number((currentUser.balance + bonusAmountUSDT).toFixed(4));
+      currentUser.fundIncome = Number(((currentUser.fundIncome || 0) + bonusAmountUSDT).toFixed(4));
+      await currentUser.save();
+
+      await Transaction.create({
+        userId: currentUserId,
+        type: "bonus",
+        title: "10-Member Referral Milestone Bonus (300 BDT)",
+        amount: bonusAmountUSDT,
+        status: "success",
+        metadata: {
+          amountBDT: bonusAmountBDT,
+          usdtRate,
+          description: "Milestone bonus for inviting 10 members credited to balance.",
+        },
+      });
+
+      return NextResponse.json({
+        success: true,
+        message: "Congratulations! 300 BDT milestone bonus credited to your balance.",
+        newBalanceBDT: Number((currentUser.balance * usdtRate).toFixed(2)),
+      });
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: "Commissions are automatically credited to your main balance whenever your team recharges or earns!",
+    });
+  } catch (error: unknown) {
+    console.error("Team Claim Error:", error);
+    const message =
+      error instanceof Error ? error.message : "Failed to process claim.";
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

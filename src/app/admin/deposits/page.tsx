@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Check, X, Clock, AlertCircle, RefreshCw } from "lucide-react";
+import { Check, X, Clock, AlertCircle, RefreshCw, Eye, ExternalLink, Image as ImageIcon } from "lucide-react";
 
 interface DepositItem {
   _id: string;
@@ -15,6 +15,7 @@ interface DepositItem {
   senderNumber: string;
   transferType: string;
   transactionId: string;
+  proofImage?: string;
   status: "pending" | "approved" | "rejected";
   createdAt: string;
 }
@@ -24,6 +25,12 @@ export default function AdminDepositsPage() {
   const [filter, setFilter] = useState<string>("pending");
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [selectedProof, setSelectedProof] = useState<{
+    url: string;
+    user: string;
+    amount: string;
+    txId: string;
+  } | null>(null);
 
   const fetchDeposits = () => {
     setLoading(true);
@@ -117,6 +124,7 @@ export default function AdminDepositsPage() {
                 <th className="p-4">Amount</th>
                 <th className="p-4">Sender Account</th>
                 <th className="p-4">Transaction ID (TxID)</th>
+                <th className="p-4">Payment Proof</th>
                 <th className="p-4">Date & Time</th>
                 <th className="p-4">Status</th>
                 <th className="p-4 text-right">Actions</th>
@@ -125,13 +133,13 @@ export default function AdminDepositsPage() {
             <tbody className="divide-y divide-slate-800 font-medium">
               {loading ? (
                 <tr>
-                  <td colSpan={8} className="p-8 text-center text-slate-500">
+                  <td colSpan={9} className="p-8 text-center text-slate-500">
                     Loading deposit records...
                   </td>
                 </tr>
               ) : deposits.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="p-8 text-center text-slate-500">
+                  <td colSpan={9} className="p-8 text-center text-slate-500">
                     No deposits matching filter &quot;{filter}&quot;.
                   </td>
                 </tr>
@@ -173,6 +181,38 @@ export default function AdminDepositsPage() {
                       <span className="px-2.5 py-1 rounded-lg bg-blue-950/70 text-cyan-400 font-mono font-bold border border-blue-800 select-all">
                         {item.transactionId}
                       </span>
+                    </td>
+
+                    <td className="p-4">
+                      {item.proofImage ? (
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setSelectedProof({
+                              url: item.proofImage!,
+                              user: `${item.userNickname || "User"} (${item.userPhone || ""})`,
+                              amount: `${item.amountBDT || item.amount} BDT`,
+                              txId: item.transactionId,
+                            })
+                          }
+                          className="flex items-center gap-2 p-1 bg-slate-900 rounded-xl border border-amber-400/50 hover:border-amber-400 hover:bg-slate-800 transition-all cursor-pointer group"
+                          title="Click to view full payment voucher screenshot"
+                        >
+                          <img
+                            src={item.proofImage}
+                            alt="Proof Voucher"
+                            className="w-10 h-10 object-cover rounded-lg group-hover:scale-105 transition-transform"
+                          />
+                          <div className="text-left pr-2">
+                            <span className="text-[10px] font-bold text-amber-400 flex items-center gap-1">
+                              <Eye size={12} /> View
+                            </span>
+                            <span className="text-[9px] text-slate-400 block">Proof</span>
+                          </div>
+                        </button>
+                      ) : (
+                        <span className="text-[11px] text-slate-500 italic">No image</span>
+                      )}
                     </td>
 
                     <td className="p-4 text-[11px] text-slate-400">
@@ -228,6 +268,69 @@ export default function AdminDepositsPage() {
           </table>
         </div>
       </div>
+      {/* Proof Image Inspection Modal */}
+      {selectedProof && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200"
+          onClick={() => setSelectedProof(null)}
+        >
+          <div
+            className="relative max-w-2xl w-full bg-[#0b192c] border border-amber-400/50 rounded-3xl p-5 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+              <div>
+                <h3 className="text-lg font-black text-white flex items-center gap-2">
+                  <ImageIcon size={18} className="text-amber-400" />
+                  <span>Payment Proof Voucher</span>
+                </h3>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  User: <strong className="text-white">{selectedProof.user}</strong> • Amount:{" "}
+                  <strong className="text-amber-400">{selectedProof.amount}</strong> • TxID:{" "}
+                  <span className="font-mono text-cyan-400">{selectedProof.txId}</span>
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedProof(null)}
+                className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors cursor-pointer"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Full Image */}
+            <div className="rounded-2xl overflow-hidden border border-slate-800 bg-black/50 flex items-center justify-center max-h-[60vh] p-2">
+              <img
+                src={selectedProof.url}
+                alt="Payment Voucher Proof"
+                className="w-full h-auto max-h-[58vh] object-contain rounded-xl select-none"
+              />
+            </div>
+
+            {/* Modal Footer */}
+            <div className="flex items-center justify-between pt-2">
+              <a
+                href={selectedProof.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold flex items-center gap-1.5 transition-colors"
+              >
+                <ExternalLink size={14} />
+                <span>Open in New Tab</span>
+              </a>
+              <button
+                type="button"
+                onClick={() => setSelectedProof(null)}
+                className="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs transition-colors cursor-pointer"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -32,7 +32,7 @@ export async function GET() {
 
     // 1. Level 1: Users referred directly by currentUser
     const level1Users = await User.find({ referredBy: currentUserId })
-      .select("_id phone nickname totalFund balance todayOrdersCount status createdAt")
+      .select("_id phone nickname referralCode totalFund balance todayOrdersCount status createdAt")
       .lean();
 
     const level1Ids = level1Users.map((u) => u._id.toString());
@@ -41,7 +41,7 @@ export async function GET() {
     const level2Users =
       level1Ids.length > 0
         ? await User.find({ referredBy: { $in: level1Ids } })
-            .select("_id phone nickname totalFund balance todayOrdersCount status createdAt")
+            .select("_id phone nickname referralCode totalFund balance todayOrdersCount status createdAt")
             .lean()
         : [];
 
@@ -51,7 +51,7 @@ export async function GET() {
     const level3Users =
       level2Ids.length > 0
         ? await User.find({ referredBy: { $in: level2Ids } })
-            .select("_id phone nickname totalFund balance todayOrdersCount status createdAt")
+            .select("_id phone nickname referralCode totalFund balance todayOrdersCount status createdAt")
             .lean()
         : [];
 
@@ -98,6 +98,7 @@ export async function GET() {
         id: uId,
         phone: maskPhone(u.phone),
         nickname: u.nickname || "User",
+        referralCode: u.referralCode || "",
         hasDeposited,
         isActive,
         depositAmount: Number(totalDep.toFixed(2)),

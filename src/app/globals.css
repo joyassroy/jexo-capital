@@ -157,7 +157,7 @@ body {
 
 /* Continuous Seamless Loop Marquee (Right to Left) */
 @keyframes marqueeLoopRTL {
-  0%, 8% {
+  0% {
     transform: translateX(0%);
   }
   100% {
@@ -830,4 +830,169 @@ button[class*="from-red"] svg,
   background-color: #1e293b !important;
   color: #ffffff !important;
   border-color: #334155 !important;
+}
+
+/* ==========================================================================
+   AUTHENTICATION (LOGIN & REGISTER) HIGH-CONTRAST LUXURY STYLES
+   ========================================================================== */
+.auth-heading {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+.auth-subheading {
+  color: #94a3b8 !important;
+  -webkit-text-fill-color: #94a3b8 !important;
+}
+
+.auth-bonus-banner {
+  background: linear-gradient(90deg, rgba(245, 186, 49, 0.15) 0%, rgba(245, 186, 49, 0.25) 50%, rgba(245, 186, 49, 0.15) 100%) !important;
+  border: 1px solid rgba(245, 186, 49, 0.45) !important;
+  box-shadow: 0 4px 15px rgba(245, 186, 49, 0.15) !important;
+}
+
+.auth-bonus-text {
+  color: #f1f5f9 !important;
+}
+
+.auth-bonus-highlight {
+  color: #f5ba31 !important;
+  background: rgba(245, 186, 49, 0.2) !important;
+  border-color: rgba(245, 186, 49, 0.4) !important;
+}
+
+.auth-input-box {
+  background-color: #04102e !important;
+  border-color: #334155 !important;
+}
+
+.auth-input-box:focus-within {
+  border-color: #f5ba31 !important;
+  box-shadow: 0 0 15px rgba(245, 186, 49, 0.25) !important;
+}
+
+.auth-input-icon {
+  color: #f5ba31 !important;
+}
+
+.auth-input-field {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+.auth-input-field::placeholder {
+  color: #64748b !important;
+  -webkit-text-fill-color: #64748b !important;
+}
+
+.auth-input-text {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+.auth-submit-btn {
+  background: linear-gradient(90deg, #e69e05 0%, #ffd369 50%, #e69e05 100%) !important;
+  color: #020a1f !important;
+  box-shadow: 0 4px 20px rgba(245, 186, 49, 0.35) !important;
+}
+
+.auth-submit-btn:hover:not(:disabled) {
+  filter: brightness(1.05);
+  box-shadow: 0 6px 25px rgba(245, 186, 49, 0.45) !important;
+}
+
+.auth-footer-text {
+  color: #cbd5e1 !important;
+  -webkit-text-fill-color: #cbd5e1 !important;
+}
+
+.auth-link {
+  color: #f5ba31 !important;
+  -webkit-text-fill-color: #f5ba31 !important;
+}
+
+/* Light Mode Overrides for Authentication */
+.light .auth-heading {
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+}
+
+.light .auth-subheading {
+  color: #64748b !important;
+  -webkit-text-fill-color: #64748b !important;
+}
+
+.light .auth-bonus-banner {
+  background: linear-gradient(90deg, #fffbeb 0%, #fef3c7 50%, #fffbeb 100%) !important;
+  border: 1.5px solid #fcd34d !important;
+  box-shadow: 0 2px 10px rgba(217, 119, 6, 0.08) !important;
+}
+
+.light .auth-bonus-text {
+  color: #78350f !important;
+  -webkit-text-fill-color: #78350f !important;
+}
+
+.light .auth-bonus-highlight {
+  color: #b45309 !important;
+  -webkit-text-fill-color: #b45309 !important;
+  background: #ffffff !important;
+  border-color: #f59e0b !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+.light .auth-input-box {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+}
+
+.light .auth-input-box:focus-within {
+  border-color: #d97706 !important;
+  box-shadow: 0 0 0 3px rgba(245, 186, 49, 0.2) !important;
+}
+
+.light .auth-input-icon {
+  color: #d97706 !important;
+}
+
+.light .auth-input-field {
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+}
+
+.light .auth-input-field::placeholder {
+  color: #94a3b8 !important;
+  -webkit-text-fill-color: #94a3b8 !important;
+}
+
+.light .auth-input-text {
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+}
+
+.light .auth-submit-btn {
+  background: linear-gradient(90deg, #d97706 0%, #f5ba31 50%, #d97706 100%) !important;
+  color: #020a1f !important;
+  box-shadow: 0 4px 18px rgba(217, 119, 6, 0.28) !important;
+}
+
+.light .auth-submit-btn:hover:not(:disabled) {
+  filter: brightness(1.06);
+  box-shadow: 0 6px 22px rgba(217, 119, 6, 0.38) !important;
+}
+
+.light .auth-footer-text {
+  color: #475569 !important;
+  -webkit-text-fill-color: #475569 !important;
+}
+
+.light .auth-link {
+  color: #b45309 !important;
+  -webkit-text-fill-color: #b45309 !important;
+}
+
+.light .auth-link:hover {
+  color: #78350f !important;
+  -webkit-text-fill-color: #78350f !important;
 }

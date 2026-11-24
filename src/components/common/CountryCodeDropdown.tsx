@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { User, ChevronDown, Check } from "lucide-react";
+import { Globe, ChevronDown, Check } from "lucide-react";
 
 export interface CountryItem {
   name: string;
@@ -61,11 +61,11 @@ export default function CountryCodeDropdown({
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className="h-[48px] min-w-[105px] px-3 bg-[#04102e] rounded-2xl border-2 border-slate-700 shadow-sm flex items-center justify-between gap-1.5 hover:border-[#f5ba31]/60 focus:border-[#f5ba31] transition-all select-none active:scale-98"
+        className="auth-input-box h-[48px] min-w-[105px] px-3 bg-[#04102e] rounded-2xl border-2 border-slate-700 shadow-sm flex items-center justify-between gap-1.5 hover:border-[#f5ba31]/60 focus:border-[#f5ba31] transition-all select-none active:scale-98"
       >
         <div className="flex items-center gap-1.5">
-          <User size={18} className="text-[#f5ba31] flex-shrink-0" />
-          <span className="text-sm font-black text-white tracking-tight">
+          <Globe size={18} className="auth-input-icon text-[#f5ba31] flex-shrink-0" />
+          <span className="auth-input-text text-sm font-black text-white tracking-tight">
             {selected.code}
           </span>
         </div>

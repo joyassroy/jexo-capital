@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
 
     await connectDB();
     const body = await req.json();
-    const { amount, method, senderNumber, transferType, transactionId } = body;
+    const { amount, method, senderNumber, transferType, transactionId, proofImage } = body;
 
     if (!amount || Number(amount) <= 0) {
       return NextResponse.json(
@@ -102,6 +102,7 @@ export async function POST(req: NextRequest) {
       senderNumber: effectiveSender,
       transferType: transferType || "send_money",
       transactionId: cleanTxId,
+      proofImage: proofImage || "",
       status: "pending",
     });
 

@@ -483,7 +483,7 @@ export default function HomePage() {
         />
         <div className="relative flex-1 overflow-hidden h-5 flex items-center">
           <div
-            className={`flex shrink-0 animate-marquee-ltr-loop whitespace-nowrap select-none text-xs font-semibold tracking-wide ${
+            className={`flex shrink-0 animate-marquee-rtl-loop whitespace-nowrap select-none text-xs font-semibold tracking-wide ${
               isLight ? "text-[#0f172a]" : "text-white"
             }`}
           >
@@ -493,7 +493,7 @@ export default function HomePage() {
             </span>
           </div>
           <div
-            className={`flex shrink-0 animate-marquee-ltr-loop whitespace-nowrap select-none text-xs font-semibold tracking-wide ${
+            className={`flex shrink-0 animate-marquee-rtl-loop whitespace-nowrap select-none text-xs font-semibold tracking-wide ${
               isLight ? "text-[#0f172a]" : "text-white"
             }`}
             aria-hidden="true"

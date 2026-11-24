@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import Logo from "@/components/common/Logo";
 import CityFooter from "@/components/common/CityFooter";
+import ThemeToggle from "@/components/common/ThemeToggle";
 import CountryCodeDropdown, {
   COUNTRY_LIST,
   CountryItem,
@@ -76,32 +77,44 @@ function LoginForm() {
       {/* Wave lines decorative top */}
       <div className="absolute top-0 left-0 right-0 h-40 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-amber-400/10 via-transparent to-transparent pointer-events-none" />
 
-      {/* Language Selector Top Right */}
-      <div className="flex justify-end p-4 z-10">
-        <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#05143a]/90 backdrop-blur-md border border-[#f5ba31]/50 text-xs font-semibold text-white shadow-sm">
-          <Globe size={14} className="text-[#f5ba31]" />
-          <span>English</span>
+      {/* Top Bar: Theme Toggle & Language Selector */}
+      <div className="flex justify-between items-center p-4 z-10">
+        <Link
+          href="/"
+          className="text-xs font-bold text-slate-400 hover:text-white transition-colors flex items-center gap-1"
+        >
+          <span>←</span>
+          <span>Home</span>
+        </Link>
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#05143a]/90 backdrop-blur-md border border-[#f5ba31]/50 text-xs font-semibold text-white shadow-sm">
+            <Globe size={14} className="text-[#f5ba31]" />
+            <span>English</span>
+          </div>
         </div>
       </div>
 
       {/* Main Content Card */}
       <div className="px-6 z-10 flex-1 flex flex-col justify-center max-w-[400px] mx-auto w-full">
-        {/* Logo */}
-        <div className="mb-2">
-          <Logo size={75} showText={false} />
+        {/* Centered Logo Emblem */}
+        <div className="flex flex-col items-center justify-center mb-4">
+          <div className="relative w-20 h-20 rounded-3xl bg-gradient-to-br from-[#071333] via-[#091d52] to-[#040f2e] p-3 border border-[#f5ba31]/40 shadow-[0_8px_30px_rgba(245,186,49,0.25)] flex items-center justify-center group transition-transform hover:scale-105">
+            <Logo size={52} showText={false} />
+          </div>
         </div>
 
         {/* Titles */}
         <div className="text-center mb-6">
-          <h2 className="text-2xl font-black text-white tracking-tight">
+          <h2 className="text-2xl sm:text-3xl font-black tracking-tight auth-heading">
             Welcome to Zexo Capital
           </h2>
           <div className="flex items-center justify-center gap-2 mt-2">
-            <span className="h-[1px] w-6 bg-[#f5ba31]/60" />
-            <p className="text-xs font-medium text-slate-300">
+            <span className="h-[1px] w-6 bg-amber-400/50" />
+            <p className="text-xs font-semibold auth-subheading">
               Login to continue your investment journey
             </p>
-            <span className="h-[1px] w-6 bg-[#f5ba31]/60" />
+            <span className="h-[1px] w-6 bg-amber-400/50" />
           </div>
         </div>
 
@@ -118,34 +131,34 @@ function LoginForm() {
           <div className="flex items-center gap-2">
             <CountryCodeDropdown selected={country} onSelect={setCountry} />
 
-            <div className="flex-1 flex items-center bg-[#04102e] rounded-2xl border-2 border-slate-700 px-3.5 h-[48px] shadow-sm focus-within:border-[#f5ba31] transition-all">
-              <Phone size={18} className="text-[#f5ba31] mr-2.5 flex-shrink-0" />
+            <div className="auth-input-box flex-1 flex items-center rounded-2xl border-2 px-3.5 h-[48px] shadow-sm transition-all">
+              <Phone size={18} className="auth-input-icon mr-2.5 flex-shrink-0" />
               <input
                 type="tel"
                 placeholder="Mobile Number"
                 value={phone}
                 onChange={handlePhoneChange}
-                className="w-full bg-transparent text-sm font-semibold text-white placeholder:text-slate-500 outline-none"
+                className="auth-input-field w-full bg-transparent text-sm font-semibold outline-none"
                 required
               />
             </div>
           </div>
 
           {/* Password input */}
-          <div className="flex items-center bg-[#04102e] rounded-2xl border-2 border-slate-700 px-3 py-1 shadow-sm focus-within:border-[#f5ba31] transition-all">
-            <Lock size={18} className="text-[#f5ba31] mr-2 flex-shrink-0" />
+          <div className="auth-input-box flex items-center rounded-2xl border-2 px-3 py-1 h-[48px] shadow-sm transition-all">
+            <Lock size={18} className="auth-input-icon mr-2 flex-shrink-0" />
             <input
               type={showPassword ? "text" : "password"}
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full py-2 text-sm font-semibold text-white placeholder:text-slate-500 bg-transparent outline-none"
+              className="auth-input-field w-full py-2 text-sm font-semibold bg-transparent outline-none"
               required
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="p-1 text-slate-400 hover:text-[#f5ba31] transition-colors"
+              className="p-1 text-slate-400 hover:text-amber-500 transition-colors"
             >
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
@@ -153,19 +166,19 @@ function LoginForm() {
 
           {/* Remember me & Forgot Password */}
           <div className="flex items-center justify-between text-xs pt-1 px-1">
-            <label className="flex items-center gap-2 cursor-pointer font-medium text-slate-300">
+            <label className="flex items-center gap-2 cursor-pointer font-medium auth-footer-text">
               <input
                 type="checkbox"
                 checked={keepSignedIn}
                 onChange={(e) => setKeepSignedIn(e.target.checked)}
-                className="w-4 h-4 rounded text-[#f5ba31] border-slate-600 focus:ring-[#f5ba31]"
+                className="w-4 h-4 rounded text-amber-500 border-slate-600 focus:ring-amber-500"
               />
               <span>Keep me signed in</span>
             </label>
 
             <Link
               href="/support"
-              className="text-[#f5ba31] font-semibold hover:underline"
+              className="auth-link font-bold hover:underline"
             >
               Forgot Password?
             </Link>
@@ -175,7 +188,7 @@ function LoginForm() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#f5ba31] via-[#ffd369] to-[#d49002] text-[#020a1f] font-black text-base shadow-[0_0_20px_rgba(245,186,49,0.35)] hover:shadow-lg active:scale-98 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+            className="auth-submit-btn w-full py-3.5 rounded-2xl font-black text-base transition-all disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer active:scale-98"
           >
             {loading ? "Logging in..." : "Login"}
           </button>
@@ -183,11 +196,11 @@ function LoginForm() {
 
         {/* Register navigation link */}
         <div className="text-center mt-6">
-          <p className="text-xs text-slate-300 font-medium">
+          <p className="text-xs font-semibold auth-footer-text">
             Don&apos;t have an account?{" "}
             <Link
               href="/register"
-              className="text-[#f5ba31] font-bold hover:underline"
+              className="auth-link font-black hover:underline ml-1"
             >
               Register Now
             </Link>

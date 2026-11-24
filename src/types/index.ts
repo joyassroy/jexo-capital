@@ -75,6 +75,7 @@ export interface IDeposit {
   senderNumber: string;
   transferType?: "send_money" | "payment";
   transactionId: string;
+  proofImage?: string;
   status: "pending" | "approved" | "rejected";
   adminNote?: string;
   reviewedBy?: string;

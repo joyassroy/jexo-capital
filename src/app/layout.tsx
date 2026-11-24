@@ -43,6 +43,17 @@ export default function RootLayout({
                   document.documentElement.setAttribute('data-theme', 'dark');
                 }
               } catch (e) {}
+
+              try {
+                var p = new URLSearchParams(window.location.search);
+                var r = p.get('ref') || p.get('code') || p.get('invite') || p.get('referral') || p.get('invitation') || p.get('referralCode');
+                if (r && r.trim()) {
+                  var c = r.trim();
+                  localStorage.setItem('jexo_referral_code', c);
+                  sessionStorage.setItem('jexo_referral_code', c);
+                  document.cookie = 'jexo_ref=' + encodeURIComponent(c) + '; path=/; max-age=2592000; SameSite=Lax';
+                }
+              } catch (e) {}
             `,
           }}
         />

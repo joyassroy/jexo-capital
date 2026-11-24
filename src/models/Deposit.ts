@@ -48,6 +48,11 @@ const DepositSchema = new Schema<IDeposit>(
       trim: true,
       index: true,
     },
+    proofImage: {
+      type: String,
+      trim: true,
+      default: "",
+    },
     status: {
       type: String,
       enum: ["pending", "approved", "rejected"],

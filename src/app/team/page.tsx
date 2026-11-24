@@ -20,6 +20,7 @@ interface TeamMember {
   id: string;
   phone: string;
   nickname: string;
+  referralCode?: string;
   hasDeposited: boolean;
   isActive: boolean;
   depositAmount: number;
@@ -515,13 +516,16 @@ export default function TeamPage() {
                               <div className="flex items-center gap-1.5 flex-wrap">
                                 <span className="font-extrabold text-xs text-slate-800 dark:text-white truncate">
                                   {member.nickname}
-                                </span>
-                                <span className="text-[10px] text-slate-400 font-mono">
-                                  ({member.phone})
+                                  <span className="text-[11px] font-mono font-semibold text-slate-500 dark:text-slate-400 ml-0.5">
+                                    (ID:{member.referralCode || member.id.slice(-6)})
+                                  </span>
                                 </span>
                               </div>
                               <div className="text-[10px] text-slate-400 font-medium mt-0.5 flex items-center gap-1.5 flex-wrap">
                                 <span>{member.joinedAt ? `Joined: ${member.joinedAt}` : ""}</span>
+                                {member.phone && member.phone !== "User" && (
+                                  <span className="text-slate-400 font-mono">• {member.phone}</span>
+                                )}
                                 {member.depositAmount > 0 && (
                                   <span className="text-amber-600 dark:text-amber-400 font-bold">
                                     • Dep: {member.depositAmount} USDT
@@ -627,13 +631,16 @@ export default function TeamPage() {
                               <div className="flex items-center gap-1.5 flex-wrap">
                                 <span className="font-extrabold text-xs text-slate-800 dark:text-white truncate">
                                   {member.nickname}
-                                </span>
-                                <span className="text-[10px] text-slate-400 font-mono">
-                                  ({member.phone})
+                                  <span className="text-[11px] font-mono font-semibold text-slate-500 dark:text-slate-400 ml-0.5">
+                                    (ID:{member.referralCode || member.id.slice(-6)})
+                                  </span>
                                 </span>
                               </div>
                               <div className="text-[10px] text-slate-400 font-medium mt-0.5 flex items-center gap-1.5 flex-wrap">
                                 <span>{member.joinedAt ? `Joined: ${member.joinedAt}` : ""}</span>
+                                {member.phone && member.phone !== "User" && (
+                                  <span className="text-slate-400 font-mono">• {member.phone}</span>
+                                )}
                                 {member.depositAmount > 0 && (
                                   <span className="text-amber-600 dark:text-amber-400 font-bold">
                                     • Dep: {member.depositAmount} USDT
@@ -739,13 +746,16 @@ export default function TeamPage() {
                               <div className="flex items-center gap-1.5 flex-wrap">
                                 <span className="font-extrabold text-xs text-slate-800 dark:text-white truncate">
                                   {member.nickname}
-                                </span>
-                                <span className="text-[10px] text-slate-400 font-mono">
-                                  ({member.phone})
+                                  <span className="text-[11px] font-mono font-semibold text-slate-500 dark:text-slate-400 ml-0.5">
+                                    (ID:{member.referralCode || member.id.slice(-6)})
+                                  </span>
                                 </span>
                               </div>
                               <div className="text-[10px] text-slate-400 font-medium mt-0.5 flex items-center gap-1.5 flex-wrap">
                                 <span>{member.joinedAt ? `Joined: ${member.joinedAt}` : ""}</span>
+                                {member.phone && member.phone !== "User" && (
+                                  <span className="text-slate-400 font-mono">• {member.phone}</span>
+                                )}
                                 {member.depositAmount > 0 && (
                                   <span className="text-amber-600 dark:text-amber-400 font-bold">
                                     • Dep: {member.depositAmount} USDT

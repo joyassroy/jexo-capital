@@ -70,7 +70,7 @@ export default function WithdrawPage() {
           setWithdrawableBDT(wBDT);
         }
       })
-      .catch(() => {});
+      .catch(() => { });
   };
 
   useEffect(() => {
@@ -88,7 +88,7 @@ export default function WithdrawPage() {
           }
         }
       })
-      .catch(() => {});
+      .catch(() => { });
 
     // Fetch settings
     fetch("/api/settings")
@@ -98,7 +98,7 @@ export default function WithdrawPage() {
           setUsdtRate(data.settings.usdtRateBDT);
         }
       })
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   const currentWallets = wallets.filter((w) =>
@@ -230,11 +230,10 @@ export default function WithdrawPage() {
 
   return (
     <div
-      className={`min-h-screen flex flex-col justify-between pb-28 transition-colors duration-200 ${
-        isLight
-          ? "bg-gradient-to-b from-[#f0f4fd] via-[#f7f9ff] to-[#eef3fb] text-slate-800"
-          : "bg-gradient-to-b from-[#020a1f] via-[#051338] to-[#01081a] text-white"
-      }`}
+      className={`min-h-screen flex flex-col justify-between pb-28 transition-colors duration-200 ${isLight
+        ? "bg-gradient-to-b from-[#f0f4fd] via-[#f7f9ff] to-[#eef3fb] text-slate-800"
+        : "bg-gradient-to-b from-[#020a1f] via-[#051338] to-[#01081a] text-white"
+        }`}
     >
       <div>
         <Header title="Withdraw" showBack={true} />
@@ -242,26 +241,23 @@ export default function WithdrawPage() {
         <div className="p-4 space-y-4 max-w-[440px] mx-auto">
           {/* Withdrawal Balance Card */}
           <div
-            className={`rounded-3xl backdrop-blur-md p-5 shadow-lg text-center space-y-3 border ${
-              isLight
-                ? "bg-white/95 border-amber-200/70 shadow-amber-500/5 text-slate-800"
-                : "bg-[#04102e]/90 border-[#f5ba31]/30 text-white"
-            }`}
+            className={`rounded-3xl backdrop-blur-md p-5 shadow-lg text-center space-y-3 border ${isLight
+              ? "bg-white/95 border-amber-200/70 shadow-amber-500/5 text-slate-800"
+              : "bg-[#04102e]/90 border-[#f5ba31]/30 text-white"
+              }`}
           >
             <div>
               <span
-                className={`text-[11px] font-bold uppercase tracking-wider ${
-                  isLight ? "text-slate-500" : "text-slate-400"
-                }`}
+                className={`text-[11px] font-bold uppercase tracking-wider ${isLight ? "text-slate-500" : "text-slate-400"
+                  }`}
               >
                 Withdrawable Balance
               </span>
               <div
-                className={`text-3xl font-black mt-0.5 flex items-baseline justify-center gap-1.5 ${
-                  isLight
-                    ? "text-amber-600 drop-shadow-xs"
-                    : "text-[#f5ba31] drop-shadow-[0_0_12px_rgba(245,186,49,0.3)]"
-                }`}
+                className={`text-3xl font-black mt-0.5 flex items-baseline justify-center gap-1.5 ${isLight
+                  ? "text-amber-600 drop-shadow-xs"
+                  : "text-[#f5ba31] drop-shadow-[0_0_12px_rgba(245,186,49,0.3)]"
+                  }`}
               >
                 <span>
                   {activeTab === "Bank"
@@ -270,9 +266,8 @@ export default function WithdrawPage() {
                 </span>
               </div>
               <div
-                className={`text-xs font-semibold mt-0.5 ${
-                  isLight ? "text-slate-600" : "text-slate-300"
-                }`}
+                className={`text-xs font-semibold mt-0.5 ${isLight ? "text-slate-600" : "text-slate-300"
+                  }`}
               >
                 {activeTab === "Bank"
                   ? `≈ ${withdrawableUSDT.toFixed(2)} USDT`
@@ -282,66 +277,57 @@ export default function WithdrawPage() {
 
             {/* Total Balance vs Bonus pill breakdown */}
             <div
-              className={`grid grid-cols-2 gap-2 pt-2 border-t text-xs ${
-                isLight ? "border-slate-100" : "border-white/10"
-              }`}
+              className={`grid grid-cols-2 gap-2 pt-2 border-t text-xs ${isLight ? "border-slate-100" : "border-white/10"
+                }`}
             >
               <div
-                className={`p-2 rounded-xl text-left border ${
-                  isLight
-                    ? "bg-slate-50 border-slate-200/80"
-                    : "bg-white/5 border-white/10"
-                }`}
+                className={`p-2 rounded-xl text-left border ${isLight
+                  ? "bg-slate-50 border-slate-200/80"
+                  : "bg-white/5 border-white/10"
+                  }`}
               >
                 <div
-                  className={`text-[10px] font-bold uppercase ${
-                    isLight ? "text-slate-500" : "text-slate-400"
-                  }`}
+                  className={`text-[10px] font-bold uppercase ${isLight ? "text-slate-500" : "text-slate-400"
+                    }`}
                 >
                   Total Assets
                 </div>
                 <div
-                  className={`font-mono font-bold text-xs mt-0.5 ${
-                    isLight ? "text-slate-900" : "text-white"
-                  }`}
+                  className={`font-mono font-bold text-xs mt-0.5 ${isLight ? "text-slate-900" : "text-white"
+                    }`}
                 >
                   TK {totalBalanceBDT.toLocaleString("en-US", { minimumFractionDigits: 2 })}
                 </div>
                 <div
-                  className={`text-[10px] font-medium ${
-                    isLight ? "text-slate-500" : "text-slate-400"
-                  }`}
+                  className={`text-[10px] font-medium ${isLight ? "text-slate-500" : "text-slate-400"
+                    }`}
                 >
                   {totalBalanceUSDT.toFixed(2)} USDT
                 </div>
               </div>
 
               <div
-                className={`p-2 rounded-xl text-left border ${
-                  isLight
-                    ? "bg-amber-500/10 border-amber-300 text-amber-900"
-                    : "bg-amber-500/10 border-amber-500/30 text-amber-300"
-                }`}
+                className={`p-2 rounded-xl text-left border ${isLight
+                  ? "bg-amber-500/10 border-amber-300 text-amber-900"
+                  : "bg-amber-500/10 border-amber-500/30 text-amber-300"
+                  }`}
               >
                 <div
-                  className={`text-[10px] font-bold uppercase flex items-center gap-1 ${
-                    isLight ? "text-amber-700" : "text-[#ffd369]"
-                  }`}
+                  className={`text-[10px] font-bold uppercase flex items-center gap-1 ${isLight ? "text-amber-700" : "text-[#ffd369]"
+                    }`}
                 >
                   <Gift size={11} className={isLight ? "text-amber-600 shrink-0" : "text-amber-400 shrink-0"} />
                   <span>Reserve Bonus</span>
                 </div>
                 <div
-                  className={`font-mono font-bold text-xs mt-0.5 ${
-                    isLight ? "text-amber-800" : "text-amber-300"
-                  }`}
+                  className={`font-mono font-bold text-xs mt-0.5 ${isLight ? "text-amber-800" : "text-amber-300"
+                    }`}
                 >
                   TK {signupBonusBDT.toFixed(2)}
                 </div>
                 <div
-                  className={`text-[10px] font-medium ${
-                    isLight ? "text-amber-600" : "text-amber-400/80"
-                  }`}
+                  className={`text-[10px] font-medium ${isLight ? "text-amber-600" : "text-amber-400/80"
+                    }`}
                 >
                   Non-Withdrawable
                 </div>
@@ -350,11 +336,10 @@ export default function WithdrawPage() {
 
             {/* Min Withdrawal Pill */}
             <div
-              className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[11px] font-semibold border ${
-                isLight
-                  ? "bg-blue-50 border-blue-200 text-blue-700"
-                  : "bg-blue-500/15 border-blue-500/30 text-blue-300"
-              }`}
+              className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[11px] font-semibold border ${isLight
+                ? "bg-blue-50 border-blue-200 text-blue-700"
+                : "bg-blue-500/15 border-blue-500/30 text-blue-300"
+                }`}
             >
               <Info size={13} className={isLight ? "shrink-0 text-blue-600" : "shrink-0 text-blue-400"} />
               <span>
@@ -366,11 +351,10 @@ export default function WithdrawPage() {
           {/* Feedback Alerts */}
           {error && (
             <div
-              className={`p-3.5 border rounded-2xl text-xs font-bold text-center shadow-md flex flex-col sm:flex-row items-center justify-center gap-2 transition-all ${
-                isLight
-                  ? "bg-rose-50 border-rose-300 text-rose-800 shadow-rose-100"
-                  : "bg-red-950/70 border-red-500/60 text-red-100 shadow-black/40"
-              }`}
+              className={`p-3.5 border rounded-2xl text-xs font-bold text-center shadow-md flex flex-col sm:flex-row items-center justify-center gap-2 transition-all ${isLight
+                ? "bg-rose-50 border-rose-300 text-rose-800 shadow-rose-100"
+                : "bg-red-950/70 border-red-500/60 text-red-100 shadow-black/40"
+                }`}
             >
               <div className="flex items-center gap-2 text-center">
                 <AlertCircle
@@ -383,11 +367,10 @@ export default function WithdrawPage() {
                 <button
                   type="button"
                   onClick={() => router.push("/set-withdraw-password")}
-                  className={`px-3 py-1 rounded-xl text-xs font-extrabold underline underline-offset-2 transition-all ${
-                    isLight
-                      ? "text-rose-950 bg-rose-200 hover:bg-rose-300"
-                      : "text-white bg-rose-800 hover:bg-rose-700"
-                  }`}
+                  className={`px-3 py-1 rounded-xl text-xs font-extrabold underline underline-offset-2 transition-all ${isLight
+                    ? "text-rose-950 bg-rose-200 hover:bg-rose-300"
+                    : "text-white bg-rose-800 hover:bg-rose-700"
+                    }`}
                 >
                   Set Password Now →
                 </button>
@@ -396,11 +379,10 @@ export default function WithdrawPage() {
           )}
           {success && (
             <div
-              className={`p-3.5 border rounded-2xl text-xs font-bold text-center shadow-md flex items-center justify-center gap-2 transition-all ${
-                isLight
-                  ? "bg-emerald-50 border-emerald-300 text-emerald-900 shadow-emerald-100"
-                  : "bg-emerald-950/70 border-emerald-500/60 text-emerald-100 shadow-black/40"
-              }`}
+              className={`p-3.5 border rounded-2xl text-xs font-bold text-center shadow-md flex items-center justify-center gap-2 transition-all ${isLight
+                ? "bg-emerald-50 border-emerald-300 text-emerald-900 shadow-emerald-100"
+                : "bg-emerald-950/70 border-emerald-500/60 text-emerald-100 shadow-black/40"
+                }`}
             >
               <CheckCircle2
                 size={18}
@@ -412,30 +394,27 @@ export default function WithdrawPage() {
 
           {/* Form Container with Tabs */}
           <div
-            className={`rounded-3xl backdrop-blur-md shadow-lg overflow-hidden border ${
-              isLight
-                ? "bg-white/95 border-amber-200/80"
-                : "bg-[#04102e]/85 border-[#f5ba31]/30"
-            }`}
+            className={`rounded-3xl backdrop-blur-md shadow-lg overflow-hidden border ${isLight
+              ? "bg-white/95 border-amber-200/80"
+              : "bg-[#04102e]/85 border-[#f5ba31]/30"
+              }`}
           >
             {/* Tabs */}
             <div
-              className={`grid grid-cols-2 border-b ${
-                isLight ? "bg-slate-100/80 border-slate-200" : "bg-[#020a1f]/80 border-white/10"
-              }`}
+              className={`grid grid-cols-2 border-b ${isLight ? "bg-slate-100/80 border-slate-200" : "bg-[#020a1f]/80 border-white/10"
+                }`}
             >
               <button
                 type="button"
                 onClick={() => handleTabChange("Bank")}
-                className={`py-3.5 text-sm font-bold flex items-center justify-center gap-2 transition-all ${
-                  activeTab === "Bank"
-                    ? isLight
-                      ? "bg-white text-amber-600 border-b-2 border-amber-500 shadow-xs"
-                      : "bg-[#04102e] text-[#f5ba31] border-b-2 border-[#f5ba31] shadow-xs"
-                    : isLight
+                className={`py-3.5 text-sm font-bold flex items-center justify-center gap-2 transition-all ${activeTab === "Bank"
+                  ? isLight
+                    ? "bg-white text-amber-600 border-b-2 border-amber-500 shadow-xs"
+                    : "bg-[#04102e] text-[#f5ba31] border-b-2 border-[#f5ba31] shadow-xs"
+                  : isLight
                     ? "text-slate-500 hover:text-slate-800"
                     : "text-slate-400 hover:text-white"
-                }`}
+                  }`}
               >
                 <Building size={16} />
                 <span>bKash / Nagad</span>
@@ -444,15 +423,14 @@ export default function WithdrawPage() {
               <button
                 type="button"
                 onClick={() => handleTabChange("USDT")}
-                className={`py-3.5 text-sm font-bold flex items-center justify-center gap-2 transition-all ${
-                  activeTab === "USDT"
-                    ? isLight
-                      ? "bg-white text-amber-600 border-b-2 border-amber-500 shadow-xs"
-                      : "bg-[#04102e] text-[#f5ba31] border-b-2 border-[#f5ba31] shadow-xs"
-                    : isLight
+                className={`py-3.5 text-sm font-bold flex items-center justify-center gap-2 transition-all ${activeTab === "USDT"
+                  ? isLight
+                    ? "bg-white text-amber-600 border-b-2 border-amber-500 shadow-xs"
+                    : "bg-[#04102e] text-[#f5ba31] border-b-2 border-[#f5ba31] shadow-xs"
+                  : isLight
                     ? "text-slate-500 hover:text-slate-800"
                     : "text-slate-400 hover:text-white"
-                }`}
+                  }`}
               >
                 <Coins size={16} />
                 <span>USDT-BEP20</span>
@@ -464,45 +442,33 @@ export default function WithdrawPage() {
               {/* Select Bank/Wallet Box (NO ARROW) */}
               <div>
                 <label
-                  className={`block text-xs font-bold mb-1.5 ${
-                    isLight ? "text-slate-700" : "text-slate-300"
-                  }`}
+                  className={`block text-xs font-bold mb-1.5 ${isLight ? "text-slate-700" : "text-slate-300"
+                    }`}
                 >
                   Select Receiving Account
                 </label>
                 {currentWallets.length > 0 ? (
                   <div
-                    className={`w-full px-4 py-3 rounded-2xl text-sm font-bold flex items-center justify-between border ${
-                      isLight
-                        ? "bg-slate-50 border-slate-200 text-slate-800 shadow-xs"
-                        : "bg-[#020a1f] border-slate-700 text-white"
-                    }`}
+                    className={`w-full px-4 py-3 rounded-2xl text-sm font-bold flex items-center justify-between border ${isLight
+                      ? "bg-slate-50 border-slate-200 text-slate-800 shadow-xs"
+                      : "bg-[#020a1f] border-slate-700 text-white"
+                      }`}
                   >
-                    <span className="truncate select-all">
+                    <span className="truncate select-all font-mono">
                       {currentWallets[0].bankType}:{" "}
                       {currentWallets[0].bankType === "USDT-BEP20"
                         ? currentWallets[0].usdtAddress
-                        : currentWallets[0].accountNumber}{" "}
-                      <span
-                        className={
-                          isLight
-                            ? "text-slate-500 font-semibold text-xs ml-1"
-                            : "text-slate-400 font-normal text-xs ml-1"
-                        }
-                      >
-                        ({currentWallets[0].realName})
-                      </span>
+                        : currentWallets[0].accountNumber}
                     </span>
                   </div>
                 ) : (
                   <button
                     type="button"
                     onClick={() => router.push("/my-bank")}
-                    className={`w-full px-3.5 py-3 rounded-2xl border text-xs font-bold flex items-center justify-between transition-colors ${
-                      isLight
-                        ? "bg-amber-500/10 border-amber-500/30 text-amber-700 hover:bg-amber-500/15"
-                        : "bg-[#f5ba31]/15 border-[#f5ba31]/40 text-[#f5ba31] hover:bg-[#f5ba31]/25"
-                    }`}
+                    className={`w-full px-3.5 py-3 rounded-2xl border text-xs font-bold flex items-center justify-between transition-colors ${isLight
+                      ? "bg-amber-500/10 border-amber-500/30 text-amber-700 hover:bg-amber-500/15"
+                      : "bg-[#f5ba31]/15 border-[#f5ba31]/40 text-[#f5ba31] hover:bg-[#f5ba31]/25"
+                      }`}
                   >
                     <span>No {activeTab === "Bank" ? "bKash / Nagad" : "USDT"} wallet bound. Tap to add</span>
                     <ChevronRight size={16} />
@@ -514,16 +480,14 @@ export default function WithdrawPage() {
               <div>
                 <div className="flex items-center justify-between mb-1.5">
                   <label
-                    className={`text-xs font-bold ${
-                      isLight ? "text-slate-700" : "text-slate-300"
-                    }`}
+                    className={`text-xs font-bold ${isLight ? "text-slate-700" : "text-slate-300"
+                      }`}
                   >
                     Withdrawal Amount ({activeTab === "Bank" ? "in BDT / Tk" : "in USDT"})
                   </label>
                   <span
-                    className={`text-[11px] font-semibold ${
-                      isLight ? "text-slate-500" : "text-slate-400"
-                    }`}
+                    className={`text-[11px] font-semibold ${isLight ? "text-slate-500" : "text-slate-400"
+                      }`}
                   >
                     Withdrawable:{" "}
                     <span className={isLight ? "text-amber-600 font-bold" : "text-[#f5ba31] font-bold"}>
@@ -545,11 +509,10 @@ export default function WithdrawPage() {
                     }
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
-                    className={`w-full pl-3.5 pr-14 py-3 rounded-2xl border text-sm font-semibold outline-none focus:border-[#f5ba31] ${
-                      isLight
-                        ? "bg-slate-50 border-slate-200 text-slate-800 placeholder-slate-400"
-                        : "bg-[#020a1f] border-slate-700 text-white placeholder-slate-500"
-                    }`}
+                    className={`w-full pl-3.5 pr-14 py-3 rounded-2xl border text-sm font-semibold outline-none focus:border-[#f5ba31] ${isLight
+                      ? "bg-slate-50 border-slate-200 text-slate-800 placeholder-slate-400"
+                      : "bg-[#020a1f] border-slate-700 text-white placeholder-slate-500"
+                      }`}
                     required
                   />
                   <button
@@ -570,16 +533,14 @@ export default function WithdrawPage() {
                 {/* Live Breakdown Box */}
                 {numAmount > 0 && (
                   <div
-                    className={`mt-2.5 p-3 rounded-2xl border text-xs space-y-1.5 ${
-                      isLight
-                        ? "bg-slate-50 border-slate-200"
-                        : "bg-white/5 border-white/10"
-                    }`}
+                    className={`mt-2.5 p-3 rounded-2xl border text-xs space-y-1.5 ${isLight
+                      ? "bg-slate-50 border-slate-200"
+                      : "bg-white/5 border-white/10"
+                      }`}
                   >
                     <div
-                      className={`flex justify-between font-semibold ${
-                        isLight ? "text-slate-600" : "text-slate-300"
-                      }`}
+                      className={`flex justify-between font-semibold ${isLight ? "text-slate-600" : "text-slate-300"
+                        }`}
                     >
                       <span>10% Platform Fee:</span>
                       <span className={isLight ? "text-rose-600 font-bold" : "text-rose-400 font-bold"}>
@@ -590,11 +551,10 @@ export default function WithdrawPage() {
                     </div>
 
                     <div
-                      className={`flex justify-between font-bold border-t pt-1.5 ${
-                        isLight
-                          ? "border-slate-200 text-slate-900"
-                          : "border-white/10 text-white"
-                      }`}
+                      className={`flex justify-between font-bold border-t pt-1.5 ${isLight
+                        ? "border-slate-200 text-slate-900"
+                        : "border-white/10 text-white"
+                        }`}
                     >
                       <span>Net Arrival:</span>
                       <span className={isLight ? "text-emerald-600 font-black text-sm" : "text-emerald-400 font-black text-sm"}>
@@ -605,9 +565,8 @@ export default function WithdrawPage() {
                     </div>
 
                     <div
-                      className={`flex justify-between font-medium text-[11px] ${
-                        isLight ? "text-slate-500" : "text-slate-400"
-                      }`}
+                      className={`flex justify-between font-medium text-[11px] ${isLight ? "text-slate-500" : "text-slate-400"
+                        }`}
                     >
                       <span>Equivalent:</span>
                       <span className={isLight ? "text-amber-700 font-mono font-bold" : "text-[#ffd369] font-mono"}>
@@ -623,18 +582,16 @@ export default function WithdrawPage() {
               {/* Withdrawal Password Input */}
               <div>
                 <label
-                  className={`block text-xs font-bold mb-1.5 ${
-                    isLight ? "text-slate-700" : "text-slate-300"
-                  }`}
+                  className={`block text-xs font-bold mb-1.5 ${isLight ? "text-slate-700" : "text-slate-300"
+                    }`}
                 >
                   Withdrawal Password
                 </label>
                 <div
-                  className={`flex items-center px-3.5 py-1 rounded-2xl border focus-within:border-[#f5ba31] ${
-                    isLight
-                      ? "bg-slate-50 border-slate-200"
-                      : "bg-[#020a1f] border-slate-700"
-                  }`}
+                  className={`flex items-center px-3.5 py-1 rounded-2xl border focus-within:border-[#f5ba31] ${isLight
+                    ? "bg-slate-50 border-slate-200"
+                    : "bg-[#020a1f] border-slate-700"
+                    }`}
                 >
                   <Lock size={18} className="text-[#f5ba31] mr-2 flex-shrink-0" />
                   <input
@@ -642,11 +599,10 @@ export default function WithdrawPage() {
                     placeholder="Enter Your Withdraw Password"
                     value={withdrawPassword}
                     onChange={(e) => setWithdrawPassword(e.target.value)}
-                    className={`w-full py-2.5 bg-transparent text-sm font-semibold outline-none ${
-                      isLight
-                        ? "text-slate-800 placeholder-slate-400"
-                        : "text-white placeholder-slate-500"
-                    }`}
+                    className={`w-full py-2.5 bg-transparent text-sm font-semibold outline-none ${isLight
+                      ? "text-slate-800 placeholder-slate-400"
+                      : "text-white placeholder-slate-500"
+                      }`}
                     required
                   />
                 </div>
@@ -665,18 +621,16 @@ export default function WithdrawPage() {
 
           {/* Operating Rules List */}
           <div
-            className={`p-4 rounded-3xl shadow-lg text-xs leading-relaxed space-y-2 border ${
-              isLight
-                ? "bg-white/95 border-amber-200/80 text-slate-700"
-                : "bg-[#04102e]/85 border-[#f5ba31]/30 text-slate-200"
-            }`}
+            className={`p-4 rounded-3xl shadow-lg text-xs leading-relaxed space-y-2 border ${isLight
+              ? "bg-white/95 border-amber-200/80 text-slate-700"
+              : "bg-[#04102e]/85 border-[#f5ba31]/30 text-slate-200"
+              }`}
           >
             <div
-              className={`font-bold flex items-center gap-1.5 text-xs uppercase tracking-wider pb-1 border-b ${
-                isLight
-                  ? "text-amber-700 border-slate-200"
-                  : "text-[#f5ba31] border-white/10"
-              }`}
+              className={`font-bold flex items-center gap-1.5 text-xs uppercase tracking-wider pb-1 border-b ${isLight
+                ? "text-amber-700 border-slate-200"
+                : "text-[#f5ba31] border-white/10"
+                }`}
             >
               <ShieldAlert size={14} />
               <span>Withdrawal Rules & Guidelines</span>

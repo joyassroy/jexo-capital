@@ -19,7 +19,7 @@ export default function Logo({ size = 34, showText = true }: LogoProps) {
   const isLight = mounted && theme === "light";
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center justify-center gap-2">
       <div
         className="relative flex items-center justify-center flex-shrink-0"
         style={{ width: size, height: size * 0.9 }}
@@ -32,9 +32,9 @@ export default function Logo({ size = 34, showText = true }: LogoProps) {
         >
           <defs>
             <linearGradient id="logoZGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#FFFFFF" />
-              <stop offset="45%" stopColor="#E0F7FF" />
-              <stop offset="100%" stopColor="#00D2FF" />
+              <stop offset="0%" stopColor="#80E5FF" />
+              <stop offset="45%" stopColor="#00D2FF" />
+              <stop offset="100%" stopColor="#0099FF" />
             </linearGradient>
             <linearGradient id="logoZSwoosh" x1="0%" y1="0%" x2="100%" y2="0%">
               <stop offset="0%" stopColor="#00D2FF" />

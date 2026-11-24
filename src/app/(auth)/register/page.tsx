@@ -96,6 +96,14 @@ function RegisterForm() {
 
   return (
     <form onSubmit={handleRegister} className="space-y-3.5">
+      {/* 500 BDT Welcome Deposit Callout */}
+      <div className="py-2.5 px-3.5 rounded-2xl bg-gradient-to-r from-amber-500/20 via-[#f5ba31]/25 to-amber-500/20 border border-[#f5ba31]/40 text-center shadow-md">
+        <span className="text-xs font-bold text-amber-300 flex items-center justify-center gap-1.5">
+          <span>🎁</span>
+          <span>Register now & get <strong className="text-white underline decoration-[#f5ba31]">500 BDT Free Deposit</strong>!</span>
+        </span>
+      </div>
+
       {/* Error notification */}
       {error && (
         <div className="mb-4 p-3 bg-red-500/20 border border-red-500/40 text-red-300 text-xs font-medium rounded-xl text-center shadow-sm">

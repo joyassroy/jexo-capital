@@ -73,7 +73,11 @@ const SettingSchema = new Schema<ISetting>(
     },
     minWithdrawUSDT: {
       type: Number,
-      default: 5,
+      default: 6,
+    },
+    signupBonusBDT: {
+      type: Number,
+      default: 500,
     },
     withdrawFeePercent: {
       type: Number,

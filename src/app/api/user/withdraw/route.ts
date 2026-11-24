@@ -15,10 +15,10 @@ export async function POST(req: NextRequest) {
 
     await connectDB();
     const body = await req.json();
-    const { amount, method, targetAccount, withdrawPassword } = body;
+    const { amount, currency, method, targetAccount, withdrawPassword } = body;
 
-    const withdrawAmount = Number(amount);
-    if (!withdrawAmount || withdrawAmount <= 0) {
+    const rawAmount = Number(amount);
+    if (!rawAmount || rawAmount <= 0) {
       return NextResponse.json(
         { error: "Please enter a valid withdrawal amount." },
         { status: 400 }
@@ -79,30 +79,76 @@ export async function POST(req: NextRequest) {
       setting = await Setting.create({ key: "default_settings" });
     }
 
-    // Validate Minimum Amount in USDT (min 5 USDT)
     const usdtRate = setting.usdtRateBDT || 127;
-    const minLimitUSDT = 5;
 
-    if (withdrawAmount < minLimitUSDT) {
+    // Determine normalized amounts in both BDT and USDT
+    let amountBDT: number;
+    let amountUSDT: number;
+
+    if (currency === "BDT" || (!currency && (method === "bKash" || method === "Nagad") && rawAmount >= 20)) {
+      amountBDT = Number(rawAmount.toFixed(2));
+      amountUSDT = Number((amountBDT / usdtRate).toFixed(4));
+    } else {
+      amountUSDT = Number(rawAmount.toFixed(4));
+      amountBDT = Number((amountUSDT * usdtRate).toFixed(2));
+    }
+
+    // Validate Minimum Withdrawal Limits
+    // bKash / Nagad: Min 250 BDT; Crypto USDT: Min 6 USDT
+    if (method === "bKash" || method === "Nagad") {
+      const minBDT = setting.minWithdrawBDT || 250;
+      if (amountBDT < minBDT) {
+        return NextResponse.json(
+          {
+            error: `Minimum withdrawal amount for ${method} is ${minBDT} BDT (≈ ${(minBDT / usdtRate).toFixed(2)} USDT).`,
+          },
+          { status: 400 }
+        );
+      }
+    } else {
+      const minUSDT = setting.minWithdrawUSDT || 6;
+      if (amountUSDT < minUSDT) {
+        return NextResponse.json(
+          {
+            error: `Minimum withdrawal amount for USDT is ${minUSDT} USDT (≈ ${(minUSDT * usdtRate).toFixed(2)} BDT).`,
+          },
+          { status: 400 }
+        );
+      }
+    }
+
+    // 3. Validate User Balance & Non-Withdrawable 500 BDT Signup Bonus
+    const currentBalanceUSDT = user.balance || 0;
+    const currentBalanceBDT = Number((currentBalanceUSDT * usdtRate).toFixed(2));
+
+    const signupBonusBDT = user.signupBonusBDT ?? 500;
+    const signupBonusUSDT = Number((signupBonusBDT / usdtRate).toFixed(4));
+
+    // Maximum withdrawable balance excludes the non-withdrawable signup bonus
+    const maxWithdrawableUSDT = Math.max(0, Number((currentBalanceUSDT - signupBonusUSDT).toFixed(4)));
+    const maxWithdrawableBDT = Math.max(0, Number((currentBalanceBDT - signupBonusBDT).toFixed(2)));
+
+    // Overall balance check
+    if (currentBalanceUSDT < amountUSDT) {
       return NextResponse.json(
         {
-          error: `Minimum withdrawal amount is ${minLimitUSDT} USDT (≈ ${(minLimitUSDT * usdtRate).toFixed(0)} BDT).`,
+          error: `Insufficient balance. Your current total balance is ${currentBalanceBDT.toFixed(2)} BDT (${currentBalanceUSDT.toFixed(2)} USDT).`,
         },
         { status: 400 }
       );
     }
 
-    // Validate User Balance (balance is in USDT)
-    if (user.balance < withdrawAmount) {
+    // Non-withdrawable signup bonus reserve check
+    if (amountUSDT > maxWithdrawableUSDT) {
       return NextResponse.json(
         {
-          error: `Insufficient balance. Your current balance is ${user.balance.toFixed(2)} USDT (≈ ${(user.balance * usdtRate).toFixed(2)} BDT).`,
+          error: `The ${signupBonusBDT} BDT welcome deposit cannot be withdrawn. Your maximum withdrawable balance is ${maxWithdrawableBDT.toFixed(2)} BDT (${maxWithdrawableUSDT.toFixed(2)} USDT). The ${signupBonusBDT} BDT bonus must remain in your account.`,
         },
         { status: 400 }
       );
     }
 
-    // 3. Validate Working Hours & Days (Sunday to Thursday, 9am - 5pm)
+    // 4. Validate Working Hours & Days (Sunday to Thursday, 9am - 5pm)
     const now = new Date();
     // Bangladeshi time offset: UTC+6
     const bdTime = new Date(now.getTime() + 6 * 60 * 60 * 1000);
@@ -141,14 +187,15 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 4. Calculate 10% fee and arrival amount in USDT & BDT
+    // 5. Calculate 10% fee and arrival amount in USDT & BDT
     const feePercent = setting.withdrawFeePercent || 10;
-    const charge = Number(((withdrawAmount * feePercent) / 100).toFixed(4));
-    const arrivalAmountUSDT = Number((withdrawAmount - charge).toFixed(4));
-    const arrivalAmountBDT = Number((arrivalAmountUSDT * usdtRate).toFixed(2));
+    const chargeUSDT = Number(((amountUSDT * feePercent) / 100).toFixed(4));
+    const chargeBDT = Number(((amountBDT * feePercent) / 100).toFixed(2));
+    const arrivalAmountUSDT = Number((amountUSDT - chargeUSDT).toFixed(4));
+    const arrivalAmountBDT = Number((amountBDT - chargeBDT).toFixed(2));
 
-    // 5. Deduct balance immediately & create records
-    user.balance -= withdrawAmount;
+    // 6. Deduct balance immediately & create records
+    user.balance = Number((user.balance - amountUSDT).toFixed(4));
     await user.save();
 
     const withdrawal = await Withdrawal.create({
@@ -156,11 +203,11 @@ export async function POST(req: NextRequest) {
       userPhone: user.phone,
       userNickname: user.nickname,
       method,
-      amount: withdrawAmount,
-      amountUSDT: withdrawAmount,
-      amountBDT: Number((withdrawAmount * usdtRate).toFixed(2)),
+      amount: amountUSDT,
+      amountUSDT,
+      amountBDT,
       feePercentage: feePercent,
-      charge,
+      charge: chargeUSDT,
       arrivalAmount: arrivalAmountUSDT,
       arrivalAmountBDT,
       targetAccount: targetAccount.trim(),
@@ -171,11 +218,14 @@ export async function POST(req: NextRequest) {
       userId: user._id.toString(),
       type: "withdraw",
       title: `Withdrawal request (${method})`,
-      amount: -withdrawAmount,
+      amount: -amountUSDT,
       status: "pending",
       metadata: {
         withdrawalId: withdrawal._id.toString(),
-        charge,
+        method,
+        amountBDT,
+        chargeUSDT,
+        chargeBDT,
         arrivalAmountUSDT,
         arrivalAmountBDT,
       },
@@ -183,7 +233,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: `Withdrawal request for ${withdrawAmount} USDT submitted! Net arrival: ${arrivalAmountUSDT} USDT (${arrivalAmountBDT} BDT) after 10% fee.`,
+      message: `Withdrawal request for ${method === "USDT-BEP20" ? `${amountUSDT} USDT` : `${amountBDT} BDT`} submitted! Net arrival: ${arrivalAmountBDT} BDT (${arrivalAmountUSDT} USDT) after ${feePercent}% fee.`,
       withdrawal,
       newBalance: user.balance,
     });

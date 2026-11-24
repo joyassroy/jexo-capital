@@ -55,6 +55,7 @@ export async function PUT(req: NextRequest) {
     if (body.homeTickerText !== undefined) setting.homeTickerText = body.homeTickerText;
     if (body.minWithdrawBDT !== undefined) setting.minWithdrawBDT = Number(body.minWithdrawBDT);
     if (body.minWithdrawUSDT !== undefined) setting.minWithdrawUSDT = Number(body.minWithdrawUSDT);
+    if (body.signupBonusBDT !== undefined) setting.signupBonusBDT = Number(body.signupBonusBDT);
     if (body.withdrawFeePercent !== undefined) setting.withdrawFeePercent = Number(body.withdrawFeePercent);
     if (body.withdrawStartTime !== undefined) setting.withdrawStartTime = body.withdrawStartTime;
     if (body.withdrawEndTime !== undefined) setting.withdrawEndTime = body.withdrawEndTime;

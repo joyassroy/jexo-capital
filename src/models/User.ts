@@ -67,6 +67,10 @@ const UserSchema = new Schema<IUser>(
       type: Number,
       default: 0,
     },
+    signupBonusBDT: {
+      type: Number,
+      default: 0,
+    },
     referralCode: {
       type: String,
       required: true,

@@ -13,6 +13,8 @@ export default function AdminSettingsPage() {
   const [telegramChannelUrl, setTelegramChannelUrl] = useState("");
   const [homeTickerText, setHomeTickerText] = useState("");
   const [minWithdrawBDT, setMinWithdrawBDT] = useState(250);
+  const [minWithdrawUSDT, setMinWithdrawUSDT] = useState(6);
+  const [signupBonusBDT, setSignupBonusBDT] = useState(500);
   const [withdrawFeePercent, setWithdrawFeePercent] = useState(10);
   const [withdrawStartTime, setWithdrawStartTime] = useState("09:00");
   const [withdrawEndTime, setWithdrawEndTime] = useState("17:00");
@@ -36,6 +38,8 @@ export default function AdminSettingsPage() {
           setTelegramChannelUrl(s.telegramChannelUrl || "");
           setHomeTickerText(s.homeTickerText || "");
           setMinWithdrawBDT(s.minWithdrawBDT || 250);
+          setMinWithdrawUSDT(s.minWithdrawUSDT || 6);
+          setSignupBonusBDT(s.signupBonusBDT ?? 500);
           setWithdrawFeePercent(s.withdrawFeePercent || 10);
           setWithdrawStartTime(s.withdrawStartTime || "09:00");
           setWithdrawEndTime(s.withdrawEndTime || "17:00");
@@ -64,6 +68,8 @@ export default function AdminSettingsPage() {
           telegramChannelUrl,
           homeTickerText,
           minWithdrawBDT,
+          minWithdrawUSDT,
+          signupBonusBDT,
           withdrawFeePercent,
           withdrawStartTime,
           withdrawEndTime,
@@ -172,7 +178,7 @@ export default function AdminSettingsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-semibold text-slate-300 mb-1">
-                Minimum Withdrawal (BDT)
+                Minimum Withdrawal for bKash/Nagad (BDT)
               </label>
               <input
                 type="number"
@@ -180,6 +186,33 @@ export default function AdminSettingsPage() {
                 onChange={(e) => setMinWithdrawBDT(Number(e.target.value))}
                 className="w-full px-4 py-2.5 rounded-xl bg-[#0F172A] border border-slate-700 text-sm text-white font-bold outline-none"
               />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-300 mb-1">
+                Minimum Withdrawal for USDT ($ / Crypto)
+              </label>
+              <input
+                type="number"
+                value={minWithdrawUSDT}
+                onChange={(e) => setMinWithdrawUSDT(Number(e.target.value))}
+                className="w-full px-4 py-2.5 rounded-xl bg-[#0F172A] border border-slate-700 text-sm text-white font-bold outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-300 mb-1">
+                Free Sign-up Bonus Reserve (BDT)
+              </label>
+              <input
+                type="number"
+                value={signupBonusBDT}
+                onChange={(e) => setSignupBonusBDT(Number(e.target.value))}
+                className="w-full px-4 py-2.5 rounded-xl bg-[#0F172A] border border-slate-700 text-sm text-white font-bold outline-none"
+              />
+              <span className="text-[10px] text-amber-400 mt-1 block">
+                Automatic free welcome deposit upon registration (Non-withdrawable).
+              </span>
             </div>
 
             <div>

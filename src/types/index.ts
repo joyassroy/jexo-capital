@@ -15,6 +15,7 @@ export interface IUser {
   lastOrderDate?: string;
   todayCommission?: number;
   freezeBalance?: number;
+  signupBonusBDT?: number;
   referralCode: string;
   referredBy?: string;
   referralCount: number;
@@ -170,6 +171,7 @@ export interface ISetting {
   // Withdrawal Rules
   minWithdrawBDT: number;
   minWithdrawUSDT: number;
+  signupBonusBDT?: number;
   withdrawFeePercent: number;
   withdrawStartTime: string; // e.g. "09:00"
   withdrawEndTime: string; // e.g. "17:00"

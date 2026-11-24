@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import { User } from "@/models/User";
+import { Setting } from "@/models/Setting";
+import { Transaction } from "@/models/Transaction";
 import { ensureDbInitialized } from "@/lib/init-db";
+import { syncUserVipWithBalance } from "@/lib/vip";
 import {
   hashPassword,
   generateReferralCode,
@@ -106,16 +109,23 @@ export async function POST(req: NextRequest) {
       newReferralCode = generateReferralCode();
     }
 
-    // 5. Create User
+    // 5. Create User with 500 BDT Free Welcome Deposit
     // For Bangladesh (+880), save in the local 017xxxxxxxx format (e.g. 01712345678).
     // For international countries, save in the full +[code][number] format (e.g. +14155552671).
     const savedPhone = cleanCountryCode === "880" ? localWithZero : intlFormat;
     const passwordHash = await hashPassword(password);
+
+    const setting = await Setting.findOne({ key: "default_settings" }).lean();
+    const usdtRate = setting?.usdtRateBDT || 127;
+    const signupBonusBDT = setting?.signupBonusBDT ?? 500;
+    const signupBonusUSDT = Number((signupBonusBDT / usdtRate).toFixed(4));
+
     const newUser = await User.create({
       phone: savedPhone,
       nickname: nickname.trim(),
       passwordHash,
-      balance: 0,
+      balance: signupBonusUSDT,
+      signupBonusBDT: signupBonusBDT,
       totalFund: 0,
       fundIncome: 0,
       yesterdayEarnings: 0,
@@ -126,6 +136,24 @@ export async function POST(req: NextRequest) {
       referralCount: 0,
       status: "active",
     });
+
+    // Create a transaction record for the 500 BDT sign-up bonus
+    await Transaction.create({
+      userId: newUser._id.toString(),
+      type: "bonus",
+      title: "Welcome Sign-up Bonus (500 Tk)",
+      amount: signupBonusUSDT,
+      status: "success",
+      metadata: {
+        amountBDT: signupBonusBDT,
+        usdtRate,
+        nonWithdrawable: true,
+        description: "Free 500 BDT welcome deposit credited automatically upon registration.",
+      },
+    });
+
+    // Sync VIP level
+    await syncUserVipWithBalance(newUser);
 
     // If referred by someone, increment referrer's count
     if (referredByUser) {

@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Headphones, MessageCircle, Send, X, ExternalLink } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface CustomerServiceProps {
   whatsappUrl?: string;
@@ -16,6 +17,7 @@ export default function CustomerServiceModal({
   telegramGroupUrl = "https://t.me/zexocapital_group",
   telegramChannelUrl = "https://t.me/zexocapital_channel",
 }: CustomerServiceProps) {
+  const { t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [urls, setUrls] = useState({
     whatsapp: whatsappUrl,
@@ -90,7 +92,7 @@ export default function CustomerServiceModal({
               </div>
 
               <h3 className="text-base font-bold text-white tracking-tight">
-                Zexo Capital Customer Service
+                Zexo Capital {t("customer_service")}
               </h3>
               <p className="text-xs text-slate-300/80 mt-0.5">
                 Our support team is available 24/7 to assist you

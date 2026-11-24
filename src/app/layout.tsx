@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import AppShell from "@/components/layout/AppShell";
 import { ThemeProvider } from "@/context/ThemeContext";
+import { LanguageProvider } from "@/context/LanguageContext";
 
 export const metadata: Metadata = {
   title: "Zexo Capital - Invest • Grow • Prosper",
@@ -48,7 +49,9 @@ export default function RootLayout({
       </head>
       <body className="antialiased min-h-screen bg-[#0b192c] flex justify-center items-start transition-colors duration-300">
         <ThemeProvider>
-          <AppShell>{children}</AppShell>
+          <LanguageProvider>
+            <AppShell>{children}</AppShell>
+          </LanguageProvider>
         </ThemeProvider>
       </body>
     </html>

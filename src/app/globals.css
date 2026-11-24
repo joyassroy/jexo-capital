@@ -527,3 +527,15 @@ span.day-action-label,
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
 }
+
+/* Ensure Logout Buttons and Red Gradient Buttons are always pure white */
+button[class*="from-red"],
+button[class*="from-red"] span,
+button[class*="from-red"] svg,
+.light button[class*="from-red"],
+.light button[class*="from-red"] span,
+.light button[class*="from-red"] svg {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}

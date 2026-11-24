@@ -330,7 +330,10 @@ export default function ProfilePage() {
             {/* Top Row: Title + Balance + Deposit / Withdraw Actions */}
             <div className="relative z-10 flex items-center justify-between pb-2.5 border-b border-white/20">
               <div>
-                <span className="text-[10px] sm:text-[10.5px] font-bold text-blue-100 uppercase tracking-wider block">
+                <span
+                  style={{ color: "#ffffff", WebkitTextFillColor: "#ffffff" }}
+                  className="text-[11px] sm:text-[11.5px] font-extrabold !text-white text-white uppercase tracking-wider block drop-shadow-[0_1px_3px_rgba(0,0,0,0.3)]"
+                >
                   {t("total_assets")}
                 </span>
                 <div className="text-2xl sm:text-2xl font-black text-white flex items-baseline gap-1.5 mt-0.5 tracking-tight">
@@ -399,7 +402,10 @@ export default function ProfilePage() {
             <div className="p-3 sm:p-3.5 rounded-[22px] bg-gradient-to-b from-[#081944]/95 via-[#04102e]/98 to-[#02091c] backdrop-blur-2xl text-white">
               <div className="flex items-center justify-between pb-2 border-b border-white/10">
                 <div>
-                  <span className="text-[10.5px] sm:text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">
+                  <span
+                    style={{ color: "#ffffff", WebkitTextFillColor: "#ffffff" }}
+                    className="text-[11px] sm:text-[11.5px] font-extrabold !text-white text-white uppercase tracking-wider block drop-shadow-[0_1px_3px_rgba(0,0,0,0.4)]"
+                  >
                     {t("total_assets")}
                   </span>
                   <div className="text-xl sm:text-2xl font-black text-white flex items-baseline gap-1 mt-0.5">
@@ -613,10 +619,16 @@ export default function ProfilePage() {
         {/* Log Out Button */}
         <button
           onClick={handleLogout}
-          className="w-full mt-5 py-3.5 rounded-2xl bg-gradient-to-r from-red-600 to-rose-700 text-white font-bold text-base shadow-[0_4px_16px_rgba(220,38,38,0.35)] hover:brightness-105 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer"
+          style={{ color: "#ffffff" }}
+          className="w-full mt-5 py-3.5 rounded-2xl bg-gradient-to-r from-red-600 to-rose-700 !text-white text-white font-extrabold text-base shadow-[0_4px_16px_rgba(220,38,38,0.35)] hover:brightness-105 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer"
         >
-          <LogOut size={20} />
-          <span>{t("logout")}</span>
+          <LogOut size={20} color="#ffffff" stroke="#ffffff" className="!text-white text-white" />
+          <span
+            style={{ color: "#ffffff", WebkitTextFillColor: "#ffffff" }}
+            className="!text-white text-white font-black tracking-wide"
+          >
+            {t("logout")}
+          </span>
         </button>
       </div>
     </div>

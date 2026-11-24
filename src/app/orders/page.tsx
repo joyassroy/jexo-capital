@@ -286,13 +286,37 @@ export default function OrdersPage() {
           <div className="absolute inset-x-8 top-3 h-44 rounded-full border border-amber-400/25 bg-radial from-amber-400/10 via-transparent to-transparent pointer-events-none filter blur-sm" />
 
           {/* Golden Capsule Pool Ticker Floating Overlay */}
-          <div className="relative z-10 inline-flex items-center gap-2 px-5 py-2 rounded-full bg-gradient-to-r from-[#1a1303] via-[#2d2005] to-[#1a1303] border-2 border-[#f5ba31] shadow-[0_0_20px_rgba(245,186,49,0.4)] mb-4 animate-pulse">
-            <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-amber-400 to-yellow-500 flex items-center justify-center text-[#1a1303] shadow-md">
-              <Coins size={15} className="stroke-[2.5]" />
+          <div
+            className="order-pool-capsule relative z-10 inline-flex items-center gap-2.5 px-5 py-2 rounded-full border-2 border-[#f5ba31] shadow-[0_4px_25px_rgba(245,186,49,0.45)] mb-4 transition-all"
+            style={{
+              background: "linear-gradient(90deg, #181203 0%, #291d05 50%, #181203 100%)",
+              borderColor: "#f5ba31",
+            }}
+          >
+            <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-amber-400 to-yellow-400 flex items-center justify-center text-[#1a1303] shadow-md shrink-0">
+              <Coins size={15} className="stroke-[2.5] text-[#1a1303]" />
             </div>
-            <span className="text-base sm:text-lg font-black font-mono tracking-tight text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-              TK {poolAmount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-            </span>
+            <div className="flex items-baseline gap-1 font-mono tracking-tight leading-none">
+              <span
+                className="order-pool-currency text-sm sm:text-base font-black text-[#f5ba31]"
+                style={{ color: "#f5ba31", WebkitTextFillColor: "#f5ba31" }}
+              >
+                TK
+              </span>
+              <span
+                className="order-pool-value text-base sm:text-lg font-black text-white"
+                style={{
+                  color: "#ffffff",
+                  WebkitTextFillColor: "#ffffff",
+                  textShadow: "0 2px 6px rgba(0,0,0,0.8)",
+                }}
+              >
+                {poolAmount.toLocaleString("en-US", {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </span>
+            </div>
           </div>
 
           {/* Modern Smart Home Appliances Showcase (matching screenshot) */}
@@ -385,7 +409,7 @@ export default function OrdersPage() {
         </div>
 
         {/* 4 Stats Rows (matching screenshot) */}
-        <div className="mx-3 mt-3 rounded-2xl bg-[#04102e]/90 backdrop-blur-md border border-[#f5ba31]/30 shadow-lg overflow-hidden divide-y divide-white/10 text-xs">
+        <div className="order-stats-card mx-3 mt-3 rounded-2xl bg-[#04102e]/90 backdrop-blur-md border border-[#f5ba31]/30 shadow-lg overflow-hidden divide-y divide-white/10 text-xs">
           {/* Row 1: Total Assets */}
           <Link
             href="/vip"
@@ -395,12 +419,12 @@ export default function OrdersPage() {
               <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center border border-amber-500/30">
                 <Coins size={18} />
               </div>
-              <span className="font-bold text-slate-200 group-hover:text-white">
+              <span className="order-stat-label font-bold text-slate-200 group-hover:text-white">
                 Total assets
               </span>
             </div>
             <div className="flex items-center gap-1.5 font-mono font-black text-sm text-[#f5ba31]">
-              <span>
+              <span className="order-stat-assets">
                 TK {data ? data.balanceBDT.toLocaleString("en-US", { minimumFractionDigits: 2 }) : "0.00"}
               </span>
               <ChevronRight size={15} className="text-slate-400" />
@@ -413,12 +437,12 @@ export default function OrdersPage() {
               <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center border border-emerald-500/30">
                 <Lock size={17} />
               </div>
-              <span className="font-bold text-slate-200 group-hover:text-white">
+              <span className="order-stat-label font-bold text-slate-200 group-hover:text-white">
                 Freeze funds
               </span>
             </div>
             <div className="flex items-center gap-1.5 font-mono font-black text-sm text-[#f5ba31]">
-              <span>
+              <span className="order-stat-freeze">
                 TK {data ? data.freezeFundsBDT.toLocaleString("en-US", { minimumFractionDigits: 2 }) : "0.00"}
               </span>
               <ChevronRight size={15} className="text-slate-400" />
@@ -431,12 +455,12 @@ export default function OrdersPage() {
               <div className="w-8 h-8 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center border border-purple-500/30">
                 <ShieldCheck size={18} />
               </div>
-              <span className="font-bold text-slate-200 group-hover:text-white">
+              <span className="order-stat-label font-bold text-slate-200 group-hover:text-white">
                 Today&apos;s commission
               </span>
             </div>
             <div className="flex items-center gap-1.5 font-mono font-black text-sm text-emerald-400">
-              <span>
+              <span className="order-stat-commission">
                 TK {data ? data.todayCommissionBDT.toLocaleString("en-US", { minimumFractionDigits: 2 }) : "0.00"}
               </span>
               <ChevronRight size={15} className="text-slate-400" />
@@ -449,12 +473,12 @@ export default function OrdersPage() {
               <div className="w-8 h-8 rounded-xl bg-yellow-500/20 text-yellow-400 flex items-center justify-center border border-yellow-500/30">
                 <ClipboardList size={18} />
               </div>
-              <span className="font-bold text-slate-200 group-hover:text-white">
+              <span className="order-stat-label font-bold text-slate-200 group-hover:text-white">
                 Today&apos;s order
               </span>
             </div>
             <div className="flex items-center gap-1.5 font-mono font-black text-sm text-white">
-              <span>{data ? data.todayOrdersCount : 0}</span>
+              <span className="order-stat-count">{data ? data.todayOrdersCount : 0}</span>
               <span className="text-xs text-slate-400 font-semibold">/ {data ? data.maxOrders : 5}</span>
               <ChevronRight size={15} className="text-slate-400 ml-1" />
             </div>

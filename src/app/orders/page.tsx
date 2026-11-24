@@ -198,6 +198,7 @@ export default function OrdersPage() {
           setShowCompletionModal(true);
         } else {
           alert(result?.error || "Failed to process order. Please try again.");
+          fetchOrderData();
         }
 
         setIsProcessing(false);
@@ -428,7 +429,10 @@ export default function OrdersPage() {
           </Link>
 
           {/* Row 2: Today's Commission */}
-          <div className="flex items-center justify-between p-3.5 hover:bg-white/5 transition-colors group">
+          <Link
+            href="/records"
+            className="flex items-center justify-between p-3.5 hover:bg-white/5 transition-colors group cursor-pointer"
+          >
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center border border-purple-500/30">
                 <ShieldCheck size={18} />
@@ -443,10 +447,13 @@ export default function OrdersPage() {
               </span>
               <ChevronRight size={15} className="text-slate-400" />
             </div>
-          </div>
+          </Link>
 
           {/* Row 3: Today's Order Count */}
-          <div className="flex items-center justify-between p-3.5 hover:bg-white/5 transition-colors group">
+          <Link
+            href="/records"
+            className="flex items-center justify-between p-3.5 hover:bg-white/5 transition-colors group cursor-pointer"
+          >
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-xl bg-yellow-500/20 text-yellow-400 flex items-center justify-center border border-yellow-500/30">
                 <ClipboardList size={18} />
@@ -460,7 +467,7 @@ export default function OrdersPage() {
               <span className="text-xs text-slate-400 font-semibold">/ {data ? data.maxOrders : 5}</span>
               <ChevronRight size={15} className="text-slate-400 ml-1" />
             </div>
-          </div>
+          </Link>
         </div>
 
         {/* Action Button: Add to Queue */}
@@ -568,7 +575,10 @@ export default function OrdersPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
           <div className="relative w-full max-w-sm rounded-3xl bg-gradient-to-b from-[#081944] via-[#04102e] to-[#02091c] border-2 border-[#f5ba31] shadow-[0_0_35px_rgba(245,186,49,0.4)] p-6 text-center space-y-4">
             <button
-              onClick={() => setShowCompletionModal(false)}
+              onClick={() => {
+                setShowCompletionModal(false);
+                fetchOrderData();
+              }}
               className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/10 text-slate-300 hover:text-white flex items-center justify-center transition-colors"
             >
               <X size={18} />
@@ -602,7 +612,10 @@ export default function OrdersPage() {
             </div>
 
             <button
-              onClick={() => setShowCompletionModal(false)}
+              onClick={() => {
+                setShowCompletionModal(false);
+                fetchOrderData();
+              }}
               className="w-full py-3 rounded-2xl bg-gradient-to-r from-[#f5ba31] via-[#ffd369] to-[#d49002] text-[#020a1f] font-black text-sm shadow-[0_4px_15px_rgba(245,186,49,0.35)] hover:brightness-105 active:scale-98 transition-all"
             >
               Confirm & Continue

@@ -5,6 +5,7 @@ import { Kyc } from "@/models/Kyc";
 import { BankWallet } from "@/models/BankWallet";
 import { getCurrentUser } from "@/lib/auth";
 import { syncUserVipWithBalance } from "@/lib/vip";
+import { syncDailyOrdersAndEarnings } from "@/lib/dailyStats";
 
 export const dynamic = "force-dynamic";
 
@@ -28,6 +29,9 @@ export async function GET() {
 
     // Auto-sync VIP level dynamically based on current user balance
     await syncUserVipWithBalance(user);
+
+    // Auto-sync daily orders and earnings on midnight rollover
+    await syncDailyOrdersAndEarnings(user);
 
     const hasWithdrawPassword = Boolean(user.withdrawPasswordHash);
     const { passwordHash: _p, withdrawPasswordHash: _w, ...userSafe } = user.toObject();

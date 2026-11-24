@@ -5,21 +5,9 @@ import { Setting } from "@/models/Setting";
 import { Transaction } from "@/models/Transaction";
 import { getCurrentUser } from "@/lib/auth";
 import { getActiveVipTiers, syncUserVipWithBalance } from "@/lib/vip";
+import { getTodayDateStringDhaka, syncDailyOrdersAndEarnings } from "@/lib/dailyStats";
 
 export const dynamic = "force-dynamic";
-
-function getTodayString(): string {
-  try {
-    return new Intl.DateTimeFormat("en-CA", {
-      timeZone: "Asia/Dhaka",
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    }).format(new Date());
-  } catch {
-    return new Date().toISOString().split("T")[0];
-  }
-}
 
 export async function GET() {
   try {
@@ -37,21 +25,16 @@ export async function GET() {
     // Auto-sync VIP level with current account balance
     await syncUserVipWithBalance(user);
 
+    // Auto-check and reset daily orders count at midnight (12:00 AM Asia/Dhaka)
+    await syncDailyOrdersAndEarnings(user);
+
     const [settings, activeTiers] = await Promise.all([
       Setting.findOne().lean(),
       getActiveVipTiers(),
     ]);
 
     const usdtRate = settings?.usdtRateBDT || 127;
-    const todayStr = getTodayString();
-
-    // Reset daily counters after midnight (12:00 AM)
-    if (user.lastOrderDate !== todayStr) {
-      user.todayOrdersCount = 0;
-      user.todayCommission = 0;
-      user.lastOrderDate = todayStr;
-      await user.save();
-    }
+    const todayStr = getTodayDateStringDhaka();
 
     const currentVipLevel = user.vipLevel || 0;
     const tier = activeTiers.find((t) => t.level === currentVipLevel);
@@ -128,20 +111,16 @@ export async function POST() {
     // Auto-sync VIP level before evaluating order
     await syncUserVipWithBalance(user);
 
+    // Auto-check and reset daily orders count at midnight (12:00 AM Asia/Dhaka)
+    await syncDailyOrdersAndEarnings(user);
+
     const [settings, activeTiers] = await Promise.all([
       Setting.findOne().lean(),
       getActiveVipTiers(),
     ]);
 
     const usdtRate = settings?.usdtRateBDT || 127;
-    const todayStr = getTodayString();
-
-    // Check midnight reset
-    if (user.lastOrderDate !== todayStr) {
-      user.todayOrdersCount = 0;
-      user.todayCommission = 0;
-      user.lastOrderDate = todayStr;
-    }
+    const todayStr = getTodayDateStringDhaka();
 
     const currentVipLevel = user.vipLevel || 0;
     const tier = activeTiers.find((t) => t.level === currentVipLevel);

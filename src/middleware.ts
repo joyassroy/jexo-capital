@@ -32,6 +32,7 @@ export function middleware(request: NextRequest) {
     "/personal-info",
     "/change-password",
     "/set-withdraw-password",
+    "/orders",
     "/records",
     "/recharge-record",
     "/withdraw-record",

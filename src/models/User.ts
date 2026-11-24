@@ -51,6 +51,22 @@ const UserSchema = new Schema<IUser>(
       type: Number,
       default: 0,
     },
+    todayOrdersCount: {
+      type: Number,
+      default: 0,
+    },
+    lastOrderDate: {
+      type: String,
+      default: "",
+    },
+    todayCommission: {
+      type: Number,
+      default: 0,
+    },
+    freezeBalance: {
+      type: Number,
+      default: 0,
+    },
     referralCode: {
       type: String,
       required: true,

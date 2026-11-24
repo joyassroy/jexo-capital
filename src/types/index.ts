@@ -11,6 +11,10 @@ export interface IUser {
   yesterdayEarnings: number;
   todayEarnings: number;
   vipLevel: number;
+  todayOrdersCount?: number;
+  lastOrderDate?: string;
+  todayCommission?: number;
+  freezeBalance?: number;
   referralCode: string;
   referredBy?: string;
   referralCount: number;

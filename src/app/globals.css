@@ -434,6 +434,31 @@ html.light body {
   font-weight: 600 !important;
 }
 
+/* Orders Page Light Mode Adaptations */
+.light [class*="from-[#041235]"] {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #0f172a !important;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05) !important;
+}
+
+.light [class*="from-[#041235]"] h2 {
+  color: #0f172a !important;
+}
+
+.light [class*="from-[#041235]"] [class*="text-slate-300"] {
+  color: #64748b !important;
+}
+
+.light [class*="from-[#06153d]"] {
+  background: linear-gradient(180deg, #f8fafc 0%, #edf2f7 100%) !important;
+  border-color: #cbd5e1 !important;
+}
+
+.light [class*="from-[#04102e]"] [class*="text-slate-200"] {
+  color: #0f172a !important;
+}
+
 /* Inner Input / Account Number / Address Boxes */
 .light [class*="bg-[#020a1f]"] {
   background-color: #f8fafc !important;

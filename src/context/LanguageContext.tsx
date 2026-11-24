@@ -100,6 +100,24 @@ export const translations: Record<Language, Record<string, string>> = {
     support: "Support",
     remove_photo: "Remove Photo",
     upload_photo: "Upload profile picture",
+
+    // Orders / Daily Tasks
+    daily_necessities: "Daily Necessities",
+    daily_return_rate: "Daily return rate",
+    trusted_product: "Trusted Product",
+    already_queued: "Already added to the queue",
+    ready_to_queue: "Ready to Add to Queue",
+    processing_order: "Processing Order in Queue...",
+    total_assets_label: "Total assets",
+    freeze_funds: "Freeze funds",
+    todays_commission: "Today's commission",
+    todays_order: "Today's order",
+    add_to_queue: "Add to Queue",
+    limit_reached: "Daily limit reached (5/5)",
+    order_completed: "Order Completed!",
+    order_success_desc: "Commission has been successfully added to your wallet.",
+    recharge_to_unlock: "Recharge to Unlock Orders",
+    min_vip_required: "Minimum VIP-1 required to earn daily order commission.",
   },
   bn: {
     // Top Bar & Common
@@ -182,6 +200,24 @@ export const translations: Record<Language, Record<string, string>> = {
     support: "সাপোর্ট",
     remove_photo: "ছবি মুছুন",
     upload_photo: "প্রোফাইল ছবি আপলোড",
+
+    // Orders / Daily Tasks
+    daily_necessities: "নিত্যপ্রয়োজনীয় পণ্য",
+    daily_return_rate: "দৈনিক আয়ের হার",
+    trusted_product: "বিশ্বস্ত পণ্য",
+    already_queued: "ইতিমধ্যে সারিতে যুক্ত করা হয়েছে",
+    ready_to_queue: "অর্ডারের সারিতে যোগ দিন",
+    processing_order: "অর্ডার প্রসেস হচ্ছে...",
+    total_assets_label: "মোট সম্পদ",
+    freeze_funds: "হোল্ড ফান্ড",
+    todays_commission: "আজকের কমিশন",
+    todays_order: "আজকের অর্ডার",
+    add_to_queue: "অর্ডারের সারিতে যোগ দিন",
+    limit_reached: "আজকের লিমিট শেষ (৫/৫)",
+    order_completed: "অর্ডার সম্পন্ন হয়েছে!",
+    order_success_desc: "কমিশন সফলভাবে আপনার ওয়ালেটে যুক্ত হয়েছে।",
+    recharge_to_unlock: "অর্ডার আনলক করতে রিচার্জ করুন",
+    min_vip_required: "অর্ডার কমিশন পেতে ন্যূনতম VIP-1 প্রয়োজন।",
   },
   ar: {
     // Top Bar & Common
@@ -264,6 +300,24 @@ export const translations: Record<Language, Record<string, string>> = {
     support: "الدعم",
     remove_photo: "حذف الصورة",
     upload_photo: "تحميل الصورة الشخصية",
+
+    // Orders / Daily Tasks
+    daily_necessities: "الضروريات اليومية",
+    daily_return_rate: "معدل العائد اليومي",
+    trusted_product: "منتج موثوق",
+    already_queued: "تمت الإضافة إلى قائمة الانتظار",
+    ready_to_queue: "جاهز للإضافة إلى قائمة الانتظار",
+    processing_order: "جاري معالجة الطلب...",
+    total_assets_label: "إجمالي الأصول",
+    freeze_funds: "الأموال المجمدة",
+    todays_commission: "عمولة اليوم",
+    todays_order: "طلبات اليوم",
+    add_to_queue: "أضف إلى قائمة الانتظار",
+    limit_reached: "تم الوصول للحد اليومي (5/5)",
+    order_completed: "اكتمل الطلب!",
+    order_success_desc: "تمت إضافة العمولة بنجاح إلى محفظتك.",
+    recharge_to_unlock: "اشحن لفتح الطلبات",
+    min_vip_required: "الحد الأدنى VIP-1 مطلوب لكسب عمولة الطلب اليومية.",
   },
   zh: {
     // Top Bar & Common
@@ -346,6 +400,24 @@ export const translations: Record<Language, Record<string, string>> = {
     support: "在线客服",
     remove_photo: "删除头像",
     upload_photo: "上传个人头像",
+
+    // Orders / Daily Tasks
+    daily_necessities: "日用品专区",
+    daily_return_rate: "每日收益率",
+    trusted_product: "认证优选",
+    already_queued: "已加入抢单队列",
+    ready_to_queue: "准备加入队列",
+    processing_order: "正在匹配订单...",
+    total_assets_label: "总资产",
+    freeze_funds: "冻结资金",
+    todays_commission: "今日佣金",
+    todays_order: "今日抢单",
+    add_to_queue: "加入队列",
+    limit_reached: "今日上限已满 (5/5)",
+    order_completed: "订单完成!",
+    order_success_desc: "订单佣金已成功存入您的账户钱包。",
+    recharge_to_unlock: "充值升级解锁抢单",
+    min_vip_required: "需要至少 VIP-1 等级才能获取每日订单佣金。",
   },
 };
 

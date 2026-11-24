@@ -31,7 +31,7 @@ export default function BottomNav() {
   const navItems = [
     { label: t("nav_home"), href: "/", icon: Home },
     { label: t("nav_vip"), href: "/vip", icon: Crown },
-    { label: t("nav_order"), href: "/records", icon: ClipboardCheck },
+    { label: t("nav_order"), href: "/orders", icon: ClipboardCheck },
     { label: t("nav_profile"), href: "/profile", icon: User },
   ];
 
@@ -51,8 +51,7 @@ export default function BottomNav() {
             const isActive =
               item.href === "/"
                 ? pathname === "/"
-                : pathname.startsWith(item.href) ||
-                  (item.href === "/records" && pathname === "/orders");
+                : pathname.startsWith(item.href);
 
             if (isLight) {
               return (

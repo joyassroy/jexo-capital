@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import Header from "@/components/common/Header";
 import CityFooter from "@/components/common/CityFooter";
 import {
@@ -9,10 +10,11 @@ import {
   PlusCircle,
   CheckCircle,
   AlertCircle,
-  Clock,
-  XCircle,
+  Lock,
   Copy,
-  ExternalLink,
+  Headphones,
+  ShieldCheck,
+  Info,
 } from "lucide-react";
 
 interface Wallet {
@@ -22,7 +24,7 @@ interface Wallet {
   accountNumber: string;
   usdtAddress?: string;
   status?: "pending" | "approved" | "rejected";
-  rejectionReason?: string;
+  isLocked?: boolean;
 }
 
 export default function MyBankPage() {
@@ -68,7 +70,7 @@ export default function MyBankPage() {
         const bep20Regex = /^0x[a-fA-F0-9]{40}$/;
         if (!bep20Regex.test(trimmed)) {
           setError(
-            "Invalid USDT (BEP-20) address. It must start with 0x and have 42 characters (e.g. 0x8f83d56dac8403238181a32f4e766d68529d9cad)."
+            "Invalid USDT (BEP-20) address. It must start with 0x and have 42 characters."
           );
           setLoading(false);
           return;
@@ -79,7 +81,7 @@ export default function MyBankPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          realName,
+          realName: realName.trim(),
           bankType: type,
           accountNumber: activeTab === "Bank" ? accountNumber.trim() : "",
           usdtAddress: activeTab === "USDT" ? usdtAddress.trim() : "",
@@ -93,10 +95,7 @@ export default function MyBankPage() {
         return;
       }
 
-      setSuccess(
-        data.message ||
-          "Wallet bound successfully and submitted for admin verification!"
-      );
+      setSuccess(data.message || "Account bound successfully and locked!");
       setShowAddForm(false);
       fetchWallets();
       setLoading(false);
@@ -124,8 +123,8 @@ export default function MyBankPage() {
           title={
             showAddForm
               ? activeTab === "Bank"
-                ? "Bank Card Information"
-                : "USDT Card Information"
+                ? "Bind Bank Card"
+                : "Bind USDT Address"
               : "My Bank"
           }
           showBack={true}
@@ -133,14 +132,14 @@ export default function MyBankPage() {
 
         <div className="p-4 space-y-4 max-w-[420px] mx-auto">
           {error && (
-            <div className="p-3 bg-red-500/20 border border-red-500/40 text-red-300 text-xs font-semibold rounded-2xl text-center shadow-sm flex items-center justify-center gap-1.5">
-              <AlertCircle size={16} className="shrink-0" />
+            <div className="p-3.5 bg-rose-50 dark:bg-red-950/70 border border-rose-300 dark:border-red-500/60 text-rose-800 dark:text-red-100 text-xs font-bold rounded-2xl text-center shadow-sm flex items-center justify-center gap-2">
+              <AlertCircle size={18} className="shrink-0 text-rose-600 dark:text-rose-400" />
               <span>{error}</span>
             </div>
           )}
           {success && (
-            <div className="p-3 bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-semibold rounded-2xl text-center shadow-sm flex items-center justify-center gap-1.5">
-              <CheckCircle size={16} className="shrink-0" />
+            <div className="p-3.5 bg-emerald-50 dark:bg-emerald-950/70 border border-emerald-300 dark:border-emerald-500/60 text-emerald-900 dark:text-emerald-100 text-xs font-bold rounded-2xl text-center shadow-sm flex items-center justify-center gap-2">
+              <CheckCircle size={18} className="shrink-0 text-emerald-600 dark:text-emerald-400" />
               <span>{success}</span>
             </div>
           )}
@@ -163,7 +162,7 @@ export default function MyBankPage() {
                 }`}
               >
                 <Building2 size={16} />
-                <span>Bank</span>
+                <span>bKash / Nagad</span>
               </button>
 
               <button
@@ -189,135 +188,132 @@ export default function MyBankPage() {
               {!showAddForm ? (
                 <>
                   {currentWallet ? (
-                    <div className="p-4 rounded-2xl bg-gradient-to-b from-[#07173e]/90 to-[#030e28]/95 border border-[#f5ba31]/40 text-left space-y-2 mb-4 shadow-lg">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-black text-cyan-400 uppercase tracking-wider flex items-center gap-1">
-                          {activeTab === "USDT" ? <Coins size={14} /> : <Building2 size={14} />}
-                          <span>{currentWallet.bankType}</span>
-                        </span>
+                    <div className="space-y-4">
+                      {/* Active Bound Wallet Card */}
+                      <div className="p-4 rounded-2xl bg-gradient-to-b from-[#07173e]/90 to-[#030e28]/95 border border-[#f5ba31]/40 text-left space-y-2.5 shadow-lg">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-black text-cyan-400 uppercase tracking-wider flex items-center gap-1.5">
+                            {activeTab === "USDT" ? (
+                              <Coins size={15} />
+                            ) : (
+                              <Building2 size={15} />
+                            )}
+                            <span>{currentWallet.bankType}</span>
+                          </span>
 
-                        {/* Verification Status Badge */}
-                        {currentWallet.status === "approved" ? (
+                          {/* Instant Bound & Locked Badge */}
                           <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[10px] font-extrabold flex items-center gap-1">
-                            <CheckCircle size={10} /> Verified
+                            <ShieldCheck size={11} /> Bound & Locked
                           </span>
-                        ) : currentWallet.status === "rejected" ? (
-                          <span className="px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/30 text-[10px] font-extrabold flex items-center gap-1">
-                            <XCircle size={10} /> Rejected
-                          </span>
-                        ) : (
-                          <span className="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 text-[10px] font-extrabold flex items-center gap-1">
-                            <Clock size={10} /> Pending Verification
-                          </span>
-                        )}
-                      </div>
-
-                      <div className="text-sm font-bold text-white">
-                        {currentWallet.realName}
-                      </div>
-
-                      <div className="p-2 rounded-xl bg-[#020a1f] border border-white/10 flex items-center justify-between gap-2">
-                        <div className="text-xs font-mono text-slate-200 break-all select-all">
-                          {currentWallet.bankType === "USDT-BEP20"
-                            ? currentWallet.usdtAddress
-                            : currentWallet.accountNumber}
                         </div>
-                        <button
-                          type="button"
-                          onClick={() =>
-                            copyToClipboard(
-                              (currentWallet.bankType === "USDT-BEP20"
-                                ? currentWallet.usdtAddress
-                                : currentWallet.accountNumber) || ""
-                            )
-                          }
-                          className="p-1 rounded text-slate-400 hover:text-white shrink-0"
-                          title="Copy"
-                        >
-                          <Copy size={13} />
-                        </button>
-                      </div>
 
-                      {/* Rejection Alert Box */}
-                      {currentWallet.status === "rejected" && (
-                        <div className="p-3 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs space-y-1">
-                          <div className="font-bold flex items-center gap-1 text-rose-400">
-                            <AlertCircle size={14} />
-                            <span>Verification Notice:</span>
+                        <div>
+                          <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                            Account Holder
                           </div>
-                          <p className="leading-relaxed">
-                            {currentWallet.rejectionReason ||
-                              "Your account details could not be verified by admin."}
-                          </p>
-                          <p className="text-[11px] text-slate-300">
-                            Please click <strong>Update</strong> below to correct your address and re-submit.
-                          </p>
+                          <div className="text-sm font-bold text-white mt-0.5">
+                            {currentWallet.realName}
+                          </div>
                         </div>
-                      )}
 
-                      {/* Pending notice */}
-                      {currentWallet.status === "pending" && (
-                        <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-300 text-[11px] flex items-center gap-1.5">
-                          <Clock size={13} className="shrink-0" />
-                          <span>Admin verification in progress. You can still re-edit if needed.</span>
+                        <div>
+                          <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                            {currentWallet.bankType === "USDT-BEP20"
+                              ? "USDT Address (BEP-20)"
+                              : "Account Number"}
+                          </div>
+                          <div className="mt-1 p-2.5 rounded-xl bg-[#020a1f] border border-white/10 flex items-center justify-between gap-2">
+                            <div className="text-xs font-mono font-semibold text-slate-100 break-all select-all">
+                              {currentWallet.bankType === "USDT-BEP20"
+                                ? currentWallet.usdtAddress
+                                : currentWallet.accountNumber}
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() =>
+                                copyToClipboard(
+                                  (currentWallet.bankType === "USDT-BEP20"
+                                    ? currentWallet.usdtAddress
+                                    : currentWallet.accountNumber) || ""
+                                )
+                              }
+                              className="p-1 rounded text-slate-400 hover:text-white shrink-0 active:scale-90 transition-all"
+                              title="Copy"
+                            >
+                              <Copy size={13} />
+                            </button>
+                          </div>
                         </div>
-                      )}
+                      </div>
+
+                      {/* Locked Notice & Support Button (Replaces Edit button) */}
+                      <div className="p-4 rounded-2xl bg-[#020a1f]/90 border border-slate-700/80 text-center space-y-2.5">
+                        <div className="flex items-center justify-center gap-1.5 text-xs font-bold text-amber-400">
+                          <Lock size={14} className="shrink-0" />
+                          <span>Account Locked for Security</span>
+                        </div>
+                        <p className="text-[11px] text-slate-300 leading-relaxed">
+                          Bank details can only be bound once. If you need to update or change your account number, please contact Customer Service for admin permission.
+                        </p>
+                        <Link
+                          href="/service"
+                          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 border border-blue-500/30 text-xs font-bold active:scale-95 transition-all shadow-sm"
+                        >
+                          <Headphones size={14} />
+                          <span>Contact Support to Modify</span>
+                        </Link>
+                      </div>
                     </div>
                   ) : (
-                    /* 3D Bank / Crypto Illustration Placeholder */
-                    <div className="my-4 flex flex-col items-center justify-center">
-                      <div className="w-20 h-20 rounded-3xl bg-gradient-to-tr from-[#ffe58f] via-[#f5ba31] to-[#e69e05] text-[#020a1f] flex items-center justify-center shadow-[0_0_25px_rgba(245,186,49,0.35)] border-2 border-white/40">
-                        {activeTab === "Bank" ? (
-                          <Building2 size={40} />
-                        ) : (
-                          <Coins size={40} />
-                        )}
+                    /* 3D Bank / Crypto Placeholder for Unbound state */
+                    <>
+                      <div className="my-5 flex flex-col items-center justify-center">
+                        <div className="w-20 h-20 rounded-3xl bg-gradient-to-tr from-[#ffe58f] via-[#f5ba31] to-[#e69e05] text-[#020a1f] flex items-center justify-center shadow-[0_0_25px_rgba(245,186,49,0.35)] border-2 border-white/40">
+                          {activeTab === "Bank" ? (
+                            <Building2 size={40} />
+                          ) : (
+                            <Coins size={40} />
+                          )}
+                        </div>
+                        <span className="text-sm font-extrabold text-white mt-3 tracking-wide">
+                          {activeTab === "Bank" ? "BANK CARD" : "USDT (BEP-20)"}
+                        </span>
+                        <span className="text-xs text-slate-400 mt-0.5">
+                          {activeTab === "Bank"
+                            ? "Bind bKash or Nagad"
+                            : "Bind Binance Smart Chain address"}
+                        </span>
                       </div>
-                      <span className="text-sm font-extrabold text-white mt-3 tracking-wide">
-                        {activeTab === "Bank" ? "BANK CARD" : "USDT (BEP-20)"}
-                      </span>
-                      <span className="text-xs text-slate-400 mt-0.5">
-                        {activeTab === "Bank"
-                          ? "Bind bKash or Nagad"
-                          : "Bind Binance Smart Chain address"}
-                      </span>
-                    </div>
-                  )}
 
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (currentWallet) {
-                        setRealName(currentWallet.realName);
-                        if (currentWallet.bankType !== "USDT-BEP20") {
-                          setBankType(currentWallet.bankType as "bKash" | "Nagad");
-                          setAccountNumber(currentWallet.accountNumber);
-                        } else {
-                          setUsdtAddress(currentWallet.usdtAddress || "");
-                        }
-                      }
-                      setShowAddForm(true);
-                      setError("");
-                    }}
-                    className={`w-full py-3 rounded-full font-black text-sm shadow-md active:scale-98 transition-all flex items-center justify-center gap-1.5 ${
-                      currentWallet?.status === "rejected"
-                        ? "bg-gradient-to-r from-rose-600 to-red-600 text-white shadow-[0_0_15px_rgba(225,29,72,0.4)]"
-                        : "bg-gradient-to-r from-[#ffe58f] via-[#f5ba31] to-[#e69e05] text-[#020a1f] shadow-[0_0_15px_rgba(245,186,49,0.35)]"
-                    }`}
-                  >
-                    <PlusCircle size={18} />
-                    <span>
-                      {currentWallet
-                        ? currentWallet.status === "rejected"
-                          ? `Re-apply ${activeTab === "Bank" ? "Bank Card" : "USDT Address"}`
-                          : `Update ${activeTab === "Bank" ? "Bank Card" : "USDT Address"}`
-                        : `Add ${activeTab === "Bank" ? "Bank Card" : "USDT Address"}`}
-                    </span>
-                  </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowAddForm(true);
+                          setError("");
+                        }}
+                        className="w-full py-3 rounded-full font-black text-sm shadow-md active:scale-98 transition-all flex items-center justify-center gap-1.5 bg-gradient-to-r from-[#ffe58f] via-[#f5ba31] to-[#e69e05] text-[#020a1f] shadow-[0_0_15px_rgba(245,186,49,0.35)] hover:brightness-105"
+                      >
+                        <PlusCircle size={18} />
+                        <span>
+                          {activeTab === "Bank"
+                            ? "Bind Bank Card"
+                            : "Bind USDT Address"}
+                        </span>
+                      </button>
+                    </>
+                  )}
                 </>
               ) : (
-                /* Add Wallet Form */
+                /* Add Wallet Form (Can be submitted only once) */
                 <form onSubmit={handleSaveWallet} className="space-y-4 text-left">
+                  {/* Warning Notice */}
+                  <div className="p-3 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs flex items-start gap-2">
+                    <Info size={15} className="shrink-0 mt-0.5" />
+                    <span>
+                      <strong>One-Time Setup:</strong> You can only bind your account once. Please double-check your information carefully before submitting.
+                    </span>
+                  </div>
+
                   <div>
                     <label className="block text-xs font-bold text-slate-300 mb-1">
                       Please enter your real name
@@ -336,7 +332,7 @@ export default function MyBankPage() {
                     <>
                       <div>
                         <label className="block text-xs font-bold text-slate-300 mb-1">
-                          Please select your bank / MFS
+                          Please select your MFS Provider
                         </label>
                         <select
                           value={bankType}
@@ -404,7 +400,7 @@ export default function MyBankPage() {
                       disabled={loading}
                       className="w-full py-3 rounded-full bg-gradient-to-r from-[#ffe58f] via-[#f5ba31] to-[#e69e05] text-[#020a1f] font-black text-sm shadow-[0_0_15px_rgba(245,186,49,0.35)] active:scale-98 transition-all disabled:opacity-50"
                     >
-                      {loading ? "Submitting for Verification..." : "Confirm & Submit"}
+                      {loading ? "Binding Account..." : "Confirm & Lock Account"}
                     </button>
                     <button
                       type="button"
@@ -426,12 +422,12 @@ export default function MyBankPage() {
             </p>
             <p>1. For local currency withdrawals, bKash and Nagad are accepted.</p>
             <p>
-              2. For international USDT withdrawals, you must provide a valid <strong>USDT (BEP-20)</strong> address starting with <code>0x</code>.
+              2. For crypto withdrawals, provide a valid <strong>USDT (BEP-20)</strong> address on Binance Smart Chain.
             </p>
             <p>
-              3. Once submitted, your wallet will be reviewed by admin. If rejected, an alert with the reason will be sent to your <strong>Notice</strong> page.
+              3. <strong>One-Time Setup:</strong> For your security, account details can only be bound once. To modify an existing account, admin permission is required.
             </p>
-            <p>4. Please double-check your address before confirming.</p>
+            <p>4. Please double-check your account number or address before confirming.</p>
           </div>
         </div>
       </div>

@@ -80,8 +80,9 @@ export async function PATCH(req: NextRequest) {
         ? deposit.amountUSDT
         : Number((deposit.amountBDT / (deposit.method === "USDT-BEP20" ? 1 : 127)).toFixed(4));
 
-      // Credit user's balance in USDT
-      user.balance += creditUSDT;
+      // Credit user's balance and totalFund in USDT
+      user.balance = Number((user.balance + creditUSDT).toFixed(4));
+      user.totalFund = Number(((user.totalFund || 0) + creditUSDT).toFixed(4));
       await user.save();
 
       // Automatically sync and upgrade user's VIP level if new balance qualifies

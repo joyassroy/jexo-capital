@@ -36,8 +36,12 @@ const BankWalletSchema = new Schema<IBankWallet>(
     status: {
       type: String,
       enum: ["pending", "approved", "rejected"],
-      default: "pending",
+      default: "approved",
       index: true,
+    },
+    isLocked: {
+      type: Boolean,
+      default: true,
     },
     rejectionReason: {
       type: String,

@@ -80,6 +80,35 @@ export default function AdminWalletsPage() {
     }
   };
 
+  const handleUnlock = async (walletId: string, bankType: string) => {
+    if (
+      !confirm(
+        `Unlock and reset this ${bankType} account? The user will be permitted to bind a new account.`
+      )
+    )
+      return;
+    setActionLoading(walletId);
+
+    try {
+      const res = await fetch("/api/admin/wallets", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ walletId, action: "unlock" }),
+      });
+
+      if (res.ok) {
+        fetchWallets();
+      } else {
+        const data = await res.json();
+        alert(data.error || "Unlock failed.");
+      }
+    } catch {
+      alert("Network error.");
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
   const handleRejectSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!rejectModalWallet) return;
@@ -341,6 +370,15 @@ export default function AdminWalletsPage() {
                               <span>Reject</span>
                             </button>
                           )}
+
+                          <button
+                            onClick={() => handleUnlock(w._id, w.bankType)}
+                            disabled={actionLoading === w._id}
+                            className="px-2.5 py-1 rounded-lg bg-amber-600/80 hover:bg-amber-600 text-white text-xs font-bold flex items-center gap-1 transition-all disabled:opacity-50"
+                            title="Unlock and permit user to re-bind"
+                          >
+                            <span>Unlock</span>
+                          </button>
                         </div>
                       </td>
                     </tr>

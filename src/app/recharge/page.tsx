@@ -12,6 +12,7 @@ import {
   Coins,
   QrCode,
   Check,
+  ShieldAlert,
 } from "lucide-react";
 
 export default function RechargePage() {
@@ -25,6 +26,9 @@ export default function RechargePage() {
   const [adminUsdtAddress, setAdminUsdtAddress] = useState<string>(
     "TKrvSHzuR9CcvRwPGiDDb7kzPvCGU3jtyi"
   );
+  const [adminUsdtQrCode, setAdminUsdtQrCode] = useState<string>("");
+  const [adminUsdtNetwork, setAdminUsdtNetwork] = useState<string>("BEP-20 (BNB Smart Chain)");
+  const [adminUsdtInstructions, setAdminUsdtInstructions] = useState<string>("");
 
   // Form states
   const [amount, setAmount] = useState<string>("500");
@@ -69,6 +73,15 @@ export default function RechargePage() {
             data.settings.usdtBep20Address ||
             "TKrvSHzuR9CcvRwPGiDDb7kzPvCGU3jtyi"
           );
+          if (data.settings.usdtQrCodeUrl) {
+            setAdminUsdtQrCode(data.settings.usdtQrCodeUrl);
+          }
+          if (data.settings.usdtNetworkName) {
+            setAdminUsdtNetwork(data.settings.usdtNetworkName);
+          }
+          if (data.settings.usdtDepositInstructions) {
+            setAdminUsdtInstructions(data.settings.usdtDepositInstructions);
+          }
         }
       })
       .catch(() => { });
@@ -145,15 +158,10 @@ export default function RechargePage() {
     }
   };
 
-  // Submit USDT Deposit
+  // Submit USDT Deposit (TxID not required)
   const handleUsdtDepositSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-
-    if (!usdtTxId || usdtTxId.trim() === "") {
-      setError("Please enter the USDT TxID / Hash.");
-      return;
-    }
 
     setLoading(true);
 
@@ -164,9 +172,8 @@ export default function RechargePage() {
         body: JSON.stringify({
           amount: Number(amount),
           method: "USDT-BEP20",
-          senderNumber: "USDT-Sender",
+          senderNumber: "USDT-Wallet",
           transferType: "send_money",
-          transactionId: usdtTxId,
         }),
       });
 
@@ -177,7 +184,7 @@ export default function RechargePage() {
         return;
       }
 
-      setSuccessMessage(data.message);
+      setSuccessMessage(data.message || "Recharge request submitted successfully!");
       setTimeout(() => {
         router.push("/recharge-record");
       }, 1500);
@@ -205,14 +212,14 @@ export default function RechargePage() {
 
         {/* Global Notifications */}
         {error && (
-          <div className="mx-4 mt-3 p-3 bg-red-500/20 border border-red-500/40 text-red-300 text-xs font-semibold rounded-xl text-center shadow-sm flex items-center justify-center gap-1.5">
-            <AlertCircle size={16} />
+          <div className="mx-4 mt-3 p-3.5 bg-rose-50 dark:bg-red-950/70 border border-rose-300 dark:border-red-500/60 text-rose-800 dark:text-red-100 text-xs font-bold rounded-xl text-center shadow-sm flex items-center justify-center gap-2">
+            <AlertCircle size={18} className="shrink-0 text-rose-600 dark:text-rose-400" />
             <span>{error}</span>
           </div>
         )}
         {successMessage && (
-          <div className="mx-4 mt-3 p-3 bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-semibold rounded-xl text-center shadow-sm flex items-center justify-center gap-1.5">
-            <CheckCircle2 size={16} />
+          <div className="mx-4 mt-3 p-3.5 bg-emerald-50 dark:bg-emerald-950/70 border border-emerald-300 dark:border-emerald-500/60 text-emerald-900 dark:text-emerald-100 text-xs font-bold rounded-xl text-center shadow-sm flex items-center justify-center gap-2">
+            <CheckCircle2 size={18} className="shrink-0 text-emerald-600 dark:text-emerald-400" />
             <span>{successMessage}</span>
           </div>
         )}
@@ -645,42 +652,73 @@ export default function RechargePage() {
         )}
 
         {/* =========================================================================
-            USDT RECHARGE SCREEN (Screen 13)
+            USDT RECHARGE SCREEN (BEP-20)
         ========================================================================= */}
         {step === "usdt_step2" && (
-          <div className="p-4 space-y-4">
-            {/* Cautions Notice Card */}
-            <div className="p-4 rounded-3xl bg-blue-50/90 border border-blue-200 text-xs text-blue-950 space-y-1.5 shadow-sm">
-              <h4 className="font-extrabold text-blue-900">Cautions:</h4>
-              <p>• This address only accepts USDT (BEP-20) top-ups.</p>
-              <p>• Please do not make duplicate payments or amend amounts.</p>
-              <p>
+          <div className="p-4 space-y-4 max-w-[440px] mx-auto">
+            {/* Cautions Notice Card (Admin-Controlled) */}
+            <div className="p-4 rounded-3xl bg-blue-50/95 border border-blue-200 text-xs text-blue-950 space-y-2 shadow-sm">
+              <div className="flex items-center justify-between pb-1.5 border-b border-blue-200/80">
+                <h4 className="font-extrabold text-blue-900 flex items-center gap-1.5">
+                  <ShieldAlert size={15} className="text-blue-700 shrink-0" />
+                  <span>Deposit Instructions & Cautions</span>
+                </h4>
+                <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-blue-600/10 text-blue-800 border border-blue-300">
+                  {adminUsdtNetwork}
+                </span>
+              </div>
+
+              {adminUsdtInstructions ? (
+                <div className="font-medium whitespace-pre-line text-blue-900 leading-relaxed text-[11.5px]">
+                  {adminUsdtInstructions}
+                </div>
+              ) : (
+                <div className="space-y-1">
+                  <p>• This address only accepts USDT ({adminUsdtNetwork}) deposits.</p>
+                  <p>• Please do not make duplicate payments or amend amounts.</p>
+                </div>
+              )}
+
+              <p className="font-bold text-blue-900 pt-1.5 border-t border-blue-200/80">
                 • Rate: 1 USDT = {usdtRate} BDT. Current deposit: {amount} BDT (≈{" "}
                 {(Number(amount) / usdtRate).toFixed(2)} USDT).
               </p>
             </div>
 
-            {/* Address & QR Card */}
-            <div className="p-5 rounded-3xl bg-white shadow-md border border-blue-200 text-center">
-              <span className="text-xs font-bold text-gray-600 uppercase">
-                Address for coin recharge (BEP-20)
-              </span>
-
-              <div className="mt-2 p-2 bg-blue-50 rounded-xl font-mono text-xs text-blue-900 break-all select-all font-semibold">
-                {adminUsdtAddress}
+            {/* Address & Dynamic QR Card (Admin-Controlled) */}
+            <div className="p-5 rounded-3xl bg-white shadow-md border border-blue-200 text-center space-y-3">
+              <div>
+                <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">
+                  Address for coin recharge ({adminUsdtNetwork})
+                </span>
+                <div className="mt-2 p-2.5 bg-blue-50/80 rounded-2xl font-mono text-xs text-blue-950 break-all select-all font-bold border border-blue-200">
+                  {adminUsdtAddress}
+                </div>
               </div>
 
-              {/* Dynamic QR illustration */}
-              <div className="my-4 flex items-center justify-center">
-                <div className="w-40 h-40 p-2 bg-white rounded-2xl border-2 border-blue-200 shadow-inner flex items-center justify-center">
-                  <QrCode size={120} className="text-blue-950" />
+              {/* Dynamic QR image (Admin uploaded image or auto-generated QR) */}
+              <div className="my-2 flex flex-col items-center justify-center">
+                <div className="w-48 h-48 p-2.5 bg-white rounded-2xl border-2 border-blue-200 shadow-md flex items-center justify-center overflow-hidden">
+                  <img
+                    src={
+                      adminUsdtQrCode ||
+                      `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(
+                        adminUsdtAddress || "USDT-BEP20"
+                      )}`
+                    }
+                    alt="USDT BEP-20 QR Code"
+                    className="w-full h-full object-contain"
+                  />
                 </div>
+                <span className="text-[11px] font-semibold text-gray-500 mt-2">
+                  Scan QR code with your crypto wallet to pay
+                </span>
               </div>
 
               <button
                 type="button"
                 onClick={() => handleCopy(adminUsdtAddress, "usdt")}
-                className="w-full py-2.5 rounded-2xl bg-blue-600 text-white font-bold text-sm shadow hover:bg-blue-700 active:scale-98 transition-all flex items-center justify-center gap-1.5"
+                className="w-full py-2.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow active:scale-98 transition-all flex items-center justify-center gap-1.5"
               >
                 {copied === "usdt" ? (
                   <>
@@ -694,43 +732,36 @@ export default function RechargePage() {
               </button>
             </div>
 
-            {/* Order Amount & Hash Form */}
+            {/* Order Amount & Direct Submit (No TxID Required) */}
             <form
               onSubmit={handleUsdtDepositSubmit}
-              className="p-4 rounded-3xl bg-white shadow-md border border-blue-200 space-y-3"
+              className="p-5 rounded-3xl bg-white shadow-md border border-blue-200 space-y-4"
             >
               <div>
-                <label className="block text-xs font-bold text-gray-600 mb-1">
-                  Order amount (USDT)
-                </label>
-                <input
-                  type="text"
-                  disabled
-                  value={(Number(amount) / usdtRate).toFixed(2)}
-                  className="w-full px-3 py-2.5 rounded-xl bg-gray-50 border border-gray-200 font-bold text-sm text-gray-800"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-gray-600 mb-1">
-                  Transaction Hash / TxID
-                </label>
-                <input
-                  type="text"
-                  placeholder="Enter BEP-20 TxID / Hash"
-                  value={usdtTxId}
-                  onChange={(e) => setUsdtTxId(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl bg-blue-50/50 border border-blue-200 font-semibold text-sm text-gray-800 outline-none"
-                  required
-                />
+                <div className="flex items-center justify-between mb-1">
+                  <label className="text-xs font-bold text-gray-600">
+                    Order Amount (USDT)
+                  </label>
+                  <span className="text-xs font-bold text-blue-600 font-mono">
+                    ≈ {amount} BDT
+                  </span>
+                </div>
+                <div className="w-full px-4 py-3 rounded-2xl bg-blue-50/60 border border-blue-200 flex items-center justify-between">
+                  <span className="font-extrabold text-base text-gray-900 font-mono">
+                    {(Number(amount) / usdtRate).toFixed(2)} USDT
+                  </span>
+                  <span className="text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-lg bg-blue-600 text-white">
+                    {adminUsdtNetwork.split(" ")[0]}
+                  </span>
+                </div>
               </div>
 
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold text-base shadow-md active:scale-98 transition-all disabled:opacity-50"
+                className="w-full py-4 rounded-2xl bg-gradient-to-r from-blue-600 via-cyan-500 to-blue-600 text-white font-extrabold text-base shadow-lg shadow-blue-500/25 active:scale-98 transition-all disabled:opacity-50"
               >
-                {loading ? "Submitting..." : "Submit"}
+                {loading ? "Submitting Deposit..." : "I Have Paid / Submit Recharge"}
               </button>
             </form>
           </div>

@@ -14,6 +14,13 @@ export async function GET() {
     }
 
     await connectDB();
+
+    // Auto-approve and lock any previously pending wallets
+    await BankWallet.updateMany(
+      { userId: userPayload.userId, status: "pending" },
+      { $set: { status: "approved", isLocked: true } }
+    );
+
     const wallets = await BankWallet.find({ userId: userPayload.userId }).sort({ createdAt: -1 });
     return NextResponse.json({ success: true, wallets });
   } catch (error: unknown) {
@@ -81,27 +88,21 @@ export async function POST(req: NextRequest) {
     // Fetch user details for phone & nickname
     const user = await User.findById(userPayload.userId);
 
-    // Check if wallet already exists for this user and type
+    // One-Time Edit Rule: Check if wallet is already bound for this category
+    const isBankCategory = bankType === "bKash" || bankType === "Nagad";
     const existingWallet = await BankWallet.findOne({
       userId: userPayload.userId,
-      bankType,
+      bankType: isBankCategory ? { $in: ["bKash", "Nagad"] } : "USDT-BEP20",
     });
 
     if (existingWallet) {
-      existingWallet.realName = realName.trim();
-      existingWallet.accountNumber = cleanAccount;
-      existingWallet.usdtAddress = cleanUsdt;
-      existingWallet.status = "pending"; // Reset to pending for admin re-verification
-      existingWallet.rejectionReason = undefined;
-      existingWallet.userPhone = user?.phone || "";
-      existingWallet.userNickname = user?.nickname || "";
-      await existingWallet.save();
-
-      return NextResponse.json({
-        success: true,
-        message: "Wallet details updated and submitted for admin verification!",
-        wallet: existingWallet,
-      });
+      return NextResponse.json(
+        {
+          error:
+            "Your account is already bound and locked. You can only set your account details once. To modify or add a new account, please contact Customer Service / Admin for permission.",
+        },
+        { status: 403 }
+      );
     }
 
     const newWallet = await BankWallet.create({
@@ -112,12 +113,13 @@ export async function POST(req: NextRequest) {
       bankType,
       accountNumber: cleanAccount,
       usdtAddress: cleanUsdt,
-      status: "pending",
+      status: "approved",
+      isLocked: true,
     });
 
     return NextResponse.json({
       success: true,
-      message: "Wallet bound successfully! Submitted for admin verification.",
+      message: "Account bound successfully and securely locked!",
       wallet: newWallet,
     });
   } catch (error: unknown) {

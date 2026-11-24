@@ -47,6 +47,7 @@ export interface IBankWallet {
   rejectionReason?: string;
   reviewedBy?: string;
   reviewedAt?: Date;
+  isLocked?: boolean;
   createdAt: Date;
 }
 
@@ -78,6 +79,7 @@ export interface IDeposit {
   adminNote?: string;
   reviewedBy?: string;
   reviewedAt?: Date;
+  isLocked?: boolean;
   createdAt: Date;
 }
 
@@ -100,6 +102,7 @@ export interface IWithdrawal {
   adminNote?: string;
   reviewedBy?: string;
   reviewedAt?: Date;
+  isLocked?: boolean;
   createdAt: Date;
 }
 
@@ -160,6 +163,9 @@ export interface ISetting {
   nagadType: "personal" | "merchant";
   usdtBep20Address: string;
   usdtRateBDT: number;
+  usdtQrCodeUrl?: string;
+  usdtNetworkName?: string;
+  usdtDepositInstructions?: string;
   // Social Links
   whatsappNumber: string;
   whatsappUrl: string;

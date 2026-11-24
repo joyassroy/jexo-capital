@@ -34,6 +34,19 @@ const SettingSchema = new Schema<ISetting>(
       type: Number,
       default: 127,
     },
+    usdtQrCodeUrl: {
+      type: String,
+      default: "",
+    },
+    usdtNetworkName: {
+      type: String,
+      default: "BEP-20 (BNB Smart Chain)",
+    },
+    usdtDepositInstructions: {
+      type: String,
+      default:
+        "• This address only accepts USDT (BEP-20) top-ups.\n• Please do not make duplicate payments or amend amounts.\n• Send the exact calculated USDT amount.",
+    },
     whatsappNumber: {
       type: String,
       default: "+8801700000000",

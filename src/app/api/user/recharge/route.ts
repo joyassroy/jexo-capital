@@ -30,29 +30,44 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    if (!senderNumber || senderNumber.trim() === "") {
+    const effectiveSender =
+      senderNumber && senderNumber.trim() !== ""
+        ? senderNumber.trim()
+        : method === "USDT-BEP20"
+        ? (userPayload.phone || "USDT-Wallet")
+        : "";
+
+    if (!effectiveSender) {
       return NextResponse.json(
         { error: "Please provide your sender account / address." },
         { status: 400 }
       );
     }
 
-    if (!transactionId || transactionId.trim() === "") {
-      return NextResponse.json(
-        { error: "Please enter the Transaction ID (TxID)." },
-        { status: 400 }
-      );
+    let cleanTxId = transactionId && transactionId.trim() !== "" ? transactionId.trim().toUpperCase() : "";
+
+    if (method === "USDT-BEP20") {
+      if (!cleanTxId) {
+        cleanTxId = `BEP20-${Date.now().toString().slice(-6)}-${Math.floor(1000 + Math.random() * 9000)}`;
+      }
+    } else {
+      if (!cleanTxId) {
+        return NextResponse.json(
+          { error: "Please enter the Transaction ID (TxID)." },
+          { status: 400 }
+        );
+      }
     }
 
-    const cleanTxId = transactionId.trim().toUpperCase();
-
-    // Check if Transaction ID has already been submitted
-    const existingTx = await Deposit.findOne({ transactionId: cleanTxId });
-    if (existingTx) {
-      return NextResponse.json(
-        { error: "This Transaction ID has already been submitted." },
-        { status: 400 }
-      );
+    // Check if Transaction ID has already been submitted (for manually entered TxID)
+    if (transactionId && transactionId.trim() !== "") {
+      const existingTx = await Deposit.findOne({ transactionId: cleanTxId });
+      if (existingTx) {
+        return NextResponse.json(
+          { error: "This Transaction ID has already been submitted." },
+          { status: 400 }
+        );
+      }
     }
 
     const setting = await Setting.findOne({ key: "default_settings" });
@@ -84,7 +99,7 @@ export async function POST(req: NextRequest) {
       amount: depositAmount,
       amountBDT,
       amountUSDT,
-      senderNumber: senderNumber.trim(),
+      senderNumber: effectiveSender,
       transferType: transferType || "send_money",
       transactionId: cleanTxId,
       status: "pending",

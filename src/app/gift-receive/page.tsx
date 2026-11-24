@@ -63,14 +63,14 @@ export default function GiftReceivePage() {
           </div>
 
           {error && (
-            <div className="p-3 bg-red-500/20 border border-red-500/40 text-red-300 text-xs font-semibold rounded-xl text-center shadow-sm flex items-center justify-center gap-1.5">
-              <AlertCircle size={16} />
+            <div className="p-3.5 bg-rose-50 dark:bg-red-950/70 border border-rose-300 dark:border-red-500/60 text-rose-800 dark:text-red-100 text-xs font-bold rounded-xl text-center shadow-sm flex items-center justify-center gap-2">
+              <AlertCircle size={18} className="shrink-0 text-rose-600 dark:text-rose-400" />
               <span>{error}</span>
             </div>
           )}
           {success && (
-            <div className="p-3 bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-semibold rounded-xl text-center shadow-sm flex items-center justify-center gap-1.5">
-              <CheckCircle2 size={16} />
+            <div className="p-3.5 bg-emerald-50 dark:bg-emerald-950/70 border border-emerald-300 dark:border-emerald-500/60 text-emerald-900 dark:text-emerald-100 text-xs font-bold rounded-xl text-center shadow-sm flex items-center justify-center gap-2">
+              <CheckCircle2 size={18} className="shrink-0 text-emerald-600 dark:text-emerald-400" />
               <span>{success}</span>
             </div>
           )}

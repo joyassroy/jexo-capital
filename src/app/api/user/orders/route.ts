@@ -163,6 +163,9 @@ export async function POST() {
     user.todayEarnings = Number(
       ((user.todayEarnings || 0) + commissionUSDT).toFixed(4)
     );
+    user.fundIncome = Number(
+      ((user.fundIncome || 0) + commissionUSDT).toFixed(4)
+    );
     user.todayOrdersCount = (user.todayOrdersCount || 0) + 1;
     user.lastOrderDate = todayStr;
 

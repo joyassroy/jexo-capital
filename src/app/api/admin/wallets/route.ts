@@ -46,7 +46,7 @@ export async function PATCH(req: NextRequest) {
     const body = await req.json();
     const { walletId, action, rejectionReason } = body;
 
-    if (!walletId || !["approve", "reject"].includes(action)) {
+    if (!walletId || !["approve", "reject", "unlock", "delete"].includes(action)) {
       return NextResponse.json(
         { error: "Invalid wallet ID or action." },
         { status: 400 }
@@ -56,6 +56,24 @@ export async function PATCH(req: NextRequest) {
     const wallet = await BankWallet.findById(walletId);
     if (!wallet) {
       return NextResponse.json({ error: "Wallet not found." }, { status: 404 });
+    }
+
+    if (action === "unlock" || action === "delete") {
+      await BankWallet.findByIdAndDelete(walletId);
+
+      await Notification.create({
+        userId: wallet.userId,
+        title: "Bank Account Unlocked",
+        message: `Your ${wallet.bankType} account has been unlocked and reset by admin. You can now bind your new account details in My Bank.`,
+        type: "wallet_unlocked",
+        actionUrl: "/my-bank",
+        actionText: "Bind Bank Account",
+      });
+
+      return NextResponse.json({
+        success: true,
+        message: `Wallet unlocked and deleted successfully. User can now bind a new ${wallet.bankType} account.`,
+      });
     }
 
     if (action === "approve") {

@@ -46,6 +46,7 @@ export default function ProfilePage() {
   const { t } = useLanguage();
   const [mounted, setMounted] = useState(false);
   const [user, setUser] = useState<UserData | null>(null);
+  const [usdtRate, setUsdtRate] = useState<number>(127);
   const [loading, setLoading] = useState(true);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -65,6 +66,7 @@ export default function ProfilePage() {
       })
       .then((data) => {
         if (data?.user) setUser(data.user);
+        if (data?.withdrawable?.usdtRate) setUsdtRate(data.withdrawable.usdtRate);
         setLoading(false);
       })
       .catch((err) => {
@@ -361,10 +363,10 @@ export default function ProfilePage() {
             {/* Rate Conversion Row */}
             <div className="relative z-10 pt-2 pb-1.5 flex items-center justify-between text-[11px] sm:text-xs font-semibold text-blue-100 whitespace-nowrap overflow-hidden">
               <span className="text-white font-black whitespace-nowrap">
-                ≈ {user ? (Number(user.balance) * 127).toFixed(2) : "0.00"} BDT
+                ≈ {user ? (Number(user.balance) * usdtRate).toFixed(2) : "0.00"} BDT
               </span>
               <span className="text-blue-100/90 font-medium whitespace-nowrap text-[10px] sm:text-[10.5px]">
-                (Rate: 1 USDT = 127 Tk)
+                (Rate: 1 USDT = {usdtRate} Tk)
               </span>
             </div>
 
@@ -433,10 +435,10 @@ export default function ProfilePage() {
               {/* Rate conversion line */}
               <div className="pt-1.5 pb-1 flex items-center justify-between text-[10.5px] sm:text-xs font-semibold text-slate-300 whitespace-nowrap overflow-hidden">
                 <span className="text-[#f5ba31] font-bold whitespace-nowrap">
-                  ≈ {user ? (Number(user.balance) * 127).toFixed(2) : "0.00"} BDT
+                  ≈ {user ? (Number(user.balance) * usdtRate).toFixed(2) : "0.00"} BDT
                 </span>
                 <span className="text-slate-400 font-medium whitespace-nowrap text-[10px] sm:text-[11px]">
-                  (Rate: 1 USDT = 127 Tk)
+                  (Rate: 1 USDT = {usdtRate} Tk)
                 </span>
               </div>
 

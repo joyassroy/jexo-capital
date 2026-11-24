@@ -513,16 +513,16 @@ export default function VipPage() {
 
             {/* Error Message */}
             {purchaseError && (
-              <div className="p-2.5 rounded-xl bg-red-500/20 border border-red-500/40 text-red-300 text-xs font-semibold text-center flex items-center justify-center gap-1.5">
-                <AlertCircle size={15} />
+              <div className="p-3 rounded-xl bg-rose-50 dark:bg-red-950/70 border border-rose-300 dark:border-red-500/60 text-rose-800 dark:text-red-100 text-xs font-bold text-center flex items-center justify-center gap-2">
+                <AlertCircle size={17} className="shrink-0 text-rose-600 dark:text-rose-400" />
                 <span>{purchaseError}</span>
               </div>
             )}
 
             {/* Success Message */}
             {purchaseSuccess && (
-              <div className="p-2.5 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold text-center flex items-center justify-center gap-1.5">
-                <Check size={16} />
+              <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/70 border border-emerald-300 dark:border-emerald-500/60 text-emerald-900 dark:text-emerald-100 text-xs font-bold text-center flex items-center justify-center gap-2">
+                <Check size={17} className="shrink-0 text-emerald-600 dark:text-emerald-400" />
                 <span>{purchaseSuccess}</span>
               </div>
             )}

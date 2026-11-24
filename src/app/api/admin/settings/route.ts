@@ -48,6 +48,9 @@ export async function PUT(req: NextRequest) {
     if (body.nagadType !== undefined) setting.nagadType = body.nagadType;
     if (body.usdtBep20Address !== undefined) setting.usdtBep20Address = body.usdtBep20Address;
     if (body.usdtRateBDT !== undefined) setting.usdtRateBDT = Number(body.usdtRateBDT);
+    if (body.usdtQrCodeUrl !== undefined) setting.usdtQrCodeUrl = body.usdtQrCodeUrl;
+    if (body.usdtNetworkName !== undefined) setting.usdtNetworkName = body.usdtNetworkName;
+    if (body.usdtDepositInstructions !== undefined) setting.usdtDepositInstructions = body.usdtDepositInstructions;
     if (body.whatsappNumber !== undefined) setting.whatsappNumber = body.whatsappNumber;
     if (body.whatsappUrl !== undefined) setting.whatsappUrl = body.whatsappUrl;
     if (body.telegramGroupUrl !== undefined) setting.telegramGroupUrl = body.telegramGroupUrl;

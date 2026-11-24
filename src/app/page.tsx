@@ -43,6 +43,7 @@ export default function HomePage() {
   const { t, activeLanguageOption } = useLanguage();
   const [mounted, setMounted] = useState(false);
   const [user, setUser] = useState<UserProfile | null>(null);
+  const [usdtRate, setUsdtRate] = useState<number>(127);
   const [isLangModalOpen, setIsLangModalOpen] = useState(false);
   const isLight = mounted && theme === "light";
   const [tickerText, setTickerText] = useState("");
@@ -81,6 +82,7 @@ export default function HomePage() {
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (data?.user) setUser(data.user);
+        if (data?.withdrawable?.usdtRate) setUsdtRate(data.withdrawable.usdtRate);
       })
       .catch(() => {});
 
@@ -90,6 +92,9 @@ export default function HomePage() {
       .then((data) => {
         if (data?.settings?.homeTickerText) {
           setTickerText(data.settings.homeTickerText);
+        }
+        if (data?.settings?.usdtRateBDT) {
+          setUsdtRate(data.settings.usdtRateBDT);
         }
       })
       .catch(() => {});
@@ -517,7 +522,7 @@ export default function HomePage() {
                 </span>
               </div>
               <div className="text-[10px] font-medium mt-0.5 text-slate-400">
-                ≈ {user ? (Number(user.balance) * 127).toFixed(0) : "0"} Tk
+                ≈ {user ? (Number(user.balance) * usdtRate).toFixed(0) : "0"} Tk
               </div>
               <div className="flex items-center justify-center gap-1.5 mt-2 pt-1.5 border-t border-slate-100">
                 <div className="w-5 h-5 rounded-md bg-[#ede9fe] text-[#7c3aed] flex items-center justify-center flex-shrink-0">
@@ -540,7 +545,7 @@ export default function HomePage() {
                 </span>
               </div>
               <div className="text-[10px] font-medium mt-0.5 text-slate-400">
-                ≈ {user ? (Number(user.totalFund) * 127).toFixed(0) : "0"} Tk
+                ≈ {user ? (Number(user.totalFund) * usdtRate).toFixed(0) : "0"} Tk
               </div>
               <div className="flex items-center justify-center gap-1.5 mt-2 pt-1.5 border-t border-slate-100">
                 <div className="w-5 h-5 rounded-md bg-[#dcfce7] text-[#16a34a] flex items-center justify-center flex-shrink-0">
@@ -563,7 +568,7 @@ export default function HomePage() {
                 </span>
               </div>
               <div className="text-[10px] font-medium mt-0.5 text-slate-400">
-                ≈ {user ? (Number(user.fundIncome) * 127).toFixed(0) : "0"} Tk
+                ≈ {user ? (Number(user.fundIncome) * usdtRate).toFixed(0) : "0"} Tk
               </div>
               <div className="flex items-center justify-center gap-1.5 mt-2 pt-1.5 border-t border-slate-100">
                 <div className="w-5 h-5 rounded-md bg-[#ede9fe] text-[#7c3aed] flex items-center justify-center flex-shrink-0">
@@ -592,7 +597,7 @@ export default function HomePage() {
                   </span>
                 </div>
                 <div className="text-[11px] font-medium mt-0.5 text-slate-300/80">
-                  ≈ {user ? (Number(user.balance) * 127).toFixed(0) : "0"} Tk
+                  ≈ {user ? (Number(user.balance) * usdtRate).toFixed(0) : "0"} Tk
                 </div>
                 <div className="flex items-center justify-center gap-1.5 mt-3 pt-2 border-t border-white/10">
                   <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-gradient-to-br from-[#00b4d8] to-[#0077b6] flex items-center justify-center shadow-[0_4px_12px_rgba(0,180,216,0.45)] border border-cyan-300/40 flex-shrink-0">
@@ -615,7 +620,7 @@ export default function HomePage() {
                   </span>
                 </div>
                 <div className="text-[11px] font-medium mt-0.5 text-slate-300/80">
-                  ≈ {user ? (Number(user.totalFund) * 127).toFixed(0) : "0"} Tk
+                  ≈ {user ? (Number(user.totalFund) * usdtRate).toFixed(0) : "0"} Tk
                 </div>
                 <div className="flex items-center justify-center gap-1.5 mt-3 pt-2 border-t border-white/10">
                   <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-gradient-to-br from-[#10b981] to-[#059669] flex items-center justify-center shadow-[0_4px_12px_rgba(168,85,247,0.45)] border border-emerald-300/40 flex-shrink-0">
@@ -638,7 +643,7 @@ export default function HomePage() {
                   </span>
                 </div>
                 <div className="text-[11px] font-medium mt-0.5 text-slate-300/80">
-                  ≈ {user ? (Number(user.fundIncome) * 127).toFixed(0) : "0"} Tk
+                  ≈ {user ? (Number(user.fundIncome) * usdtRate).toFixed(0) : "0"} Tk
                 </div>
                 <div className="flex items-center justify-center gap-1.5 mt-3 pt-2 border-t border-white/10">
                   <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-gradient-to-br from-[#a855f7] to-[#7c3aed] flex items-center justify-center shadow-[0_4px_12px_rgba(168,85,247,0.45)] border border-purple-300/40 flex-shrink-0">

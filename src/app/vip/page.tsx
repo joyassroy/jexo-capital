@@ -554,7 +554,7 @@ export default function VipPage() {
                   type="button"
                   onClick={handleConfirmPurchase}
                   disabled={buying || Boolean(purchaseSuccess)}
-                  className="w-full py-3 rounded-2xl bg-gradient-to-r from-[#f5ba31] via-[#ffd369] to-[#d49002] text-[#020a1f] font-black text-sm shadow-[0_0_20px_rgba(245,186,49,0.4)] hover:brightness-105 active:scale-98 transition-all disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="btn-gold-premium w-full py-3.5 rounded-2xl text-sm disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                   {buying ? (
                     <>

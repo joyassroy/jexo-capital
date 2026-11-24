@@ -259,7 +259,7 @@ export default function SharePage() {
             <button
               type="button"
               onClick={handleCopyLink}
-              className="w-full mt-2 py-3.5 rounded-2xl bg-gradient-to-r from-[#f5ba31] via-[#ffd369] to-[#d49002] text-[#020a1f] font-black text-sm shadow-[0_0_20px_rgba(245,186,49,0.35)] active:scale-98 transition-all flex items-center justify-center gap-2"
+              className="btn-gold-premium w-full mt-2 py-4 rounded-2xl text-sm"
             >
               {copiedLink ? (
                 <>

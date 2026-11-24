@@ -94,7 +94,7 @@ export default function GiftReceivePage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#f5ba31] via-[#ffd369] to-[#d49002] text-[#020a1f] font-black text-base shadow-[0_0_20px_rgba(245,186,49,0.35)] active:scale-98 transition-all disabled:opacity-50"
+              className="btn-gold-premium w-full py-4 rounded-2xl text-base disabled:opacity-50"
             >
               {loading ? "Claiming..." : "Receive Reward"}
             </button>

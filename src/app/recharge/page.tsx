@@ -443,7 +443,7 @@ export default function RechargePage() {
                       onClick={() => setAmount(val)}
                       className={`py-3 rounded-2xl font-bold text-sm transition-all ${
                         isSelected
-                          ? "bg-gradient-to-r from-[#e69e05] via-[#ffd369] to-[#e69e05] text-[#020a1f] font-black shadow-[0_4px_15px_rgba(245,186,49,0.45)] scale-[1.02]"
+                          ? "btn-gold-premium scale-[1.02]"
                           : isLight
                             ? "bg-slate-50 text-slate-700 border border-slate-200 hover:border-amber-400"
                             : "bg-[#020a1f] text-slate-200 border border-slate-700/80 hover:border-[#f5ba31]/60"
@@ -469,7 +469,7 @@ export default function RechargePage() {
                   onClick={() => setAmount("")}
                   className={`py-3 rounded-2xl font-bold text-sm transition-all ${
                     !["500", "1000", "1270", "2540", "5000"].includes(amount)
-                      ? "bg-gradient-to-r from-[#e69e05] via-[#ffd369] to-[#e69e05] text-[#020a1f] font-black shadow-[0_4px_15px_rgba(245,186,49,0.45)] scale-[1.02]"
+                      ? "btn-gold-premium scale-[1.02]"
                       : isLight
                         ? "bg-slate-50 text-slate-700 border border-slate-200 hover:border-amber-400"
                         : "bg-[#020a1f] text-slate-200 border border-slate-700/80 hover:border-[#f5ba31]/60"
@@ -512,9 +512,9 @@ export default function RechargePage() {
                 <button
                   type="button"
                   onClick={handleInitialRechargeClick}
-                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#e69e05] via-[#ffd369] to-[#e69e05] text-[#020a1f] font-black text-sm shadow-[0_4px_15px_rgba(245,186,49,0.35)] hover:brightness-105 active:scale-95 transition-all shrink-0"
+                  className="btn-gold-premium px-6 py-2.5 rounded-xl text-sm shrink-0"
                 >
-                  Recharge
+                  <span>Recharge</span>
                 </button>
               </div>
 
@@ -675,9 +675,10 @@ export default function RechargePage() {
                 <button
                   type="button"
                   onClick={handleConfirmMethod}
-                  className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#e69e05] via-[#ffd369] to-[#e69e05] text-[#020a1f] font-black text-sm shadow-[0_4px_20px_rgba(245,186,49,0.4)] hover:brightness-105 active:scale-98 transition-all"
+                  className="btn-gold-premium w-full py-3.5 rounded-2xl text-sm"
                 >
-                  Confirm Method
+                  <span>Confirm Method</span>
+                  <CheckCircle2 size={16} className="stroke-[2.5]" />
                 </button>
                 <button
                   type="button"
@@ -807,9 +808,10 @@ export default function RechargePage() {
                   } catch { }
                   setStep("bank_step3");
                 }}
-                className="w-full py-4 mt-2 rounded-2xl bg-gradient-to-r from-[#e69e05] via-[#ffd369] to-[#e69e05] text-[#020a1f] font-black text-base shadow-[0_4px_25px_rgba(245,186,49,0.45)] hover:brightness-105 active:scale-98 transition-all"
+                className="btn-gold-premium w-full py-4 mt-2 rounded-2xl text-base"
               >
-                Continue to Payment
+                <span>Continue to Payment</span>
+                <CheckCircle2 size={18} className="stroke-[2.5]" />
               </button>
             </div>
           </div>
@@ -856,11 +858,11 @@ export default function RechargePage() {
                           "account"
                         )
                       }
-                      className="p-1.5 rounded-xl bg-gradient-to-r from-[#e69e05] to-[#ffd369] text-[#020a1f] font-bold shadow-xs hover:brightness-105"
+                      className="btn-gold-premium p-1.5 rounded-xl text-xs"
                       title="Copy number"
                     >
                       {copied === "account" ? (
-                        <Check size={16} className="text-[#020a1f] stroke-[3]" />
+                        <Check size={16} className="text-[#030a1c] stroke-[3]" />
                       ) : (
                         <Copy size={16} />
                       )}
@@ -1114,9 +1116,19 @@ export default function RechargePage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-4 rounded-2xl bg-gradient-to-r from-[#e69e05] via-[#ffd369] to-[#e69e05] text-[#020a1f] font-black text-base shadow-[0_4px_25px_rgba(245,186,49,0.45)] hover:brightness-105 active:scale-98 transition-all disabled:opacity-50"
+                className="btn-gold-premium w-full py-4 rounded-2xl text-base"
               >
-                {loading ? "Submitting..." : "Submit Deposit Request"}
+                {loading ? (
+                  <>
+                    <Loader2 size={18} className="animate-spin" />
+                    <span>Submitting...</span>
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle2 size={18} className="stroke-[2.5]" />
+                    <span>Submit Deposit Request</span>
+                  </>
+                )}
               </button>
             </form>
           </div>
@@ -1297,15 +1309,17 @@ export default function RechargePage() {
               <button
                 type="button"
                 onClick={() => handleCopy(adminUsdtAddress, "usdt")}
-                className="w-full py-3 rounded-2xl bg-gradient-to-r from-[#e69e05] via-[#ffd369] to-[#e69e05] text-[#020a1f] font-black text-sm shadow-[0_4px_18px_rgba(245,186,49,0.35)] hover:brightness-105 active:scale-98 transition-all flex items-center justify-center gap-2"
+                className="btn-gold-premium w-full py-3 rounded-2xl text-sm"
               >
                 {copied === "usdt" ? (
                   <>
-                    <Check size={18} className="stroke-[3]" /> Copied!
+                    <Check size={18} className="stroke-[3]" />
+                    <span>Copied!</span>
                   </>
                 ) : (
                   <>
-                    <Copy size={18} /> Copy address
+                    <Copy size={18} />
+                    <span>Copy address</span>
                   </>
                 )}
               </button>
@@ -1453,9 +1467,19 @@ export default function RechargePage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-4 rounded-2xl bg-gradient-to-r from-[#e69e05] via-[#ffd369] to-[#e69e05] text-[#020a1f] font-black text-base shadow-[0_4px_25px_rgba(245,186,49,0.45)] hover:brightness-105 active:scale-98 transition-all disabled:opacity-50"
+                className="btn-gold-premium w-full py-4 rounded-2xl text-base"
               >
-                {loading ? "Submitting Deposit..." : "I Have Paid / Submit Recharge"}
+                {loading ? (
+                  <>
+                    <Loader2 size={18} className="animate-spin" />
+                    <span>Submitting Deposit...</span>
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle2 size={18} className="stroke-[2.5]" />
+                    <span>I Have Paid / Submit Recharge</span>
+                  </>
+                )}
               </button>
             </form>
           </div>

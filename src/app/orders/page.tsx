@@ -540,7 +540,7 @@ export default function OrdersPage() {
             <button
               onClick={handleAddToQueue}
               disabled={isProcessing}
-              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#e69e05] via-[#ffd369] to-[#e69e05] text-[#020a1f] font-black text-base shadow-[0_4px_25px_rgba(245,186,49,0.45)] hover:brightness-105 active:scale-98 transition-all flex items-center justify-center gap-2 disabled:opacity-75 cursor-pointer"
+              className="btn-gold-premium w-full py-4 rounded-2xl text-base disabled:opacity-75 cursor-pointer"
             >
               <ClipboardList size={20} className="stroke-[2.5]" />
               <span>
@@ -664,7 +664,7 @@ export default function OrdersPage() {
                 setShowCompletionModal(false);
                 fetchOrderData();
               }}
-              className="w-full py-3 rounded-2xl bg-gradient-to-r from-[#f5ba31] via-[#ffd369] to-[#d49002] text-[#020a1f] font-black text-sm shadow-[0_4px_15px_rgba(245,186,49,0.35)] hover:brightness-105 active:scale-98 transition-all"
+              className="btn-gold-premium w-full py-3.5 rounded-2xl text-sm"
             >
               Confirm & Continue
             </button>

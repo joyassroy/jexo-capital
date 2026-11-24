@@ -344,6 +344,96 @@ html.light body {
   border-color: #e2e8f0 !important;
 }
 
+.light [class*="from-[#07173e]"] .text-\[\#00e676\] {
+  color: #059669 !important;
+}
+
+.light [class*="from-[#07173e]"] .text-\[\#38bdf8\] {
+  color: #0284c7 !important;
+}
+
+.light [class*="from-[#07173e]"] .text-\[\#f5ba31\] {
+  color: #d97706 !important;
+}
+
+/* VIP Auto-Activation Banner & Balance Bar Styles */
+.vip-balance-card {
+  transition: all 0.2s ease-in-out;
+}
+
+.vip-auto-banner {
+  background: linear-gradient(90deg, rgba(8, 25, 68, 0.85) 0%, rgba(5, 20, 58, 0.95) 100%);
+  border: 1px solid rgba(0, 180, 216, 0.35);
+  box-shadow: 0 0 15px rgba(0, 180, 216, 0.12);
+}
+
+.vip-banner-icon {
+  background: rgba(0, 180, 216, 0.15);
+  color: #00d2ff;
+  border: 1px solid rgba(0, 180, 216, 0.3);
+}
+
+.vip-banner-title {
+  color: #ffffff;
+  font-weight: 800;
+}
+
+.vip-banner-desc {
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+/* Light / Day Mode Overrides for VIP Page elements */
+.light .vip-balance-card {
+  background: #ffffff !important;
+  border-color: #bae6fd !important;
+  box-shadow: 0 4px 18px rgba(2, 132, 199, 0.08) !important;
+}
+
+.light .vip-balance-card span.text-\[\#f5ba31\] {
+  color: #0284c7 !important;
+}
+
+.light .vip-badge-pill {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%) !important;
+  border-color: #f59e0b !important;
+  color: #92400e !important;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.18) !important;
+}
+
+.light .vip-badge-pill svg,
+.light .vip-badge-pill span {
+  color: #92400e !important;
+}
+
+.light .vip-auto-banner {
+  background: linear-gradient(135deg, #eff6ff 0%, #e0f2fe 100%) !important;
+  border: 1px solid #7dd3fc !important;
+  box-shadow: 0 3px 12px rgba(2, 132, 199, 0.1) !important;
+}
+
+.light .vip-banner-icon {
+  background: #0284c7 !important;
+  color: #ffffff !important;
+  border-color: #0284c7 !important;
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25) !important;
+}
+
+.light .vip-banner-icon svg {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+}
+
+.light .vip-banner-title {
+  color: #0369a1 !important;
+  font-weight: 800 !important;
+}
+
+.light .vip-banner-desc {
+  color: #0f172a !important;
+  font-weight: 600 !important;
+}
+
 /* Inner Input / Account Number / Address Boxes */
 .light [class*="bg-[#020a1f]"] {
   background-color: #f8fafc !important;

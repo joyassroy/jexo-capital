@@ -235,7 +235,7 @@ export default function VipPage() {
         </div>
 
         {/* User Balance & Level Quick Bar */}
-        <div className="mx-3 mt-3 p-3.5 rounded-2xl bg-[#05143a]/90 backdrop-blur-md border border-[#f5ba31]/40 shadow-[0_0_15px_rgba(245,186,49,0.2)] flex items-center justify-between">
+        <div className="vip-balance-card mx-3 mt-3 p-3.5 rounded-2xl bg-[#05143a]/90 backdrop-blur-md border border-[#f5ba31]/40 shadow-[0_0_15px_rgba(245,186,49,0.2)] flex items-center justify-between transition-all">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#00b4d8] to-[#0077b6] text-white flex items-center justify-center shadow-[0_0_10px_rgba(0,180,216,0.4)]">
               <Wallet size={18} />
@@ -255,7 +255,7 @@ export default function VipPage() {
           </div>
 
           {/* Current VIP badge */}
-          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-amber-500/20 to-amber-600/20 border border-[#f5ba31] text-[#f5ba31] shadow-[0_0_10px_rgba(245,186,49,0.25)]">
+          <div className="vip-badge-pill flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-amber-500/20 to-amber-600/20 border border-[#f5ba31] text-[#f5ba31] shadow-[0_0_10px_rgba(245,186,49,0.25)]">
             <Crown size={14} className="text-[#f5ba31]" />
             <span className="text-xs font-black">
               {user && user.vipLevel > 0 ? `VIP-${user.vipLevel}` : "VIP-0"}
@@ -265,11 +265,16 @@ export default function VipPage() {
 
         {/* Auto-Activation Informative Banner */}
         {vipAutoActiveEnabled && (
-          <div className="mx-3 mt-2.5 p-2.5 rounded-xl bg-gradient-to-r from-amber-500/15 via-blue-500/15 to-amber-500/15 border border-[#f5ba31]/30 flex items-center gap-2 text-[11px] text-amber-200">
-            <Zap size={14} className="text-[#f5ba31] shrink-0" />
-            <span className="leading-tight">
-              <strong className="text-white">Auto-Activation Active:</strong> Your VIP tier automatically unlocks and upgrades as your wallet balance grows!
-            </span>
+          <div className="vip-auto-banner mx-3 mt-2.5 p-3 rounded-2xl flex items-center gap-2.5 transition-all">
+            <div className="vip-banner-icon w-6 h-6 rounded-lg flex items-center justify-center shrink-0">
+              <Zap size={14} />
+            </div>
+            <p className="vip-banner-text text-[11px] leading-snug">
+              <strong className="vip-banner-title">Auto-Activation Active: </strong>
+              <span className="vip-banner-desc">
+                Your VIP tier automatically unlocks and upgrades as your wallet balance grows!
+              </span>
+            </p>
           </div>
         )}
 

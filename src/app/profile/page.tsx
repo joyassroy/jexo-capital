@@ -171,19 +171,10 @@ export default function ProfilePage() {
     <div
       className={`min-h-screen pb-32 transition-colors duration-300 relative overflow-hidden ${
         isLight
-          ? "bg-gradient-to-b from-[#ddecfa] via-[#eef6fc] to-[#dcecfa] text-slate-900"
+          ? "bg-gradient-to-b from-[#f4f7fc] via-[#ffffff] to-[#eef3fb] text-slate-800"
           : "bg-gradient-to-b from-[#020a1f] via-[#051338] to-[#01081a] text-white"
       }`}
     >
-      {/* Ambient Glows in Day Mode */}
-      {isLight ? (
-        <>
-          <div className="absolute -top-20 -left-20 w-72 h-72 rounded-full bg-blue-300/20 blur-3xl pointer-events-none" />
-          <div className="absolute -top-16 -right-20 w-80 h-80 rounded-full bg-cyan-300/25 blur-3xl pointer-events-none" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-sky-200/20 blur-[130px] pointer-events-none" />
-        </>
-      ) : null}
-
       {/* Header Building Image with Avatar */}
       <div className="relative h-36 w-full bg-slate-950 overflow-hidden shadow-inner">
         <Image
@@ -200,17 +191,13 @@ export default function ProfilePage() {
         <div
           className={`absolute inset-0 transition-all duration-300 ${
             isLight
-              ? "bg-gradient-to-t from-[#ddecfa] via-[#1738d8]/35 to-transparent"
-              : "bg-gradient-to-t from-[#020a1f] via-[#020a1f]/50 to-transparent"
+              ? "bg-gradient-to-t from-[#f4f7fc] via-black/25 to-black/60"
+              : "bg-gradient-to-t from-[#020a1f] via-[#020a1f]/60 to-black/60"
           }`}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-transparent pointer-events-none" />
 
-        {/* Top Bar with Page Title and Theme Toggle */}
-        <div className="absolute top-3 inset-x-4 z-20 flex items-center justify-between">
-          <span className="font-black text-sm tracking-wide text-white drop-shadow-[0_1px_4px_rgba(0,0,0,0.6)]">
-            {t("nav_profile")}
-          </span>
+        {/* Top Bar with Theme Toggle only (Personal Center removed per user request) */}
+        <div className="absolute top-3 right-4 z-20 flex items-center justify-end">
           <ThemeToggle compact />
         </div>
       </div>
@@ -223,13 +210,13 @@ export default function ProfilePage() {
             <div
               className={`relative w-20 h-20 sm:w-22 sm:h-22 rounded-full p-1 overflow-hidden flex items-center justify-center transition-all ${
                 isLight
-                  ? "bg-gradient-to-tr from-[#00d2ff] via-[#2563eb] to-[#1d4ed8] shadow-[0_4px_18px_rgba(0,180,255,0.4)] border-2 border-white"
+                  ? "bg-gradient-to-tr from-[#ffe58f] via-[#f5ba31] to-[#d49002] shadow-[0_4px_18px_rgba(245,186,49,0.35)] border-2 border-white"
                   : "bg-gradient-to-tr from-[#ffe58f] via-[#f5ba31] to-[#d49002] shadow-[0_0_20px_rgba(245,186,49,0.45)] border-2 border-white/40"
               }`}
             >
               {uploadingAvatar ? (
                 <div className="w-full h-full rounded-full bg-slate-900 flex items-center justify-center text-white">
-                  <Loader2 size={24} className={`animate-spin ${isLight ? "text-cyan-300" : "text-[#f5ba31]"}`} />
+                  <Loader2 size={24} className="animate-spin text-amber-400" />
                 </div>
               ) : user?.avatarUrl ? (
                 <img
@@ -238,13 +225,7 @@ export default function ProfilePage() {
                   className="w-full h-full object-cover rounded-full"
                 />
               ) : (
-                <div
-                  className={`w-full h-full rounded-full flex items-center justify-center text-white text-xl font-black shadow-inner tracking-wider select-none ${
-                    isLight
-                      ? "bg-gradient-to-tr from-[#00b4d8] via-[#0077b6] to-[#023e8a]"
-                      : "bg-gradient-to-tr from-[#00b4d8] to-[#0077b6]"
-                  }`}
-                >
+                <div className="w-full h-full rounded-full flex items-center justify-center text-white text-xl font-black shadow-inner tracking-wider select-none bg-gradient-to-tr from-[#020a1f] to-[#0a235c]">
                   {getInitials(user?.nickname)}
                 </div>
               )}
@@ -256,7 +237,7 @@ export default function ProfilePage() {
               title={t("upload_photo")}
               className={`absolute bottom-0 right-0 p-1.5 rounded-full shadow-md cursor-pointer hover:scale-110 active:scale-95 transition-all ${
                 isLight
-                  ? "bg-gradient-to-tr from-[#00d2ff] to-[#2563eb] text-white border-2 border-white shadow-md"
+                  ? "bg-gradient-to-tr from-[#f5ba31] to-[#d49002] text-[#020a1f] border-2 border-white shadow-md"
                   : "bg-gradient-to-tr from-[#f5ba31] to-[#e69e05] text-[#020a1f] border-2 border-[#020a1f] shadow-md"
               }`}
             >
@@ -289,11 +270,11 @@ export default function ProfilePage() {
           <div
             className={`mt-1.5 px-4 py-1 rounded-full backdrop-blur-md flex items-center gap-1.5 transition-all ${
               isLight
-                ? "bg-white/95 border border-blue-200/90 shadow-[0_2px_10px_rgba(37,99,235,0.08)]"
+                ? "bg-white border border-slate-200/90 shadow-sm"
                 : "bg-[#05143a]/90 border border-[#f5ba31]/50 shadow-[0_0_12px_rgba(245,186,49,0.2)]"
             }`}
           >
-            <User size={13} className={isLight ? "text-blue-600" : "text-[#f5ba31]"} />
+            <User size={13} className="text-amber-500" />
             <span
               className={`font-black text-xs sm:text-sm tracking-tight ${
                 isLight ? "text-slate-900" : "text-white"
@@ -310,13 +291,7 @@ export default function ProfilePage() {
           >
             <span>ID: {user?.referralCode || "------"}</span>
             <span>•</span>
-            <span
-              className={`px-2.5 py-0.5 rounded-full font-bold text-[10px] transition-all ${
-                isLight
-                  ? "bg-blue-50 text-blue-700 border border-blue-200 shadow-xs"
-                  : "bg-[#f5ba31]/20 text-[#f5ba31] border border-[#f5ba31]/60 shadow-[0_0_8px_rgba(245,186,49,0.2)]"
-              }`}
-            >
+            <span className="px-2.5 py-0.5 rounded-full font-black text-[10px] bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 text-slate-950 border border-amber-300 shadow-xs">
               Vip: {user?.vipLevel ?? 0}
             </span>
           </div>
@@ -324,108 +299,124 @@ export default function ProfilePage() {
 
         {/* Total Assets Card */}
         {isLight ? (
-          /* Day Mode Vibrant Electric Blue Wealth Card */
-          <div className="relative mt-3 p-4 sm:p-4.5 rounded-[24px] bg-gradient-to-br from-[#1738d8] via-[#2563eb] to-[#0284c7] text-white shadow-[0_8px_25px_rgba(23,56,216,0.28)] border border-blue-300/35 overflow-hidden">
-            {/* Top-right Cyan Glow */}
-            <div className="absolute top-0 right-0 w-44 h-44 bg-[radial-gradient(circle,rgba(0,210,255,0.35)_0%,transparent_70%)] pointer-events-none" />
+          /* Day Mode Clean Luxury Pearl & Gold Card */
+          <div className="relative mt-3 p-[2px] rounded-[26px] bg-gradient-to-b from-[#f5ba31] via-[#ffd778] to-[#c98600] shadow-[0_8px_25px_rgba(245,186,49,0.22)]">
+            <div className="p-4 sm:p-4.5 rounded-[24px] bg-white text-slate-800">
+              {/* Top Row: Title + Balance + Deposit / Withdraw Actions */}
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div>
+                  <span className="text-[11px] sm:text-[11.5px] font-extrabold text-slate-500 uppercase tracking-wider block">
+                    {t("total_assets")}
+                  </span>
+                  <div className="text-2xl sm:text-3xl font-black text-[#020a1f] flex items-baseline gap-1.5 mt-0.5 tracking-tight font-mono">
+                    <span>{user ? Number(user.balance).toFixed(2) : "0.00"}</span>
+                    <span className="text-xs font-black text-amber-500 font-sans">USDT</span>
+                  </div>
+                </div>
 
-            {/* Top Row: Title + Balance + Deposit / Withdraw Actions */}
-            <div className="relative z-10 flex items-center justify-between pb-2.5 border-b border-white/20">
-              <div>
-                <span
-                  style={{ color: "#ffffff", WebkitTextFillColor: "#ffffff" }}
-                  className="text-[11px] sm:text-[11.5px] font-extrabold !text-white text-white uppercase tracking-wider block drop-shadow-[0_1px_3px_rgba(0,0,0,0.3)]"
-                >
-                  {t("total_assets")}
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <Link
+                    href="/recharge"
+                    className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#f5ba31] via-[#ffd369] to-[#d49002] text-[#020a1f] font-black text-xs shadow-md shadow-amber-500/25 hover:brightness-105 active:scale-95 transition-all tracking-wide uppercase"
+                  >
+                    {t("deposit")}
+                  </Link>
+                  <Link
+                    href="/withdraw"
+                    className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-black text-xs border border-slate-200 shadow-xs hover:scale-105 active:scale-95 transition-all tracking-wide uppercase"
+                  >
+                    {t("withdraw")}
+                  </Link>
+                </div>
+              </div>
+
+              {/* Rate Conversion Row */}
+              <div className="pt-2 pb-2 flex items-center justify-between text-[11px] sm:text-xs font-semibold whitespace-nowrap overflow-hidden">
+                <span className="text-amber-600 font-black whitespace-nowrap">
+                  ≈ {user ? (Number(user.balance) * usdtRate).toFixed(2) : "0.00"} BDT
                 </span>
-                <div className="text-2xl sm:text-2xl font-black text-white flex items-baseline gap-1.5 mt-0.5 tracking-tight">
-                  <span>{user ? Number(user.balance).toFixed(2) : "0.00"}</span>
-                  <span className="text-xs font-bold text-cyan-200">USDT</span>
-                </div>
+                <span className="text-slate-400 font-medium whitespace-nowrap text-[10px] sm:text-[10.5px]">
+                  (Rate: 1 USDT = {usdtRate} Tk)
+                </span>
               </div>
 
-              <div className="flex items-center gap-1.5 flex-shrink-0">
-                <Link
-                  href="/recharge"
-                  className="px-3.5 py-1.5 rounded-xl bg-white text-blue-700 hover:bg-blue-50 font-black text-xs shadow-md hover:scale-105 active:scale-95 transition-all"
-                >
-                  {t("deposit")}
-                </Link>
-                <Link
-                  href="/withdraw"
-                  className="px-3.5 py-1.5 rounded-xl bg-white/20 backdrop-blur-md text-white border border-white/35 hover:bg-white/30 font-black text-xs shadow-sm hover:scale-105 active:scale-95 transition-all"
-                >
-                  {t("withdraw")}
-                </Link>
-              </div>
-            </div>
+              {/* 3 Columns Earnings Row (Showing both USDT and BDT profit) */}
+              <div className="grid grid-cols-3 divide-x divide-slate-100 pt-3 border-t border-slate-100 text-center">
+                {/* Yesterday */}
+                <div className="px-1 flex flex-col items-center justify-between">
+                  <div>
+                    <div className="text-xs sm:text-sm font-black text-slate-800 font-mono flex items-baseline justify-center gap-0.5">
+                      <span>{user ? Number(user.yesterdayEarnings).toFixed(2) : "0.00"}</span>
+                      <span className="text-[9px] font-bold text-slate-400">USDT</span>
+                    </div>
+                    <div className="text-[10px] sm:text-[11px] font-black text-slate-600 font-mono mt-0.5">
+                      ≈ {user ? (Number(user.yesterdayEarnings) * usdtRate).toFixed(2) : "0.00"} ৳
+                    </div>
+                  </div>
+                  <div className="text-[9px] sm:text-[9.5px] text-slate-500 font-semibold mt-1 uppercase tracking-tight">
+                    {t("earnings_yesterday")}
+                  </div>
+                </div>
 
-            {/* Rate Conversion Row */}
-            <div className="relative z-10 pt-2 pb-1.5 flex items-center justify-between text-[11px] sm:text-xs font-semibold text-blue-100 whitespace-nowrap overflow-hidden">
-              <span className="text-white font-black whitespace-nowrap">
-                ≈ {user ? (Number(user.balance) * usdtRate).toFixed(2) : "0.00"} BDT
-              </span>
-              <span className="text-blue-100/90 font-medium whitespace-nowrap text-[10px] sm:text-[10.5px]">
-                (Rate: 1 USDT = {usdtRate} Tk)
-              </span>
-            </div>
+                {/* Accumulated */}
+                <div className="px-1 flex flex-col items-center justify-between">
+                  <div>
+                    <div className="text-xs sm:text-sm font-black text-amber-600 font-mono flex items-baseline justify-center gap-0.5">
+                      <span>{user ? Number(user.fundIncome).toFixed(2) : "0.00"}</span>
+                      <span className="text-[9px] font-bold text-amber-500/80">USDT</span>
+                    </div>
+                    <div className="text-[10px] sm:text-[11px] font-black text-amber-600 font-mono mt-0.5">
+                      ≈ {user ? (Number(user.fundIncome) * usdtRate).toFixed(2) : "0.00"} ৳
+                    </div>
+                  </div>
+                  <div className="text-[9px] sm:text-[9.5px] text-slate-500 font-semibold mt-1 uppercase tracking-tight">
+                    {t("accumulated_earnings")}
+                  </div>
+                </div>
 
-            {/* 3 Columns Earnings Row */}
-            <div className="relative z-10 grid grid-cols-3 divide-x divide-white/20 pt-2 border-t border-white/20 text-center">
-              <div>
-                <div className="text-xs sm:text-sm font-black text-white">
-                  {user ? Number(user.yesterdayEarnings).toFixed(2) : "0.00"}
-                </div>
-                <div className="text-[9.5px] sm:text-[10px] text-blue-100/85 font-medium mt-0.5">
-                  {t("earnings_yesterday")}
-                </div>
-              </div>
-              <div>
-                <div className="text-xs sm:text-sm font-black text-white">
-                  {user ? Number(user.fundIncome).toFixed(2) : "0.00"}
-                </div>
-                <div className="text-[9.5px] sm:text-[10px] text-blue-100/85 font-medium mt-0.5">
-                  {t("accumulated_earnings")}
-                </div>
-              </div>
-              <div>
-                <div className="text-xs sm:text-sm font-black text-white">
-                  {user ? Number(user.todayEarnings).toFixed(2) : "0.00"}
-                </div>
-                <div className="text-[9.5px] sm:text-[10px] text-blue-100/85 font-medium mt-0.5">
-                  {t("today_earnings")}
+                {/* Today */}
+                <div className="px-1 flex flex-col items-center justify-between">
+                  <div>
+                    <div className="text-xs sm:text-sm font-black text-emerald-600 font-mono flex items-baseline justify-center gap-0.5">
+                      <span>{user ? Number(user.todayEarnings).toFixed(2) : "0.00"}</span>
+                      <span className="text-[9px] font-bold text-emerald-500/80">USDT</span>
+                    </div>
+                    <div className="text-[10px] sm:text-[11px] font-black text-emerald-600 font-mono mt-0.5">
+                      ≈ {user ? (Number(user.todayEarnings) * usdtRate).toFixed(2) : "0.00"} ৳
+                    </div>
+                  </div>
+                  <div className="text-[9px] sm:text-[9.5px] text-slate-500 font-semibold mt-1 uppercase tracking-tight">
+                    {t("today_earnings")}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         ) : (
           /* Dark Mode Luxury Obsidian Gold Assets Card */
-          <div className="mt-3 p-[2px] rounded-[24px] bg-gradient-to-b from-[#f5ba31] via-[#ffd778] to-[#c98600] shadow-[0_0_24px_rgba(245,186,49,0.3)]">
-            <div className="p-3 sm:p-3.5 rounded-[22px] bg-gradient-to-b from-[#081944]/95 via-[#04102e]/98 to-[#02091c] backdrop-blur-2xl text-white">
-              <div className="flex items-center justify-between pb-2 border-b border-white/10">
+          <div className="mt-3 p-[2px] rounded-[26px] bg-gradient-to-b from-[#f5ba31] via-[#ffd778] to-[#c98600] shadow-[0_0_24px_rgba(245,186,49,0.3)]">
+            <div className="p-4 sm:p-4.5 rounded-[24px] bg-gradient-to-b from-[#081944]/95 via-[#04102e]/98 to-[#02091c] backdrop-blur-2xl text-white">
+              <div className="flex items-center justify-between pb-3 border-b border-white/10">
                 <div>
-                  <span
-                    style={{ color: "#ffffff", WebkitTextFillColor: "#ffffff" }}
-                    className="text-[11px] sm:text-[11.5px] font-extrabold !text-white text-white uppercase tracking-wider block drop-shadow-[0_1px_3px_rgba(0,0,0,0.4)]"
-                  >
+                  <span className="text-[11px] sm:text-[11.5px] font-extrabold text-amber-200/90 uppercase tracking-wider block drop-shadow-[0_1px_3px_rgba(0,0,0,0.4)]">
                     {t("total_assets")}
                   </span>
-                  <div className="text-xl sm:text-2xl font-black text-white flex items-baseline gap-1 mt-0.5">
+                  <div className="text-2xl sm:text-3xl font-black text-white flex items-baseline gap-1.5 mt-0.5 font-mono">
                     <span>{user ? Number(user.balance).toFixed(2) : "0.00"}</span>
-                    <span className="text-xs font-bold text-[#f5ba31]">USDT</span>
+                    <span className="text-xs font-black text-[#f5ba31] font-sans">USDT</span>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-1.5 flex-shrink-0">
+                <div className="flex items-center gap-2 flex-shrink-0">
                   <Link
                     href="/recharge"
-                    className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-extrabold text-xs shadow-[0_0_10px_rgba(16,185,129,0.4)] hover:brightness-105 active:scale-95 transition-all"
+                    className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#f5ba31] via-[#ffd369] to-[#d49002] text-[#020a1f] font-black text-xs shadow-md shadow-amber-500/25 hover:brightness-105 active:scale-95 transition-all tracking-wide uppercase"
                   >
                     {t("deposit")}
                   </Link>
                   <Link
                     href="/withdraw"
-                    className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-red-500 to-rose-600 text-white font-extrabold text-xs shadow-[0_0_10px_rgba(239,68,68,0.4)] hover:brightness-105 active:scale-95 transition-all"
+                    className="px-4 py-2 rounded-xl bg-white/15 hover:bg-white/25 text-white font-black text-xs border border-white/30 backdrop-blur-md shadow-xs hover:scale-105 active:scale-95 transition-all tracking-wide uppercase"
                   >
                     {t("withdraw")}
                   </Link>
@@ -433,38 +424,61 @@ export default function ProfilePage() {
               </div>
 
               {/* Rate conversion line */}
-              <div className="pt-1.5 pb-1 flex items-center justify-between text-[10.5px] sm:text-xs font-semibold text-slate-300 whitespace-nowrap overflow-hidden">
-                <span className="text-[#f5ba31] font-bold whitespace-nowrap">
+              <div className="pt-2 pb-2 flex items-center justify-between text-[11px] sm:text-xs font-semibold text-slate-300 whitespace-nowrap overflow-hidden">
+                <span className="text-[#f5ba31] font-black whitespace-nowrap">
                   ≈ {user ? (Number(user.balance) * usdtRate).toFixed(2) : "0.00"} BDT
                 </span>
-                <span className="text-slate-400 font-medium whitespace-nowrap text-[10px] sm:text-[11px]">
+                <span className="text-slate-400 font-medium whitespace-nowrap text-[10px] sm:text-[10.5px]">
                   (Rate: 1 USDT = {usdtRate} Tk)
                 </span>
               </div>
 
-              {/* Earnings summary row */}
-              <div className="grid grid-cols-3 divide-x divide-white/10 pt-2 border-t border-white/10 text-center">
-                <div>
-                  <div className="text-xs sm:text-sm font-black text-white">
-                    {user ? Number(user.yesterdayEarnings).toFixed(2) : "0.00"}
+              {/* Earnings summary row (Showing both USDT and BDT profit) */}
+              <div className="grid grid-cols-3 divide-x divide-white/10 pt-3 border-t border-white/10 text-center">
+                {/* Yesterday */}
+                <div className="px-1 flex flex-col items-center justify-between">
+                  <div>
+                    <div className="text-xs sm:text-sm font-black text-white font-mono flex items-baseline justify-center gap-0.5">
+                      <span>{user ? Number(user.yesterdayEarnings).toFixed(2) : "0.00"}</span>
+                      <span className="text-[9px] font-bold text-slate-400">USDT</span>
+                    </div>
+                    <div className="text-[10px] sm:text-[11px] font-black text-slate-300 font-mono mt-0.5">
+                      ≈ {user ? (Number(user.yesterdayEarnings) * usdtRate).toFixed(2) : "0.00"} ৳
+                    </div>
                   </div>
-                  <div className="text-[9.5px] sm:text-[10px] text-slate-400 font-medium mt-0.5">
+                  <div className="text-[9px] sm:text-[9.5px] text-slate-400 font-medium mt-1 uppercase tracking-tight">
                     {t("earnings_yesterday")}
                   </div>
                 </div>
-                <div>
-                  <div className="text-xs sm:text-sm font-black text-white">
-                    {user ? Number(user.fundIncome).toFixed(2) : "0.00"}
+
+                {/* Accumulated */}
+                <div className="px-1 flex flex-col items-center justify-between">
+                  <div>
+                    <div className="text-xs sm:text-sm font-black text-[#f5ba31] font-mono flex items-baseline justify-center gap-0.5">
+                      <span>{user ? Number(user.fundIncome).toFixed(2) : "0.00"}</span>
+                      <span className="text-[9px] font-bold text-amber-300/80">USDT</span>
+                    </div>
+                    <div className="text-[10px] sm:text-[11px] font-black text-[#ffd369] font-mono mt-0.5">
+                      ≈ {user ? (Number(user.fundIncome) * usdtRate).toFixed(2) : "0.00"} ৳
+                    </div>
                   </div>
-                  <div className="text-[9.5px] sm:text-[10px] text-slate-400 font-medium mt-0.5">
+                  <div className="text-[9px] sm:text-[9.5px] text-slate-400 font-medium mt-1 uppercase tracking-tight">
                     {t("accumulated_earnings")}
                   </div>
                 </div>
-                <div>
-                  <div className="text-xs sm:text-sm font-black text-white">
-                    {user ? Number(user.todayEarnings).toFixed(2) : "0.00"}
+
+                {/* Today */}
+                <div className="px-1 flex flex-col items-center justify-between">
+                  <div>
+                    <div className="text-xs sm:text-sm font-black text-emerald-400 font-mono flex items-baseline justify-center gap-0.5">
+                      <span>{user ? Number(user.todayEarnings).toFixed(2) : "0.00"}</span>
+                      <span className="text-[9px] font-bold text-emerald-400/80">USDT</span>
+                    </div>
+                    <div className="text-[10px] sm:text-[11px] font-black text-emerald-400 font-mono mt-0.5">
+                      ≈ {user ? (Number(user.todayEarnings) * usdtRate).toFixed(2) : "0.00"} ৳
+                    </div>
                   </div>
-                  <div className="text-[9.5px] sm:text-[10px] text-slate-400 font-medium mt-0.5">
+                  <div className="text-[9px] sm:text-[9.5px] text-slate-400 font-medium mt-1 uppercase tracking-tight">
                     {t("today_earnings")}
                   </div>
                 </div>
@@ -474,28 +488,28 @@ export default function ProfilePage() {
         )}
 
         {/* Quick Actions Row: Notice, Company Info, FAQ */}
-        <div className="grid grid-cols-3 gap-2.5 mt-3">
+        <div className="grid grid-cols-3 gap-2.5 mt-3.5">
           {/* Notice */}
           <Link
             href="/notice"
             className={`flex flex-col items-center justify-center p-3 rounded-2xl border shadow-sm transition-all group ${
               isLight
-                ? "bg-white border-slate-100 hover:border-blue-200 hover:shadow-md"
+                ? "bg-white border-slate-200/90 hover:border-amber-400/70 hover:shadow-md"
                 : "bg-[#04102e]/85 backdrop-blur-md border-white/10 hover:border-[#f5ba31]/50 hover:bg-[#071944]"
             }`}
           >
             <div
-              className={`w-9 h-9 rounded-xl flex items-center justify-center mb-1.5 transition-transform group-hover:scale-105 ${
+              className={`w-10 h-10 rounded-xl flex items-center justify-center mb-1.5 transition-transform group-hover:scale-105 ${
                 isLight
-                  ? "bg-gradient-to-tr from-[#ff9100] via-[#ffa726] to-[#ffb74d] text-white shadow-[0_3px_10px_rgba(255,145,0,0.3)]"
+                  ? "bg-amber-100 text-amber-700 border border-amber-200/60 shadow-xs"
                   : "bg-amber-500/20 text-[#f5ba31] border border-[#f5ba31]/40"
               }`}
             >
-              <FileText size={18} color="#ffffff" stroke="#ffffff" />
+              <FileText size={19} />
             </div>
             <span
               className={`text-xs font-bold tracking-tight ${
-                isLight ? "text-slate-800 group-hover:text-blue-600" : "text-slate-200"
+                isLight ? "text-slate-800 group-hover:text-amber-700" : "text-slate-200"
               }`}
             >
               {t("notice")}
@@ -507,22 +521,22 @@ export default function ProfilePage() {
             href="/company-info"
             className={`flex flex-col items-center justify-center p-3 rounded-2xl border shadow-sm transition-all group ${
               isLight
-                ? "bg-white border-slate-100 hover:border-blue-200 hover:shadow-md"
+                ? "bg-white border-slate-200/90 hover:border-blue-400/70 hover:shadow-md"
                 : "bg-[#04102e]/85 backdrop-blur-md border-white/10 hover:border-[#f5ba31]/50 hover:bg-[#071944]"
             }`}
           >
             <div
-              className={`w-9 h-9 rounded-xl flex items-center justify-center mb-1.5 transition-transform group-hover:scale-105 ${
+              className={`w-10 h-10 rounded-xl flex items-center justify-center mb-1.5 transition-transform group-hover:scale-105 ${
                 isLight
-                  ? "bg-gradient-to-tr from-[#0066ff] via-[#0080ff] to-[#00b4d8] text-white shadow-[0_3px_10px_rgba(0,102,255,0.3)]"
+                  ? "bg-blue-100 text-blue-700 border border-blue-200/60 shadow-xs"
                   : "bg-blue-500/20 text-cyan-400 border border-cyan-400/40"
               }`}
             >
-              <Info size={18} color="#ffffff" stroke="#ffffff" />
+              <Info size={19} />
             </div>
             <span
               className={`text-xs font-bold tracking-tight ${
-                isLight ? "text-slate-800 group-hover:text-blue-600" : "text-slate-200"
+                isLight ? "text-slate-800 group-hover:text-blue-700" : "text-slate-200"
               }`}
             >
               {t("company_info")}
@@ -534,22 +548,22 @@ export default function ProfilePage() {
             href="/faq"
             className={`flex flex-col items-center justify-center p-3 rounded-2xl border shadow-sm transition-all group ${
               isLight
-                ? "bg-white border-slate-100 hover:border-blue-200 hover:shadow-md"
+                ? "bg-white border-slate-200/90 hover:border-emerald-400/70 hover:shadow-md"
                 : "bg-[#04102e]/85 backdrop-blur-md border-white/10 hover:border-[#f5ba31]/50 hover:bg-[#071944]"
             }`}
           >
             <div
-              className={`w-9 h-9 rounded-xl flex items-center justify-center mb-1.5 transition-transform group-hover:scale-105 ${
+              className={`w-10 h-10 rounded-xl flex items-center justify-center mb-1.5 transition-transform group-hover:scale-105 ${
                 isLight
-                  ? "bg-gradient-to-tr from-[#00c853] via-[#00e676] to-[#69f0ae] text-white shadow-[0_3px_10px_rgba(0,200,83,0.3)]"
-                  : "bg-cyan-500/20 text-teal-400 border border-teal-400/40"
+                  ? "bg-emerald-100 text-emerald-700 border border-emerald-200/60 shadow-xs"
+                  : "bg-emerald-500/20 text-emerald-400 border border-emerald-400/40"
               }`}
             >
-              <HelpCircle size={18} color="#ffffff" stroke="#ffffff" />
+              <HelpCircle size={19} />
             </div>
             <span
               className={`text-xs font-bold tracking-tight ${
-                isLight ? "text-slate-800 group-hover:text-blue-600" : "text-slate-200"
+                isLight ? "text-slate-800 group-hover:text-emerald-700" : "text-slate-200"
               }`}
             >
               {t("faq")}
@@ -557,15 +571,11 @@ export default function ProfilePage() {
           </Link>
         </div>
 
-        {/* Complete Now Action Pill */}
-        <div className="mt-3">
+        {/* Complete Now Action Button */}
+        <div className="mt-3.5">
           <Link
             href="/vip"
-            className={`block w-full py-3 rounded-2xl text-center font-black text-sm active:scale-98 transition-all ${
-              isLight
-                ? "bg-gradient-to-r from-[#1738d8] via-[#2563eb] to-[#00d2ff] text-white shadow-[0_4px_16px_rgba(23,56,216,0.28)] hover:brightness-105"
-                : "border-2 border-[#f5ba31] bg-gradient-to-r from-[#f5ba31]/20 via-[#ffd369]/20 to-[#f5ba31]/20 text-[#f5ba31] shadow-[0_0_15px_rgba(245,186,49,0.25)] hover:bg-[#f5ba31]/30"
-            }`}
+            className="block w-full py-3.5 rounded-2xl text-center font-black text-sm active:scale-98 transition-all uppercase tracking-wider bg-gradient-to-r from-[#f5ba31] via-[#ffd369] to-[#d49002] text-[#020a1f] shadow-[0_4px_16px_rgba(245,186,49,0.35)] hover:brightness-105 border border-amber-300"
           >
             {t("complete_now")}
           </Link>
@@ -579,17 +589,17 @@ export default function ProfilePage() {
               <Link
                 key={idx}
                 href={item.href}
-                className={`flex items-center justify-between p-3.5 rounded-2xl border shadow-sm transition-all group active:scale-[0.99] ${
+                className={`flex items-center justify-between p-3.5 rounded-2xl border shadow-xs transition-all group active:scale-[0.99] ${
                   isLight
-                    ? "bg-white border-slate-100 hover:border-blue-200 hover:shadow-md"
+                    ? "bg-white border-slate-200/80 hover:border-amber-300/80 hover:shadow-sm"
                     : "bg-[#04102e]/85 backdrop-blur-md border-white/10 hover:border-[#f5ba31]/40 hover:bg-[#071944]"
                 }`}
               >
                 <div className="flex items-center gap-3">
                   <div
-                    className={`w-8.5 h-8.5 rounded-xl flex items-center justify-center transition-all ${
+                    className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${
                       isLight
-                        ? "bg-blue-50 text-blue-600 border border-blue-100 group-hover:bg-blue-600 group-hover:text-white"
+                        ? "bg-slate-50 text-slate-700 border border-slate-200 group-hover:bg-[#020a1f] group-hover:text-amber-300 group-hover:border-[#020a1f]"
                         : "bg-white/5 border border-white/10 text-[#f5ba31] group-hover:bg-[#f5ba31] group-hover:text-[#020a1f]"
                     }`}
                   >
@@ -598,7 +608,7 @@ export default function ProfilePage() {
                   <span
                     className={`text-sm font-bold transition-colors ${
                       isLight
-                        ? "text-slate-800 group-hover:text-blue-600"
+                        ? "text-slate-800 group-hover:text-[#020a1f]"
                         : "text-slate-200 group-hover:text-white"
                     }`}
                   >
@@ -609,7 +619,7 @@ export default function ProfilePage() {
                   size={18}
                   className={`transition-all group-hover:translate-x-1 ${
                     isLight
-                      ? "text-slate-400 group-hover:text-blue-600"
+                      ? "text-slate-400 group-hover:text-amber-500"
                       : "text-slate-500 group-hover:text-[#f5ba31]"
                   }`}
                 />
@@ -621,13 +631,13 @@ export default function ProfilePage() {
         {/* Log Out Button */}
         <button
           onClick={handleLogout}
-          style={{ color: "#ffffff" }}
-          className="w-full mt-5 py-3.5 rounded-2xl bg-gradient-to-r from-red-600 to-rose-700 !text-white text-white font-extrabold text-base shadow-[0_4px_16px_rgba(220,38,38,0.35)] hover:brightness-105 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer"
+          style={{ color: "#ffffff", WebkitTextFillColor: "#ffffff" }}
+          className="w-full mt-5 py-3.5 rounded-2xl bg-gradient-to-r from-red-600 to-rose-700 !text-white text-white font-black text-sm shadow-[0_4px_16px_rgba(220,38,38,0.35)] hover:brightness-105 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer uppercase tracking-wider"
         >
-          <LogOut size={20} color="#ffffff" stroke="#ffffff" className="!text-white text-white" />
+          <LogOut size={18} color="#ffffff" stroke="#ffffff" className="!text-white text-white" />
           <span
             style={{ color: "#ffffff", WebkitTextFillColor: "#ffffff" }}
-            className="!text-white text-white font-black tracking-wide"
+            className="!text-white text-white font-black tracking-wider"
           >
             {t("logout")}
           </span>

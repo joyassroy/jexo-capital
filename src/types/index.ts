@@ -170,5 +170,26 @@ export interface ISetting {
   withdrawStartTime: string; // e.g. "09:00"
   withdrawEndTime: string; // e.g. "17:00"
   withdrawAllowedDays: number[]; // 0=Sun, 1=Mon, 2=Tue, 3=Wed, 4=Thu
+  // VIP Auto-Activation
+  vipAutoActiveEnabled?: boolean;
+}
+
+export interface IVipTier {
+  _id?: string;
+  level: number;
+  name: string;
+  dailyReturn: string; // e.g. "5.00%"
+  dailyReturnPercent: number; // e.g. 5.0
+  numberOfOrders: number; // e.g. 5
+  commissionPerOrder: string; // e.g. "0.5%"
+  commissionPerOrderPercent: number; // e.g. 0.5
+  minBDT: number; // e.g. 1000
+  maxBDT: number; // e.g. 2999
+  minUSDT: number; // e.g. 7.87
+  maxUSDT: number; // e.g. 23.61
+  status: "active" | "inactive";
+  order?: number;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 

@@ -4,6 +4,7 @@ import { User } from "@/models/User";
 import { Kyc } from "@/models/Kyc";
 import { BankWallet } from "@/models/BankWallet";
 import { getCurrentUser } from "@/lib/auth";
+import { syncUserVipWithBalance } from "@/lib/vip";
 
 export const dynamic = "force-dynamic";
 
@@ -24,6 +25,9 @@ export async function GET() {
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
+
+    // Auto-sync VIP level dynamically based on current user balance
+    await syncUserVipWithBalance(user);
 
     const hasWithdrawPassword = Boolean(user.withdrawPasswordHash);
     const { passwordHash: _p, withdrawPasswordHash: _w, ...userSafe } = user.toObject();

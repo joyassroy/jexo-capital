@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import { User } from "@/models/User";
 import { getCurrentAdmin } from "@/lib/auth";
+import { syncUserVipWithBalance } from "@/lib/vip";
 
 export const dynamic = "force-dynamic";
 
@@ -63,6 +64,9 @@ export async function PATCH(req: NextRequest) {
 
     if (typeof vipLevel === "number") {
       user.vipLevel = vipLevel;
+    } else if (typeof balanceAdjustment === "number") {
+      // Auto-sync VIP level with new balance
+      await syncUserVipWithBalance(user);
     }
 
     await user.save();

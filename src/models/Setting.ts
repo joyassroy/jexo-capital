@@ -91,6 +91,10 @@ const SettingSchema = new Schema<ISetting>(
       type: [Number],
       default: [0, 1, 2, 3, 4], // Sun, Mon, Tue, Wed, Thu
     },
+    vipAutoActiveEnabled: {
+      type: Boolean,
+      default: true,
+    },
   },
   {
     timestamps: true,

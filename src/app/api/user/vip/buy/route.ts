@@ -3,58 +3,11 @@ import { connectDB } from "@/lib/mongodb";
 import { User } from "@/models/User";
 import { Setting } from "@/models/Setting";
 import { Transaction } from "@/models/Transaction";
+import { VipTier } from "@/models/VipTier";
 import { getCurrentUser } from "@/lib/auth";
+import { getActiveVipTiers } from "@/lib/vip";
 
 export const dynamic = "force-dynamic";
-
-interface VipTierSpec {
-  level: number;
-  name: string;
-  dailyReturnPercent: number;
-  ordersCount: number;
-  commissionPerOrderPercent: number;
-  minBDT: number;
-  maxBDT: number;
-}
-
-const VIP_TIERS: Record<number, VipTierSpec> = {
-  1: {
-    level: 1,
-    name: "Vip-1",
-    dailyReturnPercent: 5.0,
-    ordersCount: 5,
-    commissionPerOrderPercent: 0.5,
-    minBDT: 1000,
-    maxBDT: 2999,
-  },
-  2: {
-    level: 2,
-    name: "Vip-2",
-    dailyReturnPercent: 6.0,
-    ordersCount: 5,
-    commissionPerOrderPercent: 0.6,
-    minBDT: 3000,
-    maxBDT: 9999,
-  },
-  3: {
-    level: 3,
-    name: "Vip-3",
-    dailyReturnPercent: 7.0,
-    ordersCount: 5,
-    commissionPerOrderPercent: 0.7,
-    minBDT: 10000,
-    maxBDT: 49999,
-  },
-  4: {
-    level: 4,
-    name: "Vip-4",
-    dailyReturnPercent: 8.0,
-    ordersCount: 5,
-    commissionPerOrderPercent: 0.8,
-    minBDT: 50000,
-    maxBDT: 99999,
-  },
-};
 
 export async function POST(req: NextRequest) {
   try {
@@ -69,7 +22,9 @@ export async function POST(req: NextRequest) {
     const vipLevel = Number(body.vipLevel);
     let amountBDT = Number(body.amountBDT);
 
-    const tier = VIP_TIERS[vipLevel];
+    const activeTiers = await getActiveVipTiers();
+    const tier = activeTiers.find((t) => t.level === vipLevel);
+
     if (!tier) {
       return NextResponse.json(
         { error: "Invalid VIP level selected." },
@@ -117,9 +72,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Deduct from main balance and update user
-    user.balance = Number((user.balance - amountUSDT).toFixed(2));
-    user.totalFund = Number(((user.totalFund || 0) + amountUSDT).toFixed(2));
+    // If auto-activate or direct activation: set user VIP level
     user.vipLevel = tier.level;
     await user.save();
 
@@ -149,9 +102,8 @@ export async function POST(req: NextRequest) {
       amountDeductedBDT: amountBDT,
     });
   } catch (error: unknown) {
-    console.error("VIP Purchase Error:", error);
-    const message =
-      error instanceof Error ? error.message : "Failed to activate VIP package.";
+    console.error("VIP Activation Error:", error);
+    const message = error instanceof Error ? error.message : "Failed to activate VIP.";
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

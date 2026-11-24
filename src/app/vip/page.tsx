@@ -16,6 +16,7 @@ import {
   ArrowRight,
   Headphones,
   X,
+  Zap,
 } from "lucide-react";
 
 interface UserProfile {
@@ -41,9 +42,9 @@ interface VipTier {
   maxUSDT: number;
 }
 
-const USDT_RATE = 127;
+const DEFAULT_USDT_RATE = 127;
 
-const VIP_PLANS: VipTier[] = [
+const DEFAULT_VIP_PLANS: VipTier[] = [
   {
     id: "vip-1",
     level: 1,
@@ -53,8 +54,8 @@ const VIP_PLANS: VipTier[] = [
     commissionPerOrder: "0.5%",
     minBDT: 1000,
     maxBDT: 2999,
-    minUSDT: Number((1000 / USDT_RATE).toFixed(2)), // 7.87
-    maxUSDT: Number((2999 / USDT_RATE).toFixed(2)), // 23.61
+    minUSDT: Number((1000 / DEFAULT_USDT_RATE).toFixed(2)),
+    maxUSDT: Number((2999 / DEFAULT_USDT_RATE).toFixed(2)),
   },
   {
     id: "vip-2",
@@ -65,8 +66,8 @@ const VIP_PLANS: VipTier[] = [
     commissionPerOrder: "0.6%",
     minBDT: 3000,
     maxBDT: 9999,
-    minUSDT: Number((3000 / USDT_RATE).toFixed(2)), // 23.62
-    maxUSDT: Number((9999 / USDT_RATE).toFixed(2)), // 78.73
+    minUSDT: Number((3000 / DEFAULT_USDT_RATE).toFixed(2)),
+    maxUSDT: Number((9999 / DEFAULT_USDT_RATE).toFixed(2)),
   },
   {
     id: "vip-3",
@@ -77,8 +78,8 @@ const VIP_PLANS: VipTier[] = [
     commissionPerOrder: "0.7%",
     minBDT: 10000,
     maxBDT: 49999,
-    minUSDT: Number((10000 / USDT_RATE).toFixed(2)), // 78.74
-    maxUSDT: Number((49999 / USDT_RATE).toFixed(2)), // 393.69
+    minUSDT: Number((10000 / DEFAULT_USDT_RATE).toFixed(2)),
+    maxUSDT: Number((49999 / DEFAULT_USDT_RATE).toFixed(2)),
   },
   {
     id: "vip-4",
@@ -89,39 +90,62 @@ const VIP_PLANS: VipTier[] = [
     commissionPerOrder: "0.8%",
     minBDT: 50000,
     maxBDT: 99999,
-    minUSDT: Number((50000 / USDT_RATE).toFixed(2)), // 393.70
-    maxUSDT: Number((99999 / USDT_RATE).toFixed(2)), // 787.39
+    minUSDT: Number((50000 / DEFAULT_USDT_RATE).toFixed(2)),
+    maxUSDT: Number((99999 / DEFAULT_USDT_RATE).toFixed(2)),
   },
 ];
 
 export default function VipPage() {
   const router = useRouter();
   const [user, setUser] = useState<UserProfile | null>(null);
+  const [vipPlans, setVipPlans] = useState<VipTier[]>(DEFAULT_VIP_PLANS);
+  const [usdtRate, setUsdtRate] = useState<number>(DEFAULT_USDT_RATE);
+  const [vipAutoActiveEnabled, setVipAutoActiveEnabled] = useState<boolean>(true);
   const [loading, setLoading] = useState(true);
+
   const [selectedPlan, setSelectedPlan] = useState<VipTier | null>(null);
   const [investBDT, setInvestBDT] = useState<number>(1000);
   const [buying, setBuying] = useState(false);
   const [purchaseError, setPurchaseError] = useState("");
   const [purchaseSuccess, setPurchaseSuccess] = useState("");
-  const [showCSModal, setShowCSModal] = useState(false);
 
-  // Fetch live user profile
+  // Fetch live user profile and dynamic VIP tiers
   useEffect(() => {
-    fetch("/api/user/me")
-      .then((res) => {
-        if (res.status === 401) {
+    const fetchData = async () => {
+      try {
+        const [userRes, tiersRes] = await Promise.all([
+          fetch("/api/user/me"),
+          fetch("/api/vip/tiers"),
+        ]);
+
+        if (userRes.status === 401) {
           router.push("/login");
-          return null;
+          return;
         }
-        return res.json();
-      })
-      .then((data) => {
-        if (data?.user) {
-          setUser(data.user);
+
+        const userData = await userRes.json();
+        if (userData?.user) {
+          setUser(userData.user);
         }
+
+        const tiersData = await tiersRes.json();
+        if (tiersData?.tiers && tiersData.tiers.length > 0) {
+          setVipPlans(tiersData.tiers);
+        }
+        if (tiersData?.usdtRate) {
+          setUsdtRate(tiersData.usdtRate);
+        }
+        if (typeof tiersData?.vipAutoActiveEnabled === "boolean") {
+          setVipAutoActiveEnabled(tiersData.vipAutoActiveEnabled);
+        }
+      } catch (err) {
+        console.error("Error loading VIP page data:", err);
+      } finally {
         setLoading(false);
-      })
-      .catch(() => setLoading(false));
+      }
+    };
+
+    fetchData();
   }, [router]);
 
   const openBuyModal = (plan: VipTier) => {
@@ -180,7 +204,7 @@ export default function VipPage() {
     }
   };
 
-  const currentInvestUSDT = Number((investBDT / USDT_RATE).toFixed(2));
+  const currentInvestUSDT = Number((investBDT / usdtRate).toFixed(2));
   const hasEnoughBalance = user ? user.balance >= currentInvestUSDT : false;
 
   return (
@@ -224,7 +248,7 @@ export default function VipPage() {
                 <span>{user ? Number(user.balance).toFixed(2) : "0.00"}</span>
                 <span className="text-[10px] font-bold text-[#f5ba31]">USDT</span>
                 <span className="text-[10px] text-slate-400 font-semibold ml-1">
-                  ≈ {user ? (Number(user.balance) * USDT_RATE).toFixed(0) : "0"} Tk
+                  ≈ {user ? (Number(user.balance) * usdtRate).toFixed(0) : "0"} Tk
                 </span>
               </div>
             </div>
@@ -239,118 +263,143 @@ export default function VipPage() {
           </div>
         </div>
 
-        {/* VIP Packages List (4 Tiers) - Compact & Sleek */}
-        <div className="px-3 py-2 space-y-2.5 max-w-[440px] mx-auto">
-          {VIP_PLANS.map((item) => {
-            const isActive = user?.vipLevel === item.level;
-            const isCompleted = user ? user.vipLevel > item.level : false;
+        {/* Auto-Activation Informative Banner */}
+        {vipAutoActiveEnabled && (
+          <div className="mx-3 mt-2.5 p-2.5 rounded-xl bg-gradient-to-r from-amber-500/15 via-blue-500/15 to-amber-500/15 border border-[#f5ba31]/30 flex items-center gap-2 text-[11px] text-amber-200">
+            <Zap size={14} className="text-[#f5ba31] shrink-0" />
+            <span className="leading-tight">
+              <strong className="text-white">Auto-Activation Active:</strong> Your VIP tier automatically unlocks and upgrades as your wallet balance grows!
+            </span>
+          </div>
+        )}
 
-            return (
-              <div
-                key={item.id}
-                className={`p-3 sm:p-3.5 rounded-2xl bg-gradient-to-b from-[#07173e] to-[#030e28] border transition-all relative overflow-hidden transform-gpu ${
-                  isActive
-                    ? "border-[#f5ba31] shadow-[0_0_15px_rgba(245,186,49,0.3)] ring-1 ring-[#f5ba31]/30"
-                    : "border-slate-700/70 hover:border-[#f5ba31]/40 shadow-sm"
-                }`}
-              >
-                {/* Active Level glowing badge */}
-                {isActive && (
-                  <div className="absolute top-0 right-0 bg-gradient-to-l from-emerald-500 to-emerald-600 text-white text-[8.5px] font-black uppercase px-2.5 py-0.5 rounded-bl-lg shadow-[0_0_8px_rgba(16,185,129,0.5)] flex items-center gap-1">
-                    <Sparkles size={9} /> Active
+        {/* VIP Packages List - Dynamically Loaded */}
+        <div className="px-3 py-2 space-y-2.5 max-w-[440px] mx-auto mt-1">
+          {loading ? (
+            <div className="py-16 text-center text-slate-400">
+              <Loader2 size={28} className="animate-spin mx-auto text-[#f5ba31] mb-2" />
+              <p className="text-xs font-bold">Loading VIP Plans...</p>
+            </div>
+          ) : (
+            vipPlans.map((item) => {
+              const isActive = user?.vipLevel === item.level;
+              const isCompleted = user ? user.vipLevel > item.level : false;
+
+              return (
+                <div
+                  key={item.id || `tier-${item.level}`}
+                  className={`p-3 sm:p-3.5 rounded-2xl bg-gradient-to-b from-[#07173e] to-[#030e28] border transition-all relative overflow-hidden transform-gpu ${
+                    isActive
+                      ? "border-[#f5ba31] shadow-[0_0_15px_rgba(245,186,49,0.3)] ring-1 ring-[#f5ba31]/30"
+                      : "border-slate-700/70 hover:border-[#f5ba31]/40 shadow-sm"
+                  }`}
+                >
+                  {/* Active Level glowing badge */}
+                  {isActive && (
+                    <div className="absolute top-0 right-0 bg-gradient-to-l from-emerald-500 to-emerald-600 text-white text-[8.5px] font-black uppercase px-2.5 py-0.5 rounded-bl-lg shadow-[0_0_8px_rgba(16,185,129,0.5)] flex items-center gap-1">
+                      <Sparkles size={9} /> Active
+                    </div>
+                  )}
+
+                  {/* VIP Title Header with decorative lines */}
+                  <div className="flex items-center justify-center gap-2 mb-1">
+                    <span className="h-[1px] w-8 sm:w-10 bg-[#f5ba31]/50" />
+                    <h3 className="text-base sm:text-lg font-black bg-gradient-to-r from-[#ffe58f] via-[#f5ba31] to-[#e69e05] bg-clip-text text-transparent tracking-tight">
+                      {item.name}
+                    </h3>
+                    <span className="h-[1px] w-8 sm:w-10 bg-[#f5ba31]/50" />
                   </div>
-                )}
 
-                {/* VIP Title Header with decorative lines */}
-                <div className="flex items-center justify-center gap-2 mb-1">
-                  <span className="h-[1px] w-8 sm:w-10 bg-[#f5ba31]/50" />
-                  <h3 className="text-base sm:text-lg font-black bg-gradient-to-r from-[#ffe58f] via-[#f5ba31] to-[#e69e05] bg-clip-text text-transparent tracking-tight">
-                    {item.name}
-                  </h3>
-                  <span className="h-[1px] w-8 sm:w-10 bg-[#f5ba31]/50" />
+                  {/* 3 Metrics: Daily return | Number of Order | Commission per order */}
+                  <div className="grid grid-cols-3 divide-x divide-white/10 text-center py-1.5">
+                    <div>
+                      <div className="text-base sm:text-lg font-black text-[#ff4d4f] tracking-tight drop-shadow-sm">
+                        {item.dailyReturn}
+                      </div>
+                      <div className="text-[10px] font-semibold text-slate-300 mt-0.5">
+                        Daily return
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="text-base sm:text-lg font-black text-[#00e676] tracking-tight drop-shadow-sm">
+                        {item.numberOfOrders}
+                      </div>
+                      <div className="text-[10px] font-semibold text-slate-300 mt-0.5">
+                        Number of Order
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="text-base sm:text-lg font-black text-[#38bdf8] tracking-tight drop-shadow-sm">
+                        {item.commissionPerOrder}
+                      </div>
+                      <div className="text-[10px] font-semibold text-slate-300 mt-0.5">
+                        Commission per order
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Divider Line */}
+                  <div className="border-t border-white/10 my-1.5" />
+
+                  {/* Investment Amount & Action Button Row */}
+                  <div className="flex items-center justify-between pt-0.5">
+                    <div>
+                      <div className="text-[10px] font-semibold text-slate-400 leading-tight">
+                        Investment amount
+                      </div>
+                      <div className="text-sm sm:text-base font-black text-white font-mono tracking-tight mt-0.5">
+                        {item.minBDT.toLocaleString()}–{item.maxBDT.toLocaleString()} Tk
+                      </div>
+                      <div className="text-[10px] font-extrabold text-[#f5ba31] flex items-center gap-1 mt-0.5">
+                        <span>≈ {item.minUSDT} - {item.maxUSDT} USDT</span>
+                      </div>
+                    </div>
+
+                    {/* Status / Purchase Button */}
+                    <div>
+                      {isActive ? (
+                        <button
+                          disabled
+                          className="px-4 py-1.5 rounded-full bg-gradient-to-b from-[#00b040] to-[#008a30] text-white font-black text-[11px] shadow-[0_0_10px_rgba(0,176,64,0.35)] flex items-center gap-1 cursor-default"
+                        >
+                          <Check size={13} className="stroke-[3]" />
+                          <span>Active</span>
+                        </button>
+                      ) : isCompleted ? (
+                        <button
+                          disabled
+                          className="px-3.5 py-1.5 rounded-full bg-slate-700 text-slate-400 font-bold text-[11px] shadow-sm cursor-default"
+                        >
+                          Unlocked
+                        </button>
+                      ) : vipAutoActiveEnabled ? (
+                        <Link
+                          href="/recharge"
+                          className="px-3.5 py-1.5 rounded-full bg-gradient-to-b from-[#e52d27] to-[#b31217] text-white font-black text-[11px] shadow-[0_0_10px_rgba(229,45,39,0.35)] hover:brightness-110 active:scale-95 transition-all flex items-center gap-1"
+                        >
+                          <span>Deposit to Unlock</span>
+                        </Link>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => openBuyModal(item)}
+                          className="px-4 py-1.5 rounded-full bg-gradient-to-b from-[#e52d27] to-[#b31217] text-white font-black text-[11px] shadow-[0_0_10px_rgba(229,45,39,0.35)] hover:brightness-110 active:scale-95 transition-all flex items-center gap-1 cursor-pointer"
+                        >
+                          <span>Not Active</span>
+                        </button>
+                      )}
+                    </div>
+                  </div>
                 </div>
-
-                {/* 3 Metrics: Daily return | Number of Order | Commission per order */}
-                <div className="grid grid-cols-3 divide-x divide-white/10 text-center py-1.5">
-                  <div>
-                    <div className="text-base sm:text-lg font-black text-[#ff4d4f] tracking-tight drop-shadow-sm">
-                      {item.dailyReturn}
-                    </div>
-                    <div className="text-[10px] font-semibold text-slate-300 mt-0.5">
-                      Daily return
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="text-base sm:text-lg font-black text-[#00e676] tracking-tight drop-shadow-sm">
-                      {item.numberOfOrders}
-                    </div>
-                    <div className="text-[10px] font-semibold text-slate-300 mt-0.5">
-                      Number of Order
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="text-base sm:text-lg font-black text-[#38bdf8] tracking-tight drop-shadow-sm">
-                      {item.commissionPerOrder}
-                    </div>
-                    <div className="text-[10px] font-semibold text-slate-300 mt-0.5">
-                      Commission per order
-                    </div>
-                  </div>
-                </div>
-
-                {/* Divider Line */}
-                <div className="border-t border-white/10 my-1.5" />
-
-                {/* Investment Amount & Action Button Row */}
-                <div className="flex items-center justify-between pt-0.5">
-                  <div>
-                    <div className="text-[10px] font-semibold text-slate-400 leading-tight">
-                      Investment amount
-                    </div>
-                    <div className="text-sm sm:text-base font-black text-white font-mono tracking-tight mt-0.5">
-                      {item.minBDT.toLocaleString()}–{item.maxBDT.toLocaleString()} Tk
-                    </div>
-                    <div className="text-[10px] font-extrabold text-[#f5ba31] flex items-center gap-1 mt-0.5">
-                      <span>≈ {item.minUSDT} - {item.maxUSDT} USDT</span>
-                    </div>
-                  </div>
-
-                  {/* Status / Purchase Button */}
-                  <div>
-                    {isActive ? (
-                      <button
-                        disabled
-                        className="px-4 py-1.5 rounded-full bg-gradient-to-b from-[#00b040] to-[#008a30] text-white font-black text-[11px] shadow-[0_0_10px_rgba(0,176,64,0.35)] flex items-center gap-1 cursor-default"
-                      >
-                        <Check size={13} className="stroke-[3]" />
-                        <span>Active</span>
-                      </button>
-                    ) : isCompleted ? (
-                      <button
-                        disabled
-                        className="px-3.5 py-1.5 rounded-full bg-slate-700 text-slate-400 font-bold text-[11px] shadow-sm cursor-default"
-                      >
-                        Completed
-                      </button>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() => openBuyModal(item)}
-                        className="px-4 py-1.5 rounded-full bg-gradient-to-b from-[#e52d27] to-[#b31217] text-white font-black text-[11px] shadow-[0_0_10px_rgba(229,45,39,0.35)] hover:brightness-110 active:scale-95 transition-all flex items-center gap-1 cursor-pointer"
-                      >
-                        <span>Not Active</span>
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+              );
+            })
+          )}
         </div>
       </div>
 
+      {/* Manual Buy / Upgrade Modal */}
       {selectedPlan && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-in fade-in duration-200">
           <div className="relative w-full max-w-sm bg-gradient-to-b from-[#081944] via-[#04102e] to-[#02091c] rounded-3xl shadow-[0_0_35px_rgba(245,186,49,0.35)] border-2 border-[#f5ba31] p-5 space-y-4 overflow-hidden text-white">
@@ -365,7 +414,7 @@ export default function VipPage() {
                     Activate {selectedPlan.name}
                   </h4>
                   <div className="text-[10px] text-slate-400 font-semibold">
-                    Rate: 1 USDT = {USDT_RATE} BDT
+                    Rate: 1 USDT = {usdtRate} BDT
                   </div>
                 </div>
               </div>

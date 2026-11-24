@@ -4,6 +4,7 @@ import { Deposit } from "@/models/Deposit";
 import { User } from "@/models/User";
 import { Transaction } from "@/models/Transaction";
 import { getCurrentAdmin } from "@/lib/auth";
+import { syncUserVipWithBalance } from "@/lib/vip";
 
 export const dynamic = "force-dynamic";
 
@@ -82,6 +83,9 @@ export async function PATCH(req: NextRequest) {
       // Credit user's balance in USDT
       user.balance += creditUSDT;
       await user.save();
+
+      // Automatically sync and upgrade user's VIP level if new balance qualifies
+      await syncUserVipWithBalance(user);
 
       // Create transaction record
       await Transaction.create({

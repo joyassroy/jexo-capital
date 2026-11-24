@@ -77,18 +77,10 @@ body {
     radial-gradient(at 0% 0%, rgba(0, 102, 255, 0.4) 0px, transparent 50%);
 }
 
-/* City Skyline & Water Reflection Motif */
-.city-silhouette-footer {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 120px;
-  pointer-events: none;
-  background-repeat: repeat-x;
-  background-position: bottom center;
-  background-size: contain;
-  opacity: 0.85;
+/* City Skyline Silhouette Footer - Disabled in both dark and day mode */
+.city-silhouette-footer,
+.light .city-silhouette-footer {
+  display: none !important;
 }
 
 /* Decorative curved wave lines */
@@ -214,12 +206,6 @@ html.light body {
 .light [class*="blur-[120px]"],
 .light [class*="blur-[90px]"] {
   opacity: 0.12 !important;
-}
-
-/* City Silhouette Footer in Day Mode */
-.light .city-silhouette-footer {
-  opacity: 0.3 !important;
-  filter: contrast(0.8);
 }
 
 /* Top Header & Subpage Headers */

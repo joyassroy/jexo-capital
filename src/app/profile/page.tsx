@@ -299,188 +299,184 @@ export default function ProfilePage() {
 
         {/* Total Assets Card */}
         {isLight ? (
-          /* Day Mode Clean Luxury Pearl & Gold Card */
-          <div className="relative mt-3 p-[2px] rounded-[26px] bg-gradient-to-b from-[#f5ba31] via-[#ffd778] to-[#c98600] shadow-[0_8px_25px_rgba(245,186,49,0.22)]">
-            <div className="p-4 sm:p-4.5 rounded-[24px] bg-white text-slate-800">
-              {/* Top Row: Title + Balance + Deposit / Withdraw Actions */}
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+          /* Day Mode Clean Box */
+          <div className="relative mt-3 p-4 sm:p-4.5 rounded-[22px] bg-white border border-slate-200/90 shadow-[0_4px_20px_rgba(0,0,0,0.04)] text-slate-800">
+            {/* Top Row: Title + Balance + Deposit / Withdraw Actions */}
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div className="min-w-0 pr-1.5">
+                <span className="text-[10px] sm:text-[11px] font-extrabold text-slate-500 uppercase tracking-tight whitespace-nowrap block">
+                  {t("total_assets")}
+                </span>
+                <div className="text-2xl sm:text-3xl font-black text-[#020a1f] flex items-baseline gap-1.5 mt-0.5 tracking-tight font-mono whitespace-nowrap">
+                  <span>{user ? Number(user.balance).toFixed(2) : "0.00"}</span>
+                  <span className="text-xs font-black text-amber-500 font-sans">USDT</span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-1.5 flex-shrink-0">
+                <Link
+                  href="/recharge"
+                  className="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-gradient-to-r from-[#f5ba31] via-[#ffd369] to-[#d49002] text-[#020a1f] font-black text-xs shadow-md shadow-amber-500/20 hover:brightness-105 active:scale-95 transition-all tracking-wide uppercase whitespace-nowrap"
+                >
+                  {t("deposit")}
+                </Link>
+                <Link
+                  href="/withdraw"
+                  className="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-black text-xs border border-slate-200 shadow-xs hover:scale-105 active:scale-95 transition-all tracking-wide uppercase whitespace-nowrap"
+                >
+                  {t("withdraw")}
+                </Link>
+              </div>
+            </div>
+
+            {/* Rate Conversion Row */}
+            <div className="pt-2 pb-2 flex items-center justify-between text-[11px] sm:text-xs font-semibold whitespace-nowrap overflow-hidden">
+              <span className="text-amber-600 font-black whitespace-nowrap">
+                ≈ {user ? (Number(user.balance) * usdtRate).toFixed(2) : "0.00"} BDT
+              </span>
+              <span className="text-slate-400 font-medium whitespace-nowrap text-[10px] sm:text-[10.5px]">
+                (Rate: 1 USDT = {usdtRate} Tk)
+              </span>
+            </div>
+
+            {/* 3 Columns Earnings Row (Strictly 1 Line on all mobile screens) */}
+            <div className="grid grid-cols-3 divide-x divide-slate-100 pt-2.5 border-t border-slate-100 text-center">
+              {/* Yesterday */}
+              <div className="px-0.5 flex flex-col items-center justify-between">
                 <div>
-                  <span className="text-[11px] sm:text-[11.5px] font-extrabold text-slate-500 uppercase tracking-wider block">
-                    {t("total_assets")}
-                  </span>
-                  <div className="text-2xl sm:text-3xl font-black text-[#020a1f] flex items-baseline gap-1.5 mt-0.5 tracking-tight font-mono">
-                    <span>{user ? Number(user.balance).toFixed(2) : "0.00"}</span>
-                    <span className="text-xs font-black text-amber-500 font-sans">USDT</span>
+                  <div className="text-xs sm:text-sm font-black text-slate-800 font-mono flex items-baseline justify-center gap-0.5 whitespace-nowrap">
+                    <span>{user ? Number(user.yesterdayEarnings).toFixed(2) : "0.00"}</span>
+                    <span className="text-[8.5px] font-bold text-slate-400">USDT</span>
+                  </div>
+                  <div className="text-[10px] sm:text-[11px] font-black text-slate-600 font-mono mt-0.5 whitespace-nowrap">
+                    ≈ {user ? (Number(user.yesterdayEarnings) * usdtRate).toFixed(2) : "0.00"} ৳
                   </div>
                 </div>
-
-                <div className="flex items-center gap-2 flex-shrink-0">
-                  <Link
-                    href="/recharge"
-                    className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#f5ba31] via-[#ffd369] to-[#d49002] text-[#020a1f] font-black text-xs shadow-md shadow-amber-500/25 hover:brightness-105 active:scale-95 transition-all tracking-wide uppercase"
-                  >
-                    {t("deposit")}
-                  </Link>
-                  <Link
-                    href="/withdraw"
-                    className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-black text-xs border border-slate-200 shadow-xs hover:scale-105 active:scale-95 transition-all tracking-wide uppercase"
-                  >
-                    {t("withdraw")}
-                  </Link>
+                <div className="text-[8px] sm:text-[8.5px] text-slate-500 font-bold mt-1 uppercase tracking-tighter whitespace-nowrap">
+                  {t("earnings_yesterday")}
                 </div>
               </div>
 
-              {/* Rate Conversion Row */}
-              <div className="pt-2 pb-2 flex items-center justify-between text-[11px] sm:text-xs font-semibold whitespace-nowrap overflow-hidden">
-                <span className="text-amber-600 font-black whitespace-nowrap">
-                  ≈ {user ? (Number(user.balance) * usdtRate).toFixed(2) : "0.00"} BDT
-                </span>
-                <span className="text-slate-400 font-medium whitespace-nowrap text-[10px] sm:text-[10.5px]">
-                  (Rate: 1 USDT = {usdtRate} Tk)
-                </span>
+              {/* Accumulated */}
+              <div className="px-0.5 flex flex-col items-center justify-between">
+                <div>
+                  <div className="text-xs sm:text-sm font-black text-amber-600 font-mono flex items-baseline justify-center gap-0.5 whitespace-nowrap">
+                    <span>{user ? Number(user.fundIncome).toFixed(2) : "0.00"}</span>
+                    <span className="text-[8.5px] font-bold text-amber-500/80">USDT</span>
+                  </div>
+                  <div className="text-[10px] sm:text-[11px] font-black text-amber-600 font-mono mt-0.5 whitespace-nowrap">
+                    ≈ {user ? (Number(user.fundIncome) * usdtRate).toFixed(2) : "0.00"} ৳
+                  </div>
+                </div>
+                <div className="text-[8px] sm:text-[8.5px] text-slate-500 font-bold mt-1 uppercase tracking-tighter whitespace-nowrap">
+                  {t("accumulated_earnings")}
+                </div>
               </div>
 
-              {/* 3 Columns Earnings Row (Showing both USDT and BDT profit) */}
-              <div className="grid grid-cols-3 divide-x divide-slate-100 pt-3 border-t border-slate-100 text-center">
-                {/* Yesterday */}
-                <div className="px-1 flex flex-col items-center justify-between">
-                  <div>
-                    <div className="text-xs sm:text-sm font-black text-slate-800 font-mono flex items-baseline justify-center gap-0.5">
-                      <span>{user ? Number(user.yesterdayEarnings).toFixed(2) : "0.00"}</span>
-                      <span className="text-[9px] font-bold text-slate-400">USDT</span>
-                    </div>
-                    <div className="text-[10px] sm:text-[11px] font-black text-slate-600 font-mono mt-0.5">
-                      ≈ {user ? (Number(user.yesterdayEarnings) * usdtRate).toFixed(2) : "0.00"} ৳
-                    </div>
+              {/* Today */}
+              <div className="px-0.5 flex flex-col items-center justify-between">
+                <div>
+                  <div className="text-xs sm:text-sm font-black text-emerald-600 font-mono flex items-baseline justify-center gap-0.5 whitespace-nowrap">
+                    <span>{user ? Number(user.todayEarnings).toFixed(2) : "0.00"}</span>
+                    <span className="text-[8.5px] font-bold text-emerald-500/80">USDT</span>
                   </div>
-                  <div className="text-[9px] sm:text-[9.5px] text-slate-500 font-semibold mt-1 uppercase tracking-tight">
-                    {t("earnings_yesterday")}
+                  <div className="text-[10px] sm:text-[11px] font-black text-emerald-600 font-mono mt-0.5 whitespace-nowrap">
+                    ≈ {user ? (Number(user.todayEarnings) * usdtRate).toFixed(2) : "0.00"} ৳
                   </div>
                 </div>
-
-                {/* Accumulated */}
-                <div className="px-1 flex flex-col items-center justify-between">
-                  <div>
-                    <div className="text-xs sm:text-sm font-black text-amber-600 font-mono flex items-baseline justify-center gap-0.5">
-                      <span>{user ? Number(user.fundIncome).toFixed(2) : "0.00"}</span>
-                      <span className="text-[9px] font-bold text-amber-500/80">USDT</span>
-                    </div>
-                    <div className="text-[10px] sm:text-[11px] font-black text-amber-600 font-mono mt-0.5">
-                      ≈ {user ? (Number(user.fundIncome) * usdtRate).toFixed(2) : "0.00"} ৳
-                    </div>
-                  </div>
-                  <div className="text-[9px] sm:text-[9.5px] text-slate-500 font-semibold mt-1 uppercase tracking-tight">
-                    {t("accumulated_earnings")}
-                  </div>
-                </div>
-
-                {/* Today */}
-                <div className="px-1 flex flex-col items-center justify-between">
-                  <div>
-                    <div className="text-xs sm:text-sm font-black text-emerald-600 font-mono flex items-baseline justify-center gap-0.5">
-                      <span>{user ? Number(user.todayEarnings).toFixed(2) : "0.00"}</span>
-                      <span className="text-[9px] font-bold text-emerald-500/80">USDT</span>
-                    </div>
-                    <div className="text-[10px] sm:text-[11px] font-black text-emerald-600 font-mono mt-0.5">
-                      ≈ {user ? (Number(user.todayEarnings) * usdtRate).toFixed(2) : "0.00"} ৳
-                    </div>
-                  </div>
-                  <div className="text-[9px] sm:text-[9.5px] text-slate-500 font-semibold mt-1 uppercase tracking-tight">
-                    {t("today_earnings")}
-                  </div>
+                <div className="text-[8px] sm:text-[8.5px] text-slate-500 font-bold mt-1 uppercase tracking-tighter whitespace-nowrap">
+                  {t("today_earnings")}
                 </div>
               </div>
             </div>
           </div>
         ) : (
-          /* Dark Mode Luxury Obsidian Gold Assets Card */
-          <div className="mt-3 p-[2px] rounded-[26px] bg-gradient-to-b from-[#f5ba31] via-[#ffd778] to-[#c98600] shadow-[0_0_24px_rgba(245,186,49,0.3)]">
-            <div className="p-4 sm:p-4.5 rounded-[24px] bg-gradient-to-b from-[#081944]/95 via-[#04102e]/98 to-[#02091c] backdrop-blur-2xl text-white">
-              <div className="flex items-center justify-between pb-3 border-b border-white/10">
+          /* Dark Mode Clean Box */
+          <div className="relative mt-3 p-4 sm:p-4.5 rounded-[22px] bg-[#04102e]/95 border border-white/10 shadow-[0_4px_20px_rgba(0,0,0,0.4)] backdrop-blur-2xl text-white">
+            <div className="flex items-center justify-between pb-3 border-b border-white/10">
+              <div className="min-w-0 pr-1.5">
+                <span className="text-[10px] sm:text-[11px] font-extrabold text-amber-200/90 uppercase tracking-tight whitespace-nowrap block drop-shadow-[0_1px_3px_rgba(0,0,0,0.4)]">
+                  {t("total_assets")}
+                </span>
+                <div className="text-2xl sm:text-3xl font-black text-white flex items-baseline gap-1.5 mt-0.5 font-mono whitespace-nowrap">
+                  <span>{user ? Number(user.balance).toFixed(2) : "0.00"}</span>
+                  <span className="text-xs font-black text-[#f5ba31] font-sans">USDT</span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-1.5 flex-shrink-0">
+                <Link
+                  href="/recharge"
+                  className="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-gradient-to-r from-[#f5ba31] via-[#ffd369] to-[#d49002] text-[#020a1f] font-black text-xs shadow-md shadow-amber-500/20 hover:brightness-105 active:scale-95 transition-all tracking-wide uppercase whitespace-nowrap"
+                >
+                  {t("deposit")}
+                </Link>
+                <Link
+                  href="/withdraw"
+                  className="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-white/15 hover:bg-white/25 text-white font-black text-xs border border-white/30 backdrop-blur-md shadow-xs hover:scale-105 active:scale-95 transition-all tracking-wide uppercase whitespace-nowrap"
+                >
+                  {t("withdraw")}
+                </Link>
+              </div>
+            </div>
+
+            {/* Rate conversion line */}
+            <div className="pt-2 pb-2 flex items-center justify-between text-[11px] sm:text-xs font-semibold text-slate-300 whitespace-nowrap overflow-hidden">
+              <span className="text-[#f5ba31] font-black whitespace-nowrap">
+                ≈ {user ? (Number(user.balance) * usdtRate).toFixed(2) : "0.00"} BDT
+              </span>
+              <span className="text-slate-400 font-medium whitespace-nowrap text-[10px] sm:text-[10.5px]">
+                (Rate: 1 USDT = {usdtRate} Tk)
+              </span>
+            </div>
+
+            {/* Earnings summary row (Strictly 1 Line on all mobile screens) */}
+            <div className="grid grid-cols-3 divide-x divide-white/10 pt-2.5 border-t border-white/10 text-center">
+              {/* Yesterday */}
+              <div className="px-0.5 flex flex-col items-center justify-between">
                 <div>
-                  <span className="text-[11px] sm:text-[11.5px] font-extrabold text-amber-200/90 uppercase tracking-wider block drop-shadow-[0_1px_3px_rgba(0,0,0,0.4)]">
-                    {t("total_assets")}
-                  </span>
-                  <div className="text-2xl sm:text-3xl font-black text-white flex items-baseline gap-1.5 mt-0.5 font-mono">
-                    <span>{user ? Number(user.balance).toFixed(2) : "0.00"}</span>
-                    <span className="text-xs font-black text-[#f5ba31] font-sans">USDT</span>
+                  <div className="text-xs sm:text-sm font-black text-white font-mono flex items-baseline justify-center gap-0.5 whitespace-nowrap">
+                    <span>{user ? Number(user.yesterdayEarnings).toFixed(2) : "0.00"}</span>
+                    <span className="text-[8.5px] font-bold text-slate-400">USDT</span>
+                  </div>
+                  <div className="text-[10px] sm:text-[11px] font-black text-slate-300 font-mono mt-0.5 whitespace-nowrap">
+                    ≈ {user ? (Number(user.yesterdayEarnings) * usdtRate).toFixed(2) : "0.00"} ৳
                   </div>
                 </div>
-
-                <div className="flex items-center gap-2 flex-shrink-0">
-                  <Link
-                    href="/recharge"
-                    className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#f5ba31] via-[#ffd369] to-[#d49002] text-[#020a1f] font-black text-xs shadow-md shadow-amber-500/25 hover:brightness-105 active:scale-95 transition-all tracking-wide uppercase"
-                  >
-                    {t("deposit")}
-                  </Link>
-                  <Link
-                    href="/withdraw"
-                    className="px-4 py-2 rounded-xl bg-white/15 hover:bg-white/25 text-white font-black text-xs border border-white/30 backdrop-blur-md shadow-xs hover:scale-105 active:scale-95 transition-all tracking-wide uppercase"
-                  >
-                    {t("withdraw")}
-                  </Link>
+                <div className="text-[8px] sm:text-[8.5px] text-slate-400 font-medium mt-1 uppercase tracking-tighter whitespace-nowrap">
+                  {t("earnings_yesterday")}
                 </div>
               </div>
 
-              {/* Rate conversion line */}
-              <div className="pt-2 pb-2 flex items-center justify-between text-[11px] sm:text-xs font-semibold text-slate-300 whitespace-nowrap overflow-hidden">
-                <span className="text-[#f5ba31] font-black whitespace-nowrap">
-                  ≈ {user ? (Number(user.balance) * usdtRate).toFixed(2) : "0.00"} BDT
-                </span>
-                <span className="text-slate-400 font-medium whitespace-nowrap text-[10px] sm:text-[10.5px]">
-                  (Rate: 1 USDT = {usdtRate} Tk)
-                </span>
+              {/* Accumulated */}
+              <div className="px-0.5 flex flex-col items-center justify-between">
+                <div>
+                  <div className="text-xs sm:text-sm font-black text-[#f5ba31] font-mono flex items-baseline justify-center gap-0.5 whitespace-nowrap">
+                    <span>{user ? Number(user.fundIncome).toFixed(2) : "0.00"}</span>
+                    <span className="text-[8.5px] font-bold text-amber-300/80">USDT</span>
+                  </div>
+                  <div className="text-[10px] sm:text-[11px] font-black text-[#ffd369] font-mono mt-0.5 whitespace-nowrap">
+                    ≈ {user ? (Number(user.fundIncome) * usdtRate).toFixed(2) : "0.00"} ৳
+                  </div>
+                </div>
+                <div className="text-[8px] sm:text-[8.5px] text-slate-400 font-medium mt-1 uppercase tracking-tighter whitespace-nowrap">
+                  {t("accumulated_earnings")}
+                </div>
               </div>
 
-              {/* Earnings summary row (Showing both USDT and BDT profit) */}
-              <div className="grid grid-cols-3 divide-x divide-white/10 pt-3 border-t border-white/10 text-center">
-                {/* Yesterday */}
-                <div className="px-1 flex flex-col items-center justify-between">
-                  <div>
-                    <div className="text-xs sm:text-sm font-black text-white font-mono flex items-baseline justify-center gap-0.5">
-                      <span>{user ? Number(user.yesterdayEarnings).toFixed(2) : "0.00"}</span>
-                      <span className="text-[9px] font-bold text-slate-400">USDT</span>
-                    </div>
-                    <div className="text-[10px] sm:text-[11px] font-black text-slate-300 font-mono mt-0.5">
-                      ≈ {user ? (Number(user.yesterdayEarnings) * usdtRate).toFixed(2) : "0.00"} ৳
-                    </div>
+              {/* Today */}
+              <div className="px-0.5 flex flex-col items-center justify-between">
+                <div>
+                  <div className="text-xs sm:text-sm font-black text-emerald-400 font-mono flex items-baseline justify-center gap-0.5 whitespace-nowrap">
+                    <span>{user ? Number(user.todayEarnings).toFixed(2) : "0.00"}</span>
+                    <span className="text-[8.5px] font-bold text-emerald-400/80">USDT</span>
                   </div>
-                  <div className="text-[9px] sm:text-[9.5px] text-slate-400 font-medium mt-1 uppercase tracking-tight">
-                    {t("earnings_yesterday")}
+                  <div className="text-[10px] sm:text-[11px] font-black text-emerald-400 font-mono mt-0.5 whitespace-nowrap">
+                    ≈ {user ? (Number(user.todayEarnings) * usdtRate).toFixed(2) : "0.00"} ৳
                   </div>
                 </div>
-
-                {/* Accumulated */}
-                <div className="px-1 flex flex-col items-center justify-between">
-                  <div>
-                    <div className="text-xs sm:text-sm font-black text-[#f5ba31] font-mono flex items-baseline justify-center gap-0.5">
-                      <span>{user ? Number(user.fundIncome).toFixed(2) : "0.00"}</span>
-                      <span className="text-[9px] font-bold text-amber-300/80">USDT</span>
-                    </div>
-                    <div className="text-[10px] sm:text-[11px] font-black text-[#ffd369] font-mono mt-0.5">
-                      ≈ {user ? (Number(user.fundIncome) * usdtRate).toFixed(2) : "0.00"} ৳
-                    </div>
-                  </div>
-                  <div className="text-[9px] sm:text-[9.5px] text-slate-400 font-medium mt-1 uppercase tracking-tight">
-                    {t("accumulated_earnings")}
-                  </div>
-                </div>
-
-                {/* Today */}
-                <div className="px-1 flex flex-col items-center justify-between">
-                  <div>
-                    <div className="text-xs sm:text-sm font-black text-emerald-400 font-mono flex items-baseline justify-center gap-0.5">
-                      <span>{user ? Number(user.todayEarnings).toFixed(2) : "0.00"}</span>
-                      <span className="text-[9px] font-bold text-emerald-400/80">USDT</span>
-                    </div>
-                    <div className="text-[10px] sm:text-[11px] font-black text-emerald-400 font-mono mt-0.5">
-                      ≈ {user ? (Number(user.todayEarnings) * usdtRate).toFixed(2) : "0.00"} ৳
-                    </div>
-                  </div>
-                  <div className="text-[9px] sm:text-[9.5px] text-slate-400 font-medium mt-1 uppercase tracking-tight">
-                    {t("today_earnings")}
-                  </div>
+                <div className="text-[8px] sm:text-[8.5px] text-slate-400 font-medium mt-1 uppercase tracking-tighter whitespace-nowrap">
+                  {t("today_earnings")}
                 </div>
               </div>
             </div>

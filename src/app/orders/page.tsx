@@ -394,14 +394,60 @@ export default function OrdersPage() {
           <div className="relative mx-auto w-4/5 h-4 bg-gradient-to-r from-amber-600 via-amber-300 to-amber-600 rounded-full shadow-[0_4px_15px_rgba(245,186,49,0.6)] border-t border-amber-200 opacity-90" />
         </div>
 
-        {/* Queue Status Ribbon Banner */}
+        {/* Ultra-Premium Order Queue Station Banner */}
         <div className="mx-3 mt-3">
-          <div className="relative py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 via-[#ffd369] to-amber-500 text-[#020a1f] font-extrabold text-xs shadow-md shadow-amber-500/25 flex items-center justify-center gap-2">
-            <Zap size={15} className="text-red-600 fill-red-600 shrink-0" />
-            <span className="tracking-tight text-sm font-black">
-              {isProcessing ? "Processing in Queue (10s)..." : "Order"}
-            </span>
-            <CheckCircle2 size={15} className="text-emerald-700 stroke-[3] shrink-0" />
+          <div className="order-status-card relative overflow-hidden rounded-2xl p-3.5 transition-all">
+            {/* Ambient Golden Top Shimmer */}
+            <div className="absolute inset-x-6 top-0 h-[1px] bg-gradient-to-r from-transparent via-[#f5ba31]/60 to-transparent pointer-events-none" />
+
+            <div className="relative flex items-center justify-between gap-3">
+              {/* Left Side: Icon + Title */}
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="relative w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 via-yellow-400 to-amber-600 p-[1.5px] shadow-md shadow-amber-500/30 shrink-0">
+                  <div className="order-banner-icon-bg w-full h-full rounded-[10px] flex items-center justify-center transition-colors">
+                    {isProcessing ? (
+                      <Sparkles size={18} className="text-[#f5ba31] animate-spin" />
+                    ) : (
+                      <Zap size={18} className="text-[#f5ba31] fill-[#f5ba31] drop-shadow-[0_0_8px_rgba(245,186,49,0.8)]" />
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex flex-col min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="order-banner-title font-black text-base tracking-wide uppercase">
+                      {isProcessing ? "Queueing Order" : "Order"}
+                    </span>
+                    <span className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-amber-400/20 text-[#f5ba31] border border-amber-400/40 shrink-0">
+                      VIP LIVE
+                    </span>
+                  </div>
+                  <span className="order-banner-sub text-[10.5px] font-semibold truncate">
+                    {isProcessing
+                      ? `Matching task in queue (~${countdown}s)`
+                      : "Smart Auto-Matching & Instant Commission"}
+                  </span>
+                </div>
+              </div>
+
+              {/* Right Side: Status Badge */}
+              <div className="shrink-0">
+                {isProcessing ? (
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/20 border border-amber-500/40 text-[#f5ba31] text-xs font-black shadow-sm animate-pulse">
+                    <Loader2 size={13} className="animate-spin" />
+                    <span>{countdown}s</span>
+                  </div>
+                ) : (
+                  <div className="order-status-ready flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-black shadow-sm">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    </span>
+                    <span>Ready</span>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
 

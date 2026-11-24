@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import CityFooter from "@/components/common/CityFooter";
 import ThemeToggle from "@/components/common/ThemeToggle";
+import { useTheme } from "@/context/ThemeContext";
 import {
   ChevronLeft,
   Crown,
@@ -97,6 +98,8 @@ const DEFAULT_VIP_PLANS: VipTier[] = [
 
 export default function VipPage() {
   const router = useRouter();
+  const { theme } = useTheme();
+  const [mounted, setMounted] = useState(false);
   const [user, setUser] = useState<UserProfile | null>(null);
   const [vipPlans, setVipPlans] = useState<VipTier[]>(DEFAULT_VIP_PLANS);
   const [usdtRate, setUsdtRate] = useState<number>(DEFAULT_USDT_RATE);
@@ -108,6 +111,12 @@ export default function VipPage() {
   const [buying, setBuying] = useState(false);
   const [purchaseError, setPurchaseError] = useState("");
   const [purchaseSuccess, setPurchaseSuccess] = useState("");
+
+  const isLight = mounted && theme === "light";
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Fetch live user profile and dynamic VIP tiers
   useEffect(() => {
@@ -211,22 +220,35 @@ export default function VipPage() {
     <div className="min-h-screen bg-gradient-to-b from-[#020a1f] via-[#051338] to-[#01081a] text-white flex flex-col justify-between pb-28">
       <div>
         {/* Top Header with Back button and Title */}
-        <div className="relative flex items-center justify-between px-4 py-3 bg-[#030e28]/90 backdrop-blur-md border-b border-[#f5ba31]/30 shadow-md">
+        <div
+          className={`relative flex items-center justify-between px-4 py-3 backdrop-blur-md border-b shadow-md transition-colors duration-200 ${
+            isLight
+              ? "bg-white/95 border-amber-300/40 text-slate-800"
+              : "bg-[#030e28]/90 border-[#f5ba31]/30 text-white"
+          }`}
+        >
           <button
             onClick={() => router.back()}
-            className="w-9 h-9 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center hover:bg-white/20 active:scale-95 transition-all text-white"
+            className={`w-9 h-9 rounded-full border flex items-center justify-center active:scale-95 transition-all ${
+              isLight
+                ? "bg-slate-100 hover:bg-slate-200 border-slate-200 text-slate-700"
+                : "bg-white/10 hover:bg-white/20 border-white/20 text-white"
+            }`}
             aria-label="Back"
           >
             <ChevronLeft size={22} className="stroke-[2.5]" />
           </button>
 
-          {/* Centered Title */}
+          {/* Centered Title in signature gold */}
           <div className="flex items-center gap-2">
-            <span className="h-[1px] w-5 bg-[#f5ba31]/60" />
-            <h1 className="text-base sm:text-lg font-black tracking-tight text-white drop-shadow-[0_0_10px_rgba(245,186,49,0.3)]">
+            <span className="h-[1px] w-4 bg-[#f5ba31]/70" />
+            <h1
+              style={{ color: "#f5ba31", WebkitTextFillColor: "#f5ba31" }}
+              className="text-base sm:text-lg font-black tracking-tight !text-[#f5ba31] text-[#f5ba31] drop-shadow-[0_0_10px_rgba(245,186,49,0.35)]"
+            >
               Invest and Share the Earnings
             </h1>
-            <span className="h-[1px] w-5 bg-[#f5ba31]/60" />
+            <span className="h-[1px] w-4 bg-[#f5ba31]/70" />
           </div>
 
           <div className="w-9 flex items-center justify-end">

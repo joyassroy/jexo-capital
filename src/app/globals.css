@@ -491,6 +491,50 @@ html.light body {
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05) !important;
 }
 
+/* Orders Page Status Card - Ultra-Premium Luxury Header */
+.order-status-card {
+  background: linear-gradient(135deg, #05143a 0%, #091f58 50%, #05143a 100%) !important;
+  border: 1px solid rgba(245, 186, 49, 0.45) !important;
+  box-shadow: 0 4px 20px rgba(245, 186, 49, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+.order-status-card .order-banner-title {
+  color: #ffffff !important;
+}
+
+.order-status-card .order-banner-sub {
+  color: #94a3b8 !important;
+}
+
+.order-status-card .order-banner-icon-bg {
+  background: #071333 !important;
+}
+
+/* Light Mode Overrides for Order Status Card */
+.light .order-status-card {
+  background: #ffffff !important;
+  border: 1.5px solid rgba(245, 186, 49, 0.5) !important;
+  box-shadow: 0 4px 18px rgba(245, 186, 49, 0.12), 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+}
+
+.light .order-status-card .order-banner-title {
+  color: #0f172a !important;
+}
+
+.light .order-status-card .order-banner-sub {
+  color: #64748b !important;
+}
+
+.light .order-status-card .order-banner-icon-bg {
+  background: #fef3c7 !important;
+}
+
+.light .order-status-card .order-status-ready {
+  background-color: #ecfdf5 !important;
+  border-color: #a7f3d0 !important;
+  color: #047857 !important;
+}
+
 .light .order-stats-card span.order-stat-label {
   color: #0f172a !important;
 }
@@ -662,6 +706,15 @@ span.day-action-label,
 .light [class*="!text-white"] {
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
+}
+
+/* Ensure Header Gold Titles remain signature gold in Day and Dark Mode */
+.header-gold-title,
+.light .header-gold-title,
+.light [class*="!text-[#f5ba31]"],
+[class*="!text-[#f5ba31]"] {
+  color: #f5ba31 !important;
+  -webkit-text-fill-color: #f5ba31 !important;
 }
 
 /* Ensure Logout Buttons and Red Gradient Buttons are always pure white */

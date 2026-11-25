@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Header from "@/components/common/Header";
 import CityFooter from "@/components/common/CityFooter";
@@ -15,6 +15,8 @@ import {
   Headphones,
   ShieldCheck,
   Info,
+  ChevronDown,
+  Check,
 } from "lucide-react";
 import { useToast } from "@/context/ToastContext";
 
@@ -37,12 +39,29 @@ export default function MyBankPage() {
   // Form states
   const [realName, setRealName] = useState("");
   const [bankType, setBankType] = useState<"bKash" | "Nagad">("bKash");
+  const [isBankDropdownOpen, setIsBankDropdownOpen] = useState(false);
+  const bankDropdownRef = useRef<HTMLDivElement>(null);
   const [accountNumber, setAccountNumber] = useState("");
   const [usdtAddress, setUsdtAddress] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        bankDropdownRef.current &&
+        !bankDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsBankDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const fetchWallets = () => {
     fetch("/api/user/wallets")
@@ -334,20 +353,105 @@ export default function MyBankPage() {
 
                   {activeTab === "Bank" ? (
                     <>
-                      <div>
+                      <div className="relative" ref={bankDropdownRef}>
                         <label className="block text-xs font-bold text-slate-300 mb-1">
                           Please select your MFS Provider
                         </label>
-                        <select
-                          value={bankType}
-                          onChange={(e) =>
-                            setBankType(e.target.value as "bKash" | "Nagad")
-                          }
-                          className="w-full px-3.5 py-2.5 rounded-2xl bg-[#020a1f] border border-slate-700 text-sm font-semibold text-white outline-none focus:border-[#f5ba31]"
+
+                        {/* Custom Dropdown Trigger */}
+                        <button
+                          type="button"
+                          onClick={() => setIsBankDropdownOpen((prev) => !prev)}
+                          className="w-full h-[48px] px-3.5 rounded-2xl bg-[#020a1f] border border-slate-700 text-sm font-semibold text-white outline-none flex items-center justify-between hover:border-[#f5ba31]/60 focus:border-[#f5ba31] transition-all select-none active:scale-[0.99]"
                         >
-                          <option value="bKash">bKash</option>
-                          <option value="Nagad">Nagad</option>
-                        </select>
+                          <div className="flex items-center gap-2.5">
+                            {bankType === "bKash" ? (
+                              <span className="px-2.5 py-1 rounded-lg bg-[#e2136e] text-white text-[11px] font-black tracking-wide shadow-xs">
+                                bKash
+                              </span>
+                            ) : (
+                              <span className="px-2.5 py-1 rounded-lg bg-[#f7941d] text-white text-[11px] font-black tracking-wide shadow-xs">
+                                Nagad
+                              </span>
+                            )}
+                            <span className="font-extrabold text-white text-sm">
+                              {bankType === "bKash" ? "bKash (বিকাশ)" : "Nagad (নগদ)"}
+                            </span>
+                          </div>
+                          <ChevronDown
+                            size={16}
+                            className={`text-slate-400 transition-transform duration-200 ${
+                              isBankDropdownOpen ? "rotate-180 text-[#f5ba31]" : ""
+                            }`}
+                          />
+                        </button>
+
+                        {/* Custom Animated Dropdown Menu Panel */}
+                        {isBankDropdownOpen && (
+                          <div className="absolute top-full left-0 right-0 mt-1.5 z-50 rounded-2xl bg-[#030e26]/98 backdrop-blur-xl border-2 border-[#f5ba31]/60 shadow-[0_12px_40px_rgba(0,0,0,0.85),0_0_24px_rgba(245,186,49,0.3)] overflow-hidden p-1.5 space-y-1">
+                            {/* bKash Option */}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setBankType("bKash");
+                                setIsBankDropdownOpen(false);
+                              }}
+                              className={`w-full flex items-center justify-between p-3 rounded-xl transition-all ${
+                                bankType === "bKash"
+                                  ? "bg-[#f5ba31]/20 border border-[#f5ba31]/50 text-white font-black"
+                                  : "text-slate-200 hover:bg-white/10"
+                              }`}
+                            >
+                              <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-xl bg-[#e2136e] flex items-center justify-center text-white text-xs font-black shadow-sm">
+                                  bK
+                                </div>
+                                <div className="text-left">
+                                  <div className="text-sm font-extrabold text-white leading-tight">
+                                    bKash
+                                  </div>
+                                  <div className="text-[11px] text-slate-400 font-medium">
+                                    বিকাশ ওয়ালেট (Personal)
+                                  </div>
+                                </div>
+                              </div>
+                              {bankType === "bKash" && (
+                                <Check size={18} className="text-[#f5ba31] stroke-[3]" />
+                              )}
+                            </button>
+
+                            {/* Nagad Option */}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setBankType("Nagad");
+                                setIsBankDropdownOpen(false);
+                              }}
+                              className={`w-full flex items-center justify-between p-3 rounded-xl transition-all ${
+                                bankType === "Nagad"
+                                  ? "bg-[#f5ba31]/20 border border-[#f5ba31]/50 text-white font-black"
+                                  : "text-slate-200 hover:bg-white/10"
+                              }`}
+                            >
+                              <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-xl bg-[#f7941d] flex items-center justify-center text-white text-xs font-black shadow-sm">
+                                  Na
+                                </div>
+                                <div className="text-left">
+                                  <div className="text-sm font-extrabold text-white leading-tight">
+                                    Nagad
+                                  </div>
+                                  <div className="text-[11px] text-slate-400 font-medium">
+                                    নগদ ওয়ালেট (Personal)
+                                  </div>
+                                </div>
+                              </div>
+                              {bankType === "Nagad" && (
+                                <Check size={18} className="text-[#f5ba31] stroke-[3]" />
+                              )}
+                            </button>
+                          </div>
+                        )}
                       </div>
 
                       <div>
@@ -402,7 +506,7 @@ export default function MyBankPage() {
                     <button
                       type="submit"
                       disabled={loading}
-                      className="w-full py-3 rounded-full bg-gradient-to-r from-[#ffe58f] via-[#f5ba31] to-[#e69e05] text-[#020a1f] font-black text-sm shadow-[0_0_15px_rgba(245,186,49,0.35)] active:scale-98 transition-all disabled:opacity-50"
+                      className="btn-gold-premium w-full py-3.5 rounded-2xl font-black text-sm active:scale-98 transition-all disabled:opacity-50"
                     >
                       {loading ? "Binding Account..." : "Confirm & Lock Account"}
                     </button>

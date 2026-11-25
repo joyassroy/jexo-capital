@@ -255,19 +255,29 @@ export default function PersonalInfoPage() {
 
             {/* Gender */}
             <div>
-              <label className="block text-xs font-bold text-blue-900 mb-1">
+              <label className="block text-xs font-bold text-blue-900 mb-1.5">
                 Gender
               </label>
-              <select
-                value={gender}
-                onChange={(e) => setGender(e.target.value)}
-                disabled={isApproved}
-                className="w-full px-3.5 py-2.5 rounded-2xl bg-blue-50/50 border border-blue-200 text-sm font-semibold text-gray-800 outline-none focus:border-blue-500 disabled:opacity-75"
-              >
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
-              </select>
+              <div className="grid grid-cols-3 gap-2">
+                {(["Male", "Female", "Other"] as const).map((g) => {
+                  const isSelected = gender === g;
+                  return (
+                    <button
+                      key={g}
+                      type="button"
+                      disabled={isApproved}
+                      onClick={() => setGender(g)}
+                      className={`py-2.5 px-3 rounded-2xl text-xs font-bold transition-all border ${
+                        isSelected
+                          ? "bg-gradient-to-r from-[#ffe58f] via-[#f5ba31] to-[#d48b06] text-[#020a1f] font-black border-amber-300 shadow-sm"
+                          : "bg-blue-50/50 text-slate-700 border-blue-200 hover:border-blue-300"
+                      } disabled:opacity-75`}
+                    >
+                      {g}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
             {/* National ID */}

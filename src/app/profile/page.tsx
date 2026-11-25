@@ -7,6 +7,7 @@ import ThemeToggle from "@/components/common/ThemeToggle";
 import { useTheme } from "@/context/ThemeContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { useToast } from "@/context/ToastContext";
+import ConfirmModal from "@/components/common/ConfirmModal";
 import {
   FileText,
   Info,
@@ -79,13 +80,22 @@ export default function ProfilePage() {
       });
   }, []);
 
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [showRemoveAvatarModal, setShowRemoveAvatarModal] = useState(false);
+
   const isLight = mounted && theme === "light";
 
-  const handleLogout = async () => {
-    if (confirm(t("confirm_logout"))) {
-      await fetch("/api/auth/logout", { method: "POST" });
+  const handleLogout = () => {
+    setShowLogoutModal(true);
+  };
+
+  const confirmLogout = async () => {
+    setShowLogoutModal(false);
+    toast.success("Logged out successfully");
+    await fetch("/api/auth/logout", { method: "POST" });
+    setTimeout(() => {
       window.location.href = "/login";
-    }
+    }, 600);
   };
 
   const getInitials = (name?: string) => {
@@ -139,10 +149,13 @@ export default function ProfilePage() {
     }
   };
 
-  const handleRemoveAvatar = async (e: React.MouseEvent) => {
+  const handleRemoveAvatar = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!confirm(t("remove_photo") + "?")) return;
+    setShowRemoveAvatarModal(true);
+  };
 
+  const confirmRemoveAvatar = async () => {
+    setShowRemoveAvatarModal(false);
     setUploadingAvatar(true);
     try {
       const res = await fetch("/api/user/avatar", { method: "DELETE" });
@@ -661,6 +674,31 @@ export default function ProfilePage() {
           </span>
         </button>
       </div>
+
+      {/* Luxury Confirmation Modals */}
+      <ConfirmModal
+        isOpen={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+        onConfirm={confirmLogout}
+        title={t("logout")}
+        message={t("confirm_logout")}
+        confirmText={t("logout")}
+        cancelText={t("cancel") || "Cancel"}
+        type="danger"
+        icon={<LogOut size={24} />}
+      />
+
+      <ConfirmModal
+        isOpen={showRemoveAvatarModal}
+        onClose={() => setShowRemoveAvatarModal(false)}
+        onConfirm={confirmRemoveAvatar}
+        title={t("remove_photo") || "Remove Photo"}
+        message={(t("remove_photo") || "Remove profile photo") + "?"}
+        confirmText="Remove"
+        cancelText={t("cancel") || "Cancel"}
+        type="warning"
+        icon={<Trash2 size={24} />}
+      />
     </div>
   );
 }

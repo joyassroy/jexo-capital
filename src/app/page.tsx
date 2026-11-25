@@ -6,6 +6,8 @@ import Image from "next/image";
 import Logo from "@/components/common/Logo";
 import ThemeToggle from "@/components/common/ThemeToggle";
 import LanguageModal from "@/components/common/LanguageModal";
+import ConfirmModal from "@/components/common/ConfirmModal";
+import { useToast } from "@/context/ToastContext";
 import { useTheme } from "@/context/ThemeContext";
 import { useLanguage } from "@/context/LanguageContext";
 import {
@@ -41,10 +43,12 @@ interface UserProfile {
 export default function HomePage() {
   const { theme } = useTheme();
   const { t, activeLanguageOption } = useLanguage();
+  const { toast } = useToast();
   const [mounted, setMounted] = useState(false);
   const [user, setUser] = useState<UserProfile | null>(null);
   const [usdtRate, setUsdtRate] = useState<number>(127);
   const [isLangModalOpen, setIsLangModalOpen] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const isLight = mounted && theme === "light";
   const [tickerText, setTickerText] = useState("");
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -100,11 +104,17 @@ export default function HomePage() {
       .catch(() => {});
   }, []);
 
-  const handleLogout = async () => {
-    if (confirm(t("confirm_logout"))) {
-      await fetch("/api/auth/logout", { method: "POST" });
+  const handleLogout = () => {
+    setShowLogoutModal(true);
+  };
+
+  const confirmLogout = async () => {
+    setShowLogoutModal(false);
+    toast.success("Logged out successfully");
+    await fetch("/api/auth/logout", { method: "POST" });
+    setTimeout(() => {
       window.location.href = "/login";
-    }
+    }, 600);
   };
 
   // 9 White Squircle Cards for Day Mode (Matching media_1795519809893_3008b983.jpg)
@@ -761,6 +771,19 @@ export default function HomePage() {
       <LanguageModal
         isOpen={isLangModalOpen}
         onClose={() => setIsLangModalOpen(false)}
+      />
+
+      {/* Luxury Logout Confirmation Modal */}
+      <ConfirmModal
+        isOpen={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+        onConfirm={confirmLogout}
+        title={t("logout")}
+        message={t("confirm_logout")}
+        confirmText={t("logout")}
+        cancelText={t("cancel") || "Cancel"}
+        type="danger"
+        icon={<LogOut size={24} />}
       />
     </div>
   );

@@ -5,9 +5,11 @@ import { useRouter } from "next/navigation";
 import Header from "@/components/common/Header";
 import CityFooter from "@/components/common/CityFooter";
 import { Lock, Shield, Eye, EyeOff, AlertCircle, CheckCircle } from "lucide-react";
+import { useToast } from "@/context/ToastContext";
 
 export default function SetWithdrawPasswordPage() {
   const router = useRouter();
+  const { toast } = useToast();
 
   const [loginPassword, setLoginPassword] = useState("");
   const [withdrawPassword, setWithdrawPassword] = useState("");
@@ -56,7 +58,9 @@ export default function SetWithdrawPasswordPage() {
         return;
       }
 
-      setSuccess("Withdrawal password set successfully!");
+      const successMsg = "Withdrawal password set successfully!";
+      setSuccess(successMsg);
+      toast.success(successMsg);
       setTimeout(() => {
         router.push("/profile");
       }, 1500);

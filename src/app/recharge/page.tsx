@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Header from "@/components/common/Header";
 import CityFooter from "@/components/common/CityFooter";
 import { useTheme } from "@/context/ThemeContext";
+import { useToast } from "@/context/ToastContext";
 import {
   Copy,
   CheckCircle2,
@@ -25,6 +26,7 @@ import {
 export default function RechargePage() {
   const router = useRouter();
   const { theme } = useTheme();
+  const { toast } = useToast();
   const [mounted, setMounted] = useState<boolean>(false);
 
   // Settings & User state
@@ -117,7 +119,7 @@ export default function RechargePage() {
       if (remainingSec <= 0) {
         clearInterval(interval);
         // Session expired: Alert user, cancel order and redirect to Home
-        alert("Payment session expired (10 minutes limit). Recharge order has been canceled.");
+        toast.warning("Payment session expired (10 minutes limit). Recharge order has been canceled.");
         router.push("/");
       }
     }, 1000);
@@ -172,6 +174,7 @@ export default function RechargePage() {
   const handleCopy = (text: string, label: string) => {
     navigator.clipboard.writeText(text);
     setCopied(label);
+    toast.success(`${label} copied to clipboard!`);
     setTimeout(() => setCopied(""), 2000);
   };
 
@@ -297,7 +300,9 @@ export default function RechargePage() {
         return;
       }
 
-      setSuccessMessage(data.message || "Recharge request submitted successfully!");
+      const msg = data.message || "Recharge request submitted successfully!";
+      setSuccessMessage(msg);
+      toast.success(msg);
       setTimeout(() => {
         router.push("/recharge-record");
       }, 1500);
@@ -334,7 +339,9 @@ export default function RechargePage() {
         return;
       }
 
-      setSuccessMessage(data.message || "Recharge request submitted successfully!");
+      const msg = data.message || "USDT Recharge request submitted successfully!";
+      setSuccessMessage(msg);
+      toast.success(msg);
       setTimeout(() => {
         router.push("/recharge-record");
       }, 1500);

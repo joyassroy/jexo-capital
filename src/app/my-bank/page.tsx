@@ -16,6 +16,7 @@ import {
   ShieldCheck,
   Info,
 } from "lucide-react";
+import { useToast } from "@/context/ToastContext";
 
 interface Wallet {
   _id?: string;
@@ -28,6 +29,7 @@ interface Wallet {
 }
 
 export default function MyBankPage() {
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<"Bank" | "USDT">("Bank");
   const [wallets, setWallets] = useState<Wallet[]>([]);
   const [showAddForm, setShowAddForm] = useState(false);
@@ -95,7 +97,9 @@ export default function MyBankPage() {
         return;
       }
 
-      setSuccess(data.message || "Account bound successfully and locked!");
+      const successMsg = data.message || `${type} account bound successfully and locked!`;
+      setSuccess(successMsg);
+      toast.success(successMsg);
       setShowAddForm(false);
       fetchWallets();
       setLoading(false);
@@ -113,7 +117,7 @@ export default function MyBankPage() {
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    alert("Copied to clipboard!");
+    toast.success("Wallet details copied to clipboard!");
   };
 
   return (

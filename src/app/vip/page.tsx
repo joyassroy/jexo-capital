@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import CityFooter from "@/components/common/CityFooter";
 import ThemeToggle from "@/components/common/ThemeToggle";
 import { useTheme } from "@/context/ThemeContext";
+import { useToast } from "@/context/ToastContext";
 import {
   ChevronLeft,
   Crown,
@@ -99,6 +100,7 @@ const DEFAULT_VIP_PLANS: VipTier[] = [
 export default function VipPage() {
   const router = useRouter();
   const { theme } = useTheme();
+  const { toast } = useToast();
   const [mounted, setMounted] = useState(false);
   const [user, setUser] = useState<UserProfile | null>(null);
   const [vipPlans, setVipPlans] = useState<VipTier[]>(DEFAULT_VIP_PLANS);
@@ -189,7 +191,9 @@ export default function VipPage() {
         return;
       }
 
-      setPurchaseSuccess(data.message || `${selectedPlan.name} activated successfully!`);
+      const successMsg = data.message || `${selectedPlan.name} activated successfully!`;
+      setPurchaseSuccess(successMsg);
+      toast.success(successMsg);
       // Update local user state
       setUser((prev) =>
         prev

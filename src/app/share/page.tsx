@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Header from "@/components/common/Header";
 import CityFooter from "@/components/common/CityFooter";
 import { useTheme } from "@/context/ThemeContext";
+import { useToast } from "@/context/ToastContext";
 import {
   Share2,
   Link as LinkIcon,
@@ -19,6 +20,7 @@ import {
 export default function SharePage() {
   const router = useRouter();
   const { theme } = useTheme();
+  const { toast } = useToast();
   const [mounted, setMounted] = useState(false);
   const isLight = mounted && theme === "light";
 
@@ -61,6 +63,7 @@ export default function SharePage() {
     if (!referralLink) return;
     navigator.clipboard.writeText(referralLink);
     setCopiedLink(true);
+    toast.success("Referral link copied to clipboard!");
     setTimeout(() => setCopiedLink(false), 2000);
   };
 
@@ -68,6 +71,7 @@ export default function SharePage() {
     if (!referralCode) return;
     navigator.clipboard.writeText(referralCode);
     setCopiedCode(true);
+    toast.success(`Referral code ${referralCode} copied!`);
     setTimeout(() => setCopiedCode(false), 2000);
   };
 

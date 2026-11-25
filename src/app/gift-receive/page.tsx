@@ -4,8 +4,10 @@ import React, { useState } from "react";
 import Header from "@/components/common/Header";
 import CityFooter from "@/components/common/CityFooter";
 import { Gift, CheckCircle2, AlertCircle } from "lucide-react";
+import { useToast } from "@/context/ToastContext";
 
 export default function GiftReceivePage() {
+  const { toast } = useToast();
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -37,7 +39,9 @@ export default function GiftReceivePage() {
         return;
       }
 
-      setSuccess(data.message);
+      const successMsg = data.message || "Gift redeemed successfully!";
+      setSuccess(successMsg);
+      toast.success(successMsg);
       setCode("");
       setLoading(false);
     } catch {

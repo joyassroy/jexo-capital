@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import ThemeToggle from "@/components/common/ThemeToggle";
 import { useLanguage } from "@/context/LanguageContext";
+import { useToast } from "@/context/ToastContext";
 import { playCoinDropRhythm, playSuccessChime } from "@/lib/soundEffects";
 
 interface OrderUserData {
@@ -48,6 +49,7 @@ interface OrderUserData {
 export default function OrdersPage() {
   const router = useRouter();
   const { t } = useLanguage();
+  const { toast } = useToast();
 
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<OrderUserData | null>(null);
@@ -116,7 +118,7 @@ export default function OrdersPage() {
     if (!data) return;
 
     if (!data.isQualified) {
-      alert(
+      toast.warning(
         `Minimum VIP-1 required (Balance ≥ 1,000 Tk / ~${(1000 / usdtRate).toFixed(2)} USDT) to earn commission on daily orders.`
       );
       router.push("/vip");
@@ -124,7 +126,7 @@ export default function OrdersPage() {
     }
 
     if (data.todayOrdersCount >= data.maxOrders) {
-      alert(`You have completed all ${data.maxOrders} daily orders! New orders reset after midnight (12:00 AM).`);
+      toast.info(`You have completed all ${data.maxOrders} daily orders! New orders reset after midnight (12:00 AM).`);
       return;
     }
 
@@ -180,6 +182,11 @@ export default function OrdersPage() {
             orderNum: result.todayOrdersCount,
           });
 
+          toast.success(
+            `Order #${result.todayOrdersCount} completed! +${result.earnedCommissionBDT?.toFixed(2)} BDT earned.`,
+            { sound: false }
+          );
+
           // Update local data
           setData((prev) =>
             prev
@@ -197,7 +204,7 @@ export default function OrdersPage() {
 
           setShowCompletionModal(true);
         } else {
-          alert(result?.error || "Failed to process order. Please try again.");
+          toast.error(result?.error || "Failed to process order. Please try again.");
           fetchOrderData();
         }
 

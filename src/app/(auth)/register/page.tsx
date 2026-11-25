@@ -11,10 +11,12 @@ import CountryCodeDropdown, {
   CountryItem,
 } from "@/components/common/CountryCodeDropdown";
 import { Eye, EyeOff, Lock, Phone, User, UserPlus, Globe, Check } from "lucide-react";
+import { useToast } from "@/context/ToastContext";
 
 function RegisterForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { toast } = useToast();
 
   const [country, setCountry] = useState<CountryItem>(COUNTRY_LIST[0]);
   const [nickname, setNickname] = useState("");
@@ -145,8 +147,11 @@ function RegisterForm() {
         document.cookie = "jexo_ref=; path=/; max-age=0";
       } catch {}
 
-      router.push("/profile");
-      router.refresh();
+      toast.success("Account created successfully! Welcome to Jexo Capital.");
+      setTimeout(() => {
+        router.push("/profile");
+        router.refresh();
+      }, 500);
     } catch {
       setError("An unexpected error occurred. Please try again.");
       setLoading(false);

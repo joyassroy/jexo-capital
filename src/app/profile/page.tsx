@@ -6,6 +6,7 @@ import Image from "next/image";
 import ThemeToggle from "@/components/common/ThemeToggle";
 import { useTheme } from "@/context/ThemeContext";
 import { useLanguage } from "@/context/LanguageContext";
+import { useToast } from "@/context/ToastContext";
 import {
   FileText,
   Info,
@@ -44,6 +45,7 @@ interface UserData {
 export default function ProfilePage() {
   const { theme } = useTheme();
   const { t } = useLanguage();
+  const { toast } = useToast();
   const [mounted, setMounted] = useState(false);
   const [user, setUser] = useState<UserData | null>(null);
   const [usdtRate, setUsdtRate] = useState<number>(127);
@@ -99,12 +101,12 @@ export default function ProfilePage() {
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-      alert("Please select a valid image file (JPG, PNG, WEBP).");
+      toast.error("Please select a valid image file (JPG, PNG, WEBP).");
       return;
     }
 
     if (file.size > 5 * 1024 * 1024) {
-      alert("Image size should not exceed 5MB.");
+      toast.error("Image size should not exceed 5MB.");
       return;
     }
 
@@ -121,13 +123,14 @@ export default function ProfilePage() {
 
       const data = await res.json();
       if (!res.ok) {
-        alert(data.error || "Failed to upload profile picture.");
+        toast.error(data.error || "Failed to upload profile picture.");
         return;
       }
 
       setUser((prev) => (prev ? { ...prev, avatarUrl: data.avatarUrl } : null));
+      toast.success("Profile photo updated successfully!");
     } catch {
-      alert("An unexpected network error occurred while uploading.");
+      toast.error("An unexpected network error occurred while uploading.");
     } finally {
       setUploadingAvatar(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -143,11 +146,12 @@ export default function ProfilePage() {
       const res = await fetch("/api/user/avatar", { method: "DELETE" });
       if (res.ok) {
         setUser((prev) => (prev ? { ...prev, avatarUrl: "" } : null));
+        toast.success("Profile photo removed.");
       } else {
-        alert("Failed to remove profile picture.");
+        toast.error("Failed to remove profile picture.");
       }
     } catch {
-      alert("Network error.");
+      toast.error("Network error.");
     } finally {
       setUploadingAvatar(false);
     }
@@ -289,7 +293,19 @@ export default function ProfilePage() {
               isLight ? "text-slate-600" : "text-slate-300"
             }`}
           >
-            <span>ID: {user?.referralCode || "------"}</span>
+            <button
+              type="button"
+              onClick={() => {
+                if (user?.referralCode) {
+                  navigator.clipboard.writeText(user.referralCode);
+                  toast.success(`ID ${user.referralCode} copied to clipboard!`);
+                }
+              }}
+              className="hover:underline flex items-center gap-1 active:scale-95 transition-transform"
+              title="Click to copy ID"
+            >
+              <span>ID: {user?.referralCode || "------"}</span>
+            </button>
             <span>•</span>
             <span className="px-2.5 py-0.5 rounded-full font-black text-[10px] bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 text-slate-950 border border-amber-300 shadow-xs">
               Vip: {user?.vipLevel ?? 0}

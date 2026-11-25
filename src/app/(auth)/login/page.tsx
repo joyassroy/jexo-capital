@@ -11,10 +11,12 @@ import CountryCodeDropdown, {
   CountryItem,
 } from "@/components/common/CountryCodeDropdown";
 import { Eye, EyeOff, Lock, Phone, Globe } from "lucide-react";
+import { useToast } from "@/context/ToastContext";
 
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { toast } = useToast();
   const [country, setCountry] = useState<CountryItem>(COUNTRY_LIST[0]);
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
@@ -63,9 +65,12 @@ function LoginForm() {
         return;
       }
 
+      toast.success("Login successful! Welcome back.");
       const redirectUrl = searchParams.get("redirect") || "/profile";
-      router.push(redirectUrl);
-      router.refresh();
+      setTimeout(() => {
+        router.push(redirectUrl);
+        router.refresh();
+      }, 500);
     } catch {
       setError("An unexpected error occurred. Please try again.");
       setLoading(false);

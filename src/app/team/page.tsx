@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import ThemeToggle from "@/components/common/ThemeToggle";
 import { useTheme } from "@/context/ThemeContext";
+import { useToast } from "@/context/ToastContext";
 
 interface TeamMember {
   id: string;
@@ -109,6 +110,7 @@ function GoldenWing({ flip = false }: { flip?: boolean }) {
 export default function TeamPage() {
   const router = useRouter();
   const { theme } = useTheme();
+  const { toast } = useToast();
   const [mounted, setMounted] = useState(false);
   const isLight = mounted && theme === "light";
 
@@ -174,22 +176,26 @@ export default function TeamPage() {
       type === "referral" ? team.referralRewardsBDT : team.cashbackRewardsBDT;
 
     if (amount <= 0) {
+      const msg = `No unclaimed ${
+        type === "referral" ? "Referral" : "Cashback"
+      } commission yet. Share your invite link to build your team!`;
       setFeedback({
         type: "info",
-        text: `No unclaimed ${
-          type === "referral" ? "Referral" : "Cashback"
-        } commission yet. Share your invite link to build your team!`,
+        text: msg,
       });
+      toast.info(msg);
       setTimeout(() => setFeedback(null), 3800);
       return;
     }
 
+    const claimMsg = `All ${amount.toFixed(
+      2
+    )} BDT commissions are auto-credited to your main balance!`;
     setFeedback({
       type: "success",
-      text: `All ${amount.toFixed(
-        2
-      )} BDT commissions are auto-credited to your main balance!`,
+      text: claimMsg,
     });
+    toast.success(claimMsg);
     setTimeout(() => setFeedback(null), 4000);
   };
 
@@ -203,18 +209,22 @@ export default function TeamPage() {
       });
       const data = await res.json();
       if (res.ok) {
+        const succMsg =
+          data.message ||
+          "Congratulations! 300 BDT milestone bonus credited to your balance.";
         setFeedback({
           type: "success",
-          text:
-            data.message ||
-            "Congratulations! 300 BDT milestone bonus credited to your balance.",
+          text: succMsg,
         });
+        toast.success(succMsg);
         fetchTeamData();
       } else {
+        const errMsg = data.error || "Unable to claim milestone bonus.";
         setFeedback({
           type: "info",
-          text: data.error || "Unable to claim milestone bonus.",
+          text: errMsg,
         });
+        toast.warning(errMsg);
       }
     } catch {
       setFeedback({

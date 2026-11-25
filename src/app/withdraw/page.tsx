@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Header from "@/components/common/Header";
 import CityFooter from "@/components/common/CityFooter";
 import { useTheme } from "@/context/ThemeContext";
+import { useToast } from "@/context/ToastContext";
 import {
   Lock,
   AlertCircle,
@@ -28,6 +29,7 @@ interface WalletItem {
 export default function WithdrawPage() {
   const router = useRouter();
   const { theme } = useTheme();
+  const { toast } = useToast();
   const [mounted, setMounted] = useState(false);
   const isLight = mounted && theme === "light";
 
@@ -217,7 +219,9 @@ export default function WithdrawPage() {
         return;
       }
 
-      setSuccess("Withdrawal request submitted successfully! Pending admin review.");
+      const successMsg = "Withdrawal request submitted successfully! Pending admin review.";
+      setSuccess(successMsg);
+      toast.success(successMsg);
       setAmount("");
       setWithdrawPassword("");
       fetchUserData();

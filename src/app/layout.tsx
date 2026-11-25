@@ -3,6 +3,7 @@ import "./globals.css";
 import AppShell from "@/components/layout/AppShell";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { LanguageProvider } from "@/context/LanguageContext";
+import { ToastProvider } from "@/context/ToastContext";
 
 export const metadata: Metadata = {
   title: "Zexo Capital - Invest • Grow • Prosper",
@@ -61,7 +62,9 @@ export default function RootLayout({
       <body className="antialiased min-h-screen bg-[#0b192c] flex justify-center items-start transition-colors duration-300">
         <ThemeProvider>
           <LanguageProvider>
-            <AppShell>{children}</AppShell>
+            <ToastProvider>
+              <AppShell>{children}</AppShell>
+            </ToastProvider>
           </LanguageProvider>
         </ThemeProvider>
       </body>

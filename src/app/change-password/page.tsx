@@ -5,9 +5,11 @@ import { useRouter } from "next/navigation";
 import Header from "@/components/common/Header";
 import CityFooter from "@/components/common/CityFooter";
 import { Lock, Shield, Eye, EyeOff, AlertCircle, CheckCircle } from "lucide-react";
+import { useToast } from "@/context/ToastContext";
 
 export default function ChangePasswordPage() {
   const router = useRouter();
+  const { toast } = useToast();
 
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -52,7 +54,9 @@ export default function ChangePasswordPage() {
         return;
       }
 
-      setSuccess("Login password updated successfully!");
+      const successMsg = "Login password updated successfully!";
+      setSuccess(successMsg);
+      toast.success(successMsg);
       setTimeout(() => {
         router.push("/profile");
       }, 1500);

@@ -1110,6 +1110,26 @@ button[class*="from-red"] svg,
   }
 }
 
+/* Toast HUD Theme Rules for Guaranteed High Contrast in Day & Night Mode */
+.toast-hud-card {
+  box-sizing: border-box;
+}
+
+html.light .toast-hud-card,
+body.light .toast-hud-card {
+  background-color: #ffffff !important;
+  border: 2px solid #f5ba31 !important;
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.2), 0 0 20px rgba(245, 186, 49, 0.25) !important;
+}
+
+html.light .toast-hud-card div,
+html.light .toast-hud-card span,
+body.light .toast-hud-card div,
+body.light .toast-hud-card span {
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+}
+
 @keyframes toastCountdown {
   0% {
     width: 100%;

@@ -11,6 +11,7 @@ import React, {
 import { createPortal } from "react-dom";
 import { Check, X, AlertTriangle, Info } from "lucide-react";
 import { playSuccessChime } from "@/lib/soundEffects";
+import { useTheme } from "@/context/ThemeContext";
 
 export type ToastType = "success" | "error" | "info" | "warning";
 
@@ -48,11 +49,20 @@ const ToastContext = createContext<ToastContextValue | null>(null);
 export function ToastProvider({ children }: { children: React.ReactNode }) {
   const [toasts, setToasts] = useState<ToastItem[]>([]);
   const timeoutsRef = useRef<Map<string, NodeJS.Timeout>>(new Map());
+  const { theme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Bulletproof detection for Day Mode (Light Theme)
+  const isLight =
+    mounted &&
+    (theme === "light" ||
+      (typeof document !== "undefined" &&
+        (document.documentElement.classList.contains("light") ||
+          document.body?.classList.contains("light"))));
 
   const removeToast = useCallback((id: string) => {
     setToasts((prev) =>
@@ -161,49 +171,92 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
               const isError = item.type === "error";
               const isWarning = item.type === "warning";
 
+              // Explicit Color Schemes for Day Mode & Night Mode
+              // Day Mode (White/Light Screen):
+              // Solid pure white box with crisp gold border, vibrant emerald checkmark, dark high-contrast text
+              // Night Mode (Dark Screen):
+              // Solid midnight obsidian box with crisp gold border, vibrant gold checkmark, white text
+              const cardBg = isLight ? "#ffffff" : "#081026";
+              const cardBorder = isLight ? "2px solid #f5ba31" : "2px solid #f5ba31";
+              const cardShadow = isLight
+                ? "0 18px 45px rgba(0, 0, 0, 0.22), 0 0 20px rgba(245, 186, 49, 0.25)"
+                : "0 25px 60px rgba(0, 0, 0, 0.95), 0 0 35px rgba(245, 186, 49, 0.35)";
+              const textColor = isLight ? "#0f172a" : "#ffffff";
+
+              const iconColor = isSuccess
+                ? isLight
+                  ? "#059669"
+                  : "#f5ba31"
+                : isError
+                ? isLight
+                  ? "#e11d48"
+                  : "#fb7185"
+                : isWarning
+                ? isLight
+                  ? "#d97706"
+                  : "#fbbf24"
+                : isLight
+                ? "#0284c7"
+                : "#38bdf8";
+
               return (
                 <div
                   key={item.id}
                   onClick={() => removeToast(item.id)}
                   role="alert"
                   style={{
+                    backgroundColor: cardBg,
+                    border: cardBorder,
+                    boxShadow: cardShadow,
+                    color: textColor,
                     willChange: "transform, opacity",
                     animation: item.exiting
                       ? "toastHudOut 0.18s cubic-bezier(0.4, 0, 0.2, 1) forwards"
                       : "toastHudIn 0.20s cubic-bezier(0.16, 1, 0.3, 1) forwards",
                   }}
-                  className="pointer-events-auto cursor-pointer relative min-w-[124px] max-w-[200px] min-h-[124px] px-5 py-4 rounded-[18px] bg-[#3a3d42]/95 backdrop-blur-md text-white shadow-[0_14px_36px_rgba(0,0,0,0.38)] flex flex-col items-center justify-center text-center transition-transform active:scale-95"
+                  className="toast-hud-card pointer-events-auto cursor-pointer relative min-w-[126px] max-w-[210px] min-h-[126px] px-5 py-4 rounded-[20px] flex flex-col items-center justify-center text-center transition-transform active:scale-95"
                 >
                   {/* Minimal Centered Icon */}
                   <div className="mb-2 flex items-center justify-center">
                     {isSuccess && (
                       <Check
                         size={38}
-                        className="text-white stroke-[3.4] drop-shadow-sm"
+                        strokeWidth={3.5}
+                        style={{ stroke: iconColor, color: iconColor }}
+                        className="drop-shadow-sm"
                       />
                     )}
                     {isError && (
                       <X
                         size={38}
-                        className="text-white stroke-[3.4] drop-shadow-sm"
+                        strokeWidth={3.5}
+                        style={{ stroke: iconColor, color: iconColor }}
+                        className="drop-shadow-sm"
                       />
                     )}
                     {isWarning && (
                       <AlertTriangle
                         size={36}
-                        className="text-amber-400 stroke-[3] drop-shadow-sm"
+                        strokeWidth={3}
+                        style={{ stroke: iconColor, color: iconColor }}
+                        className="drop-shadow-sm"
                       />
                     )}
                     {!isSuccess && !isError && !isWarning && (
                       <Info
                         size={36}
-                        className="text-sky-400 stroke-[3] drop-shadow-sm"
+                        strokeWidth={3}
+                        style={{ stroke: iconColor, color: iconColor }}
+                        className="drop-shadow-sm"
                       />
                     )}
                   </div>
 
-                  {/* Clean Text Label */}
-                  <div className="text-[13px] sm:text-[13.5px] font-medium text-white text-center leading-snug whitespace-pre-line break-words max-w-[170px]">
+                  {/* High Contrast Clean Text Label */}
+                  <div
+                    style={{ color: textColor }}
+                    className="text-[13px] sm:text-[13.5px] font-bold text-center leading-snug whitespace-pre-line break-words max-w-[170px]"
+                  >
                     {item.message}
                   </div>
                 </div>

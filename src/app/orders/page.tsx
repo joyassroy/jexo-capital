@@ -76,6 +76,7 @@ export default function OrdersPage() {
   // Timer reference
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const soundIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const isProcessingRef = useRef<boolean>(false);
 
   const fetchOrderData = async () => {
     try {
@@ -131,8 +132,9 @@ export default function OrdersPage() {
       return;
     }
 
-    if (isProcessing) return;
-
+    // Guard against rapid duplicate clicks
+    if (isProcessingRef.current || isProcessing) return;
+    isProcessingRef.current = true;
     setIsProcessing(true);
     setCountdown(10);
     setAnimationStep("Connecting to Global Merchant Queue...");
@@ -156,6 +158,7 @@ export default function OrdersPage() {
       .catch(() => null);
 
     let currentSec = 10;
+    let completed = false;
     timerRef.current = setInterval(async () => {
       currentSec -= 1;
       setCountdown(currentSec);
@@ -166,50 +169,56 @@ export default function OrdersPage() {
         setAnimationStep("Processing Commission & Smart Verification...");
       } else if (currentSec === 2) {
         setAnimationStep("Finalizing Settlement to Main Balance...");
-      } else if (currentSec <= 0) {
-        if (timerRef.current) clearInterval(timerRef.current);
-        if (soundIntervalRef.current) clearInterval(soundIntervalRef.current);
-
-        // Await the API response
-        const result = await apiResultPromise;
-        if (result && result.success) {
-          if (soundEnabled) {
-            playSuccessChime();
-          }
-
-          setCompletedCommission({
-            usdt: result.earnedCommissionUSDT,
-            bdt: result.earnedCommissionBDT,
-            orderNum: result.todayOrdersCount,
-          });
-
-          toast.success(
-            `Order #${result.todayOrdersCount} completed! +${result.earnedCommissionBDT?.toFixed(2)} BDT earned.`,
-            { sound: false }
-          );
-
-          // Update local data
-          setData((prev) =>
-            prev
-              ? {
-                  ...prev,
-                  balanceUSDT: result.newBalanceUSDT,
-                  balanceBDT: result.newBalanceBDT,
-                  todayCommissionUSDT: result.todayCommissionUSDT,
-                  todayCommissionBDT: result.todayCommissionBDT,
-                  todayOrdersCount: result.todayOrdersCount,
-                  hasReachedLimit: result.hasReachedLimit,
-                }
-              : null
-          );
-
-          setShowCompletionModal(true);
-        } else {
-          toast.error(result?.error || "Failed to process order. Please try again.");
-          fetchOrderData();
+      } else if (currentSec <= 0 && !completed) {
+        completed = true;
+        if (timerRef.current) {
+          clearInterval(timerRef.current);
+          timerRef.current = null;
+        }
+        if (soundIntervalRef.current) {
+          clearInterval(soundIntervalRef.current);
+          soundIntervalRef.current = null;
         }
 
-        setIsProcessing(false);
+        try {
+          // Await the API response
+          const result = await apiResultPromise;
+          if (result && result.success) {
+            if (soundEnabled) {
+              playSuccessChime();
+            }
+
+            setCompletedCommission({
+              usdt: result.earnedCommissionUSDT,
+              bdt: result.earnedCommissionBDT,
+              orderNum: result.todayOrdersCount,
+            });
+
+            // Update local data
+            setData((prev) =>
+              prev
+                ? {
+                    ...prev,
+                    balanceUSDT: result.newBalanceUSDT,
+                    balanceBDT: result.newBalanceBDT,
+                    todayCommissionUSDT: result.todayCommissionUSDT,
+                    todayCommissionBDT: result.todayCommissionBDT,
+                    todayOrdersCount: result.todayOrdersCount,
+                    hasReachedLimit: result.hasReachedLimit,
+                  }
+                : null
+            );
+
+            // Show the single clean completion modal dialog (no duplicate floating toast)
+            setShowCompletionModal(true);
+          } else {
+            toast.error(result?.error || "Failed to process order. Please try again.");
+            fetchOrderData();
+          }
+        } finally {
+          isProcessingRef.current = false;
+          setIsProcessing(false);
+        }
       }
     }, 1000);
   };

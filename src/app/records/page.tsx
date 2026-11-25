@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import Header from "@/components/common/Header";
 import CityFooter from "@/components/common/CityFooter";
 import { ClipboardList } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface RecordItem {
   _id: string;
@@ -15,6 +16,7 @@ interface RecordItem {
 }
 
 export default function RecordsPage() {
+  const { t } = useLanguage();
   const [records, setRecords] = useState<RecordItem[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -41,7 +43,7 @@ export default function RecordsPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#020a1f] via-[#051338] to-[#01081a] text-white flex flex-col justify-between pb-28">
       <div>
-        <Header title="Record" showBack={true} />
+        <Header title={t("records")} showBack={true} />
 
         <div className="p-4 space-y-2">
           {loading ? (

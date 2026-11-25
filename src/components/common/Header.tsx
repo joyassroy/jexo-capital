@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
 import ThemeToggle from "@/components/common/ThemeToggle";
 import { useTheme } from "@/context/ThemeContext";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface HeaderProps {
   title: string;
@@ -21,6 +22,7 @@ export default function Header({
 }: HeaderProps) {
   const router = useRouter();
   const { theme } = useTheme();
+  const { t, activeLanguageOption, openLangModal } = useLanguage();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -39,7 +41,7 @@ export default function Header({
 
   return (
     <div
-      className={`relative flex items-center justify-between px-4 py-3 backdrop-blur-md border-b shadow-xs z-30 transition-colors duration-200 ${
+      className={`relative flex items-center justify-between px-3.5 py-3 backdrop-blur-md border-b shadow-xs z-30 transition-colors duration-200 ${
         isLight
           ? "bg-white/95 border-amber-300/40 text-slate-800"
           : "bg-[#030e28]/95 border-[#f5ba31]/30 text-white shadow-md"
@@ -63,18 +65,39 @@ export default function Header({
       </div>
 
       {/* Centered Title in signature Vibrant Gold (Matching Daily Necessities) */}
-      <div className="flex-1 flex items-center justify-center px-2">
+      <div className="flex-1 flex items-center justify-center px-1">
         <h1
           style={{ color: "#f5ba31", WebkitTextFillColor: "#f5ba31" }}
-          className="header-gold-title text-base sm:text-lg font-black tracking-tight !text-[#f5ba31] text-[#f5ba31] text-center drop-shadow-[0_0_10px_rgba(245,186,49,0.35)] select-none"
+          className="header-gold-title text-base sm:text-lg font-black tracking-tight !text-[#f5ba31] text-[#f5ba31] text-center drop-shadow-[0_0_10px_rgba(245,186,49,0.35)] select-none truncate"
         >
           {title}
         </h1>
       </div>
 
-      {/* Right action placeholder or ThemeToggle */}
-      <div className="w-9 h-9 flex items-center justify-end">
-        {rightAction !== undefined ? rightAction : <ThemeToggle compact />}
+      {/* Right action placeholder or Language Switcher + ThemeToggle */}
+      <div className="flex items-center gap-1.5 justify-end">
+        {rightAction !== undefined ? (
+          rightAction
+        ) : (
+          <>
+            <button
+              type="button"
+              onClick={openLangModal}
+              className={`px-2 py-1 rounded-full border text-xs font-semibold flex items-center gap-1 active:scale-95 transition-all ${
+                isLight
+                  ? "bg-slate-100 hover:bg-slate-200 border-slate-200 text-slate-700 shadow-xs"
+                  : "bg-white/10 hover:bg-white/20 border-white/20 text-white shadow-xs"
+              }`}
+              title={t("select_language")}
+            >
+              <span className="text-sm leading-none">{activeLanguageOption.flag}</span>
+              <span className="text-[10px] font-black tracking-wider uppercase">
+                {activeLanguageOption.code}
+              </span>
+            </button>
+            <ThemeToggle compact />
+          </>
+        )}
       </div>
     </div>
   );

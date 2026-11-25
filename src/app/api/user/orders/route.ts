@@ -237,11 +237,13 @@ export async function POST() {
     });
 
     // 6. 3-Tier Team Cashback Sharing from Order Earnings:
-    // Level 1: 10% of order income
-    // Level 2: 5% of order income
-    // Level 3: 3% of order income
+    // VIP 0 players are free trial players; their earnings DO NOT yield upline commissions!
+    // Level 1: 10% of order income (Only for VIP-1 and higher players)
+    // Level 2: 5% of order income (Only for VIP-1 and higher players)
+    // Level 3: 3% of order income (Only for VIP-1 and higher players)
     // Stored in database in upline's unclaimedCashbackRewardsUSDT for Right-Button Claiming
-    if (user.referredBy && commissionUSDT > 0) {
+    const isPlayerVipZero = (user.vipLevel ?? 0) === 0 || (tier?.level ?? 0) === 0;
+    if (user.referredBy && commissionUSDT > 0 && !isPlayerVipZero) {
       try {
         const l1User = await User.findById(user.referredBy);
         if (l1User) {

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import CityFooter from "@/components/common/CityFooter";
 import ThemeToggle from "@/components/common/ThemeToggle";
 import { useTheme } from "@/context/ThemeContext";
+import { useLanguage } from "@/context/LanguageContext";
 import { useToast } from "@/context/ToastContext";
 import {
   ChevronLeft,
@@ -112,6 +113,7 @@ const DEFAULT_VIP_PLANS: VipTier[] = [
 export default function VipPage() {
   const router = useRouter();
   const { theme } = useTheme();
+  const { t } = useLanguage();
   const { toast } = useToast();
   const [mounted, setMounted] = useState(false);
   const [user, setUser] = useState<UserProfile | null>(null);
@@ -262,7 +264,7 @@ export default function VipPage() {
               style={{ color: "#f5ba31", WebkitTextFillColor: "#f5ba31" }}
               className="text-base sm:text-lg font-black tracking-tight !text-[#f5ba31] text-[#f5ba31] drop-shadow-[0_0_10px_rgba(245,186,49,0.35)]"
             >
-              Invest and Share the Earnings
+              {t("vip_title")}
             </h1>
             <span className="h-[1px] w-4 bg-[#f5ba31]/70" />
           </div>
@@ -280,7 +282,7 @@ export default function VipPage() {
             </div>
             <div>
               <div className="text-[10px] font-bold text-slate-300 uppercase tracking-wider">
-                My Wallet Balance
+                {t("vip_my_wallet_balance")}
               </div>
               <div className="text-sm font-black text-white flex items-baseline gap-1">
                 <span>{user ? Number(user.balance).toFixed(2) : "0.00"}</span>
@@ -346,7 +348,7 @@ export default function VipPage() {
                         {item.dailyReturn}
                       </div>
                       <div className="text-[10px] font-semibold text-slate-300 mt-0.5">
-                        Daily return
+                        {t("daily_return_rate")}
                       </div>
                     </div>
 
@@ -355,7 +357,7 @@ export default function VipPage() {
                         {item.numberOfOrders}
                       </div>
                       <div className="text-[10px] font-semibold text-slate-300 mt-0.5">
-                        Number of Order
+                        {t("vip_orders_per_day")}
                       </div>
                     </div>
 
@@ -364,7 +366,7 @@ export default function VipPage() {
                         {item.commissionPerOrder}
                       </div>
                       <div className="text-[10px] font-semibold text-slate-300 mt-0.5">
-                        Commission per order
+                        {t("vip_per_order")}
                       </div>
                     </div>
                   </div>
@@ -376,7 +378,7 @@ export default function VipPage() {
                   <div className="flex items-center justify-between pt-0.5">
                     <div>
                       <div className="text-[10px] font-semibold text-slate-400 leading-tight">
-                        Investment amount
+                        {t("amount")}
                       </div>
                       <div className="text-sm sm:text-base font-black text-white font-mono tracking-tight mt-0.5">
                         {item.minBDT.toLocaleString()}–{item.maxBDT.toLocaleString()} Tk
@@ -394,21 +396,21 @@ export default function VipPage() {
                           className="px-4 py-1.5 rounded-full bg-gradient-to-b from-[#00b040] to-[#008a30] text-white font-black text-[11px] shadow-[0_0_10px_rgba(0,176,64,0.35)] flex items-center gap-1 cursor-default"
                         >
                           <Check size={13} className="stroke-[3]" />
-                          <span>Active</span>
+                          <span>{t("vip_active_now")}</span>
                         </button>
                       ) : isCompleted ? (
                         <button
                           disabled
                           className="px-3.5 py-1.5 rounded-full bg-slate-700 text-slate-400 font-bold text-[11px] shadow-sm cursor-default"
                         >
-                          Unlocked
+                          {t("success")}
                         </button>
                       ) : vipAutoActiveEnabled ? (
                         <Link
                           href="/recharge"
                           className="px-3.5 py-1.5 rounded-full bg-gradient-to-b from-[#e52d27] to-[#b31217] text-white font-black text-[11px] shadow-[0_0_10px_rgba(229,45,39,0.35)] hover:brightness-110 active:scale-95 transition-all flex items-center gap-1"
                         >
-                          <span>Deposit to Unlock</span>
+                          <span>{t("recharge_to_unlock")}</span>
                         </Link>
                       ) : (
                         <button
@@ -416,7 +418,7 @@ export default function VipPage() {
                           onClick={() => openBuyModal(item)}
                           className="px-4 py-1.5 rounded-full bg-gradient-to-b from-[#e52d27] to-[#b31217] text-white font-black text-[11px] shadow-[0_0_10px_rgba(229,45,39,0.35)] hover:brightness-110 active:scale-95 transition-all flex items-center gap-1 cursor-pointer"
                         >
-                          <span>Not Active</span>
+                          <span>{t("join_now")}</span>
                         </button>
                       )}
                     </div>

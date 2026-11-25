@@ -6,14 +6,17 @@ import { useLanguage, LANGUAGE_OPTIONS, Language } from "@/context/LanguageConte
 import { useTheme } from "@/context/ThemeContext";
 
 interface LanguageModalProps {
-  isOpen: boolean;
-  onClose: () => void;
+  isOpen?: boolean;
+  onClose?: () => void;
 }
 
-export default function LanguageModal({ isOpen, onClose }: LanguageModalProps) {
-  const { language, setLanguage, t } = useLanguage();
+export default function LanguageModal({ isOpen: propIsOpen, onClose: propOnClose }: LanguageModalProps = {}) {
+  const { language, setLanguage, t, isLangModalOpen, closeLangModal } = useLanguage();
   const { theme } = useTheme();
   const isLight = theme === "light";
+
+  const isOpen = propIsOpen !== undefined ? propIsOpen : isLangModalOpen;
+  const onClose = propOnClose || closeLangModal;
 
   if (!isOpen) return null;
 

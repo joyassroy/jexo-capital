@@ -198,14 +198,14 @@ export default function OrdersPage() {
             setData((prev) =>
               prev
                 ? {
-                    ...prev,
-                    balanceUSDT: result.newBalanceUSDT,
-                    balanceBDT: result.newBalanceBDT,
-                    todayCommissionUSDT: result.todayCommissionUSDT,
-                    todayCommissionBDT: result.todayCommissionBDT,
-                    todayOrdersCount: result.todayOrdersCount,
-                    hasReachedLimit: result.hasReachedLimit,
-                  }
+                  ...prev,
+                  balanceUSDT: result.newBalanceUSDT,
+                  balanceBDT: result.newBalanceBDT,
+                  todayCommissionUSDT: result.todayCommissionUSDT,
+                  todayCommissionBDT: result.todayCommissionBDT,
+                  todayOrdersCount: result.todayOrdersCount,
+                  hasReachedLimit: result.hasReachedLimit,
+                }
                 : null
             );
 
@@ -242,18 +242,17 @@ export default function OrdersPage() {
               <ShoppingBag size={16} className="stroke-[2.5]" />
             </div>
             <h1 className="text-base sm:text-lg font-black tracking-tight text-[#f5ba31] drop-shadow-[0_0_10px_rgba(245,186,49,0.35)]">
-              Daily Necessities
+              {t("daily_necessities")}
             </h1>
           </div>
 
           <div className="flex items-center gap-1.5">
             <button
               onClick={() => setSoundEnabled(!soundEnabled)}
-              className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${
-                soundEnabled
+              className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${soundEnabled
                   ? "bg-amber-500/20 text-[#f5ba31] border border-amber-500/40"
                   : "bg-white/10 text-slate-400 border border-white/10"
-              }`}
+                }`}
               title={soundEnabled ? "Sound Effects ON" : "Sound Effects Muted"}
             >
               <Volume2 size={15} />
@@ -277,7 +276,7 @@ export default function OrdersPage() {
               </div>
               <div className="text-[11px] font-black text-[#f5ba31] flex items-center gap-1 mt-0.5">
                 <span>
-                  Daily return rate:{" "}
+                  {t("daily_return_rate")}:{" "}
                   {data?.dailyReturnPercent ? `${data.dailyReturnPercent.toFixed(2)}%` : "5.00%"}
                 </span>
                 <span className="text-[9.5px] text-emerald-400 font-bold ml-1">
@@ -293,7 +292,7 @@ export default function OrdersPage() {
               <CheckCircle2 size={16} className="stroke-[3]" />
             </div>
             <span className="text-[9px] font-black text-amber-300 uppercase tracking-tight mt-1 text-center">
-              Trusted Product
+              {t("trusted_product")}
             </span>
           </div>
         </div>
@@ -480,7 +479,7 @@ export default function OrdersPage() {
                 <Coins size={18} />
               </div>
               <span className="order-stat-label font-bold text-slate-200 group-hover:text-white">
-                Total assets
+                {t("total_assets_label")}
               </span>
             </div>
             <div className="flex items-center gap-1.5 font-mono font-black text-sm text-[#f5ba31]">
@@ -501,7 +500,7 @@ export default function OrdersPage() {
                 <ShieldCheck size={18} />
               </div>
               <span className="order-stat-label font-bold text-slate-200 group-hover:text-white">
-                Today&apos;s commission
+                {t("todays_commission")}
               </span>
             </div>
             <div className="flex items-center gap-1.5 font-mono font-black text-sm text-emerald-400">
@@ -522,7 +521,7 @@ export default function OrdersPage() {
                 <ClipboardList size={18} />
               </div>
               <span className="order-stat-label font-bold text-slate-200 group-hover:text-white">
-                Today&apos;s order
+                {t("todays_order")}
               </span>
             </div>
             <div className="flex items-center gap-1.5 font-mono font-black text-sm text-white">
@@ -564,8 +563,8 @@ export default function OrdersPage() {
               <ClipboardList size={20} className="stroke-[2.5]" />
               <span>
                 {isProcessing
-                  ? `Queueing Order (${countdown}s)...`
-                  : `Add to Queue (${data ? data.todayOrdersCount : 0}/${data ? data.maxOrders : 0})`}
+                  ? `${t("processing_order")} (${countdown}s)...`
+                  : `${t("add_to_queue")} (${data ? data.todayOrdersCount : 0}/${data ? data.maxOrders : 0})`}
               </span>
               <ArrowRight size={18} className="stroke-[2.5]" />
             </button>
@@ -618,7 +617,7 @@ export default function OrdersPage() {
             {/* Bottom Chest/Pedestal Target */}
             <div className="absolute bottom-2 inset-x-8 h-10 rounded-2xl bg-gradient-to-r from-amber-600 via-amber-400 to-amber-600 shadow-[0_0_25px_rgba(245,186,49,0.5)] border-t-2 border-yellow-200 flex items-center justify-center">
               <span className="text-[10px] font-black text-[#1a1303] uppercase tracking-widest">
-                Target Vault
+                {t("target_vault")}
               </span>
             </div>
           </div>
@@ -629,7 +628,7 @@ export default function OrdersPage() {
               Commission: ~{data?.commissionPercent}% of wallet balance
             </div>
             <div className="text-[11px] text-slate-400">
-              Please wait while the transaction settles...
+              {t("order_settling_desc")}
             </div>
           </div>
         </div>
@@ -658,17 +657,17 @@ export default function OrdersPage() {
 
             <div>
               <h3 className="text-xl font-black text-white">
-                Order #{completedCommission.orderNum} Completed!
+                Order #{completedCommission.orderNum} {t("order_completed")}
               </h3>
               <p className="text-xs text-slate-300 mt-1">
-                Your daily commission has been successfully added to your balance.
+                {t("order_success_desc")}
               </p>
             </div>
 
             {/* Profit Highlight Box */}
             <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-1">
               <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                Earned Profit
+                {t("earned_profit")}
               </div>
               <div className="text-2xl font-black text-emerald-400 font-mono">
                 +TK {completedCommission.bdt.toLocaleString("en-US", { minimumFractionDigits: 2 })}
@@ -685,7 +684,7 @@ export default function OrdersPage() {
               }}
               className="btn-gold-premium w-full py-3.5 rounded-2xl text-sm"
             >
-              Confirm & Continue
+              {t("confirm_and_continue")}
             </button>
           </div>
         </div>

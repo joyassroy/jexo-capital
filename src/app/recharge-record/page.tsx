@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import Header from "@/components/common/Header";
 import CityFooter from "@/components/common/CityFooter";
 import { ArrowDownCircle, Clock } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface RechargeItem {
   _id: string;
@@ -18,6 +19,7 @@ interface RechargeItem {
 }
 
 export default function RechargeRecordPage() {
+  const { t } = useLanguage();
   const [records, setRecords] = useState<RechargeItem[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -44,7 +46,7 @@ export default function RechargeRecordPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#020a1f] via-[#051338] to-[#01081a] text-white flex flex-col justify-between pb-28">
       <div>
-        <Header title="Recharge Record" showBack={true} />
+        <Header title={t("recharge_records")} showBack={true} />
 
         <div className="p-4 space-y-3">
           {loading ? (

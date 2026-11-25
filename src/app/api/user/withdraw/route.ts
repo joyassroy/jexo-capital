@@ -16,6 +16,20 @@ export async function POST(req: NextRequest) {
 
     await connectDB();
 
+    // Verify withdrawal day (Withdrawals are strictly closed on Friday and Saturday for weekly settlement)
+    const dhakaNow = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Dhaka" }));
+    const currentDayOfWeek = dhakaNow.getDay(); // 0: Sun, 1: Mon, ..., 5: Fri, 6: Sat
+    if (currentDayOfWeek === 5 || currentDayOfWeek === 6) {
+      return NextResponse.json(
+        {
+          error:
+            "Withdrawals are closed on Friday and Saturday due to weekly financial audits and settlements. Services resume on Sunday at 10:00 AM.",
+          isWeekendClosed: true,
+        },
+        { status: 400 }
+      );
+    }
+
     // Verify that profile and NID documents are completed before allowing withdrawal
     const kyc = await Kyc.findOne({ userId: userPayload.userId });
     if (!kyc || !kyc.nidNumber || !kyc.frontPictureUrl || !kyc.backPictureUrl) {

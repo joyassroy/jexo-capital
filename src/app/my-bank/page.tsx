@@ -19,6 +19,7 @@ import {
   Check,
 } from "lucide-react";
 import { useToast } from "@/context/ToastContext";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface Wallet {
   _id?: string;
@@ -32,6 +33,7 @@ interface Wallet {
 
 export default function MyBankPage() {
   const { toast } = useToast();
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState<"Bank" | "USDT">("Bank");
   const [wallets, setWallets] = useState<Wallet[]>([]);
   const [showAddForm, setShowAddForm] = useState(false);
@@ -148,7 +150,7 @@ export default function MyBankPage() {
               ? activeTab === "Bank"
                 ? "Bind Bank Card"
                 : "Bind USDT Address"
-              : "My Bank"
+              : t("my_bank_title")
           }
           showBack={true}
         />

@@ -32,6 +32,13 @@ export const translations: Record<Language, Record<string, string>> = {
     loading: "Loading...",
     success: "Success",
     error: "Error",
+    back: "Back",
+    details: "Details",
+    all: "All",
+    status: "Status",
+    time: "Time",
+    amount: "Amount",
+    action: "Action",
 
     // Banner & Announcements
     live_summit: "LIVE SUMMIT",
@@ -53,9 +60,9 @@ export const translations: Record<Language, Record<string, string>> = {
     app_download: "App Download",
     records: "Records",
     gift_receive: "Gift Receive",
-    password: "password",
+    password: "Password",
     my_bank: "My Bank",
-    my_team: "My team",
+    my_team: "My Team",
     deposit: "Deposit",
     withdraw: "Withdraw",
     logout: "Logout",
@@ -70,12 +77,22 @@ export const translations: Record<Language, Record<string, string>> = {
     nav_profile: "Personal Center",
 
     // VIP Page
+    vip_title: "Invest and Share the Earnings",
     vip_privilege: "VIP Privileges",
+    vip_my_wallet_balance: "My Wallet Balance",
+    vip_daily_profit: "Daily Profit",
+    vip_per_order: "Per Order",
+    vip_orders_per_day: "Orders / Day",
     daily_income: "Daily Income",
     total_revenue: "Total Revenue",
     valid_days: "Valid Period",
     join_now: "Join Now",
+    vip_upgrade_join: "Upgrade / Join Now",
+    vip_active_now: "Currently Active",
     current_level: "Current Level",
+    vip_confirm_modal_title: "Confirm VIP Activation",
+    vip_unlock_rule: "VIP Level Requirement",
+    vip_balance_insufficient: "Insufficient balance to upgrade. Please recharge first.",
 
     // Profile & Records
     my_profile: "My Profile",
@@ -115,9 +132,77 @@ export const translations: Record<Language, Record<string, string>> = {
     add_to_queue: "Add to Queue",
     limit_reached: "Daily limit reached (5/5)",
     order_completed: "Order Completed!",
-    order_success_desc: "Commission has been successfully added to your wallet.",
+    order_success_desc: "Your daily commission has been successfully added to your balance.",
+    earned_profit: "Earned Profit",
+    confirm_and_continue: "Confirm & Continue",
     recharge_to_unlock: "Recharge to Unlock Orders",
     min_vip_required: "Minimum VIP-1 required to earn daily order commission.",
+    target_vault: "Target Vault",
+    order_settling_desc: "Please wait while the transaction settles...",
+
+    // Withdraw Page
+    withdraw_title: "Withdraw",
+    withdraw_balance_label: "Withdrawable Balance",
+    total_balance_label: "Total Balance",
+    bank_card: "bKash / Nagad",
+    crypto_usdt: "USDT (BEP-20)",
+    select_account: "Select Receiving Account",
+    no_wallet_bound: "No wallet bound yet. Go to 'My Bank' to bind.",
+    withdraw_amount_label: "Withdrawal Amount",
+    enter_amount: "Please enter amount",
+    withdraw_pwd_label: "Withdrawal Password",
+    enter_withdraw_pwd: "Enter 6-digit withdrawal password",
+    confirm_withdraw_btn: "Confirm Withdrawal",
+    withdraw_rules: "Withdrawal Rules",
+    min_withdraw_bank_rule: "Minimum withdrawal for bKash / Nagad is 250 BDT.",
+    min_withdraw_usdt_rule: "Minimum withdrawal for USDT is 6 USDT.",
+    bonus_lock_rule: "The 500 BDT sign-up bonus cannot be withdrawn directly.",
+    weekend_notice_title: "Weekly Settlement Notice",
+    weekend_notice_desc: "Withdrawals are unavailable on Friday and Saturday due to weekly financial audits and banking settlement. Withdrawal services will resume on Sunday at 10:00 AM.",
+    weekend_badge: "Withdrawal Closed (Friday & Saturday)",
+    i_understand: "I Understand",
+    back_to_home: "Back to Home",
+
+    // Recharge Page
+    recharge_title: "Recharge",
+    recharge_amount: "Recharge Amount",
+    select_payment_channel: "Select Payment Channel",
+    confirm_recharge: "Confirm Recharge",
+    transfer_guide: "Transfer Guide",
+    min_deposit: "Minimum Deposit",
+    exchange_rate: "Exchange Rate",
+
+    // Team Page
+    team_title: "My Team",
+    team_overview: "Team Overview",
+    total_team_members: "Total Team Members",
+    total_team_commission: "Team Commission",
+    level1: "Level 1",
+    level2: "Level 2",
+    level3: "Level 3",
+    referral_code: "Referral Code",
+    copy_link: "Copy Link",
+    claim_rewards: "Claim Commission",
+
+    // My Bank Page
+    my_bank_title: "My Bank",
+    bind_account: "Bind Account",
+    account_name: "Account Holder Name",
+    account_number: "Account / Phone Number",
+    save_changes: "Save Changes",
+
+    // Auth Pages
+    login_title: "Welcome to Zexo Capital",
+    login_subheading: "Login to continue your investment journey",
+    register_title: "Create Account",
+    register_subheading: "Join Zexo Capital and grow your wealth",
+    phone_placeholder: "Phone number",
+    password_placeholder: "Password",
+    login_button: "Sign In",
+    register_button: "Create Account",
+    dont_have_account: "Don't have an account?",
+    already_have_account: "Already have an account?",
+    sign_up_now: "Sign Up Now",
   },
   bn: {
     // Top Bar & Common
@@ -132,6 +217,13 @@ export const translations: Record<Language, Record<string, string>> = {
     loading: "লোড হচ্ছে...",
     success: "সফল",
     error: "ত্রুটি",
+    back: "ফিরে যান",
+    details: "বিস্তারিত",
+    all: "সব",
+    status: "স্ট্যাটাস",
+    time: "সময়",
+    amount: "পরিমাণ",
+    action: "অ্যাকশন",
 
     // Banner & Announcements
     live_summit: "লাইভ সামিট",
@@ -170,12 +262,22 @@ export const translations: Record<Language, Record<string, string>> = {
     nav_profile: "পার্সোনাল সেন্টার",
 
     // VIP Page
+    vip_title: "বিনিয়োগ করুন ও আয় শেয়ার করুন",
     vip_privilege: "ভিআইপি সুবিধা",
+    vip_my_wallet_balance: "আমার ওয়ালেট ব্যালেন্স",
+    vip_daily_profit: "দৈনিক লাভ",
+    vip_per_order: "প্রতি অর্ডার",
+    vip_orders_per_day: "অর্ডার / দিন",
     daily_income: "দৈনিক আয়",
     total_revenue: "মোট আয়",
     valid_days: "মেয়াদকাল",
     join_now: "যুক্ত হোন",
+    vip_upgrade_join: "আপগ্রেড / যুক্ত হোন",
+    vip_active_now: "বর্তমানে সক্রিয়",
     current_level: "বর্তমান লেভেল",
+    vip_confirm_modal_title: "ভিআইপি সক্রিয়করণ নিশ্চিত করুন",
+    vip_unlock_rule: "ভিআইপি লেভেল শর্ত",
+    vip_balance_insufficient: "আপগ্রেড করার জন্য পর্যাপ্ত ব্যালেন্স নেই। দয়া করে আগে রিচার্জ করুন।",
 
     // Profile & Records
     my_profile: "আমার প্রোফাইল",
@@ -215,9 +317,77 @@ export const translations: Record<Language, Record<string, string>> = {
     add_to_queue: "অর্ডারের সারিতে যোগ দিন",
     limit_reached: "আজকের লিমিট শেষ (৫/৫)",
     order_completed: "অর্ডার সম্পন্ন হয়েছে!",
-    order_success_desc: "কমিশন সফলভাবে আপনার ওয়ালেটে যুক্ত হয়েছে।",
+    order_success_desc: "আপনার দৈনিক কমিশন সফলভাবে ব্যালেন্সে যুক্ত হয়েছে।",
+    earned_profit: "অর্জিত লাভ",
+    confirm_and_continue: "নিশ্চিত করুন এবং এগিয়ে যান",
     recharge_to_unlock: "অর্ডার আনলক করতে রিচার্জ করুন",
     min_vip_required: "অর্ডার কমিশন পেতে ন্যূনতম VIP-1 প্রয়োজন।",
+    target_vault: "টার্গেট ভল্ট",
+    order_settling_desc: "অনুগ্রহ করে লেনদেন সম্পন্ন হওয়া পর্যন্ত অপেক্ষা করুন...",
+
+    // Withdraw Page
+    withdraw_title: "উইথড্র",
+    withdraw_balance_label: "উইথড্রযোগ্য ব্যালেন্স",
+    total_balance_label: "মোট ব্যালেন্স",
+    bank_card: "বিকাশ / নগদ",
+    crypto_usdt: "ইউএসডিটি (BEP-20)",
+    select_account: "গ্রহণকারী অ্যাকাউন্ট নির্বাচন করুন",
+    no_wallet_bound: "কোনো ওয়ালেট যুক্ত করা নেই। যুক্ত করতে 'আমার ব্যাংক' এ যান।",
+    withdraw_amount_label: "উইথড্র পরিমাণ",
+    enter_amount: "পরিমাণ লিখুন",
+    withdraw_pwd_label: "উইথড্র পাসওয়ার্ড",
+    enter_withdraw_pwd: "৬ ডিজিটের উইথড্র পাসওয়ার্ড দিন",
+    confirm_withdraw_btn: "উইথড্র নিশ্চিত করুন",
+    withdraw_rules: "উইথড্র নিয়মাবলী",
+    min_withdraw_bank_rule: "বিকাশ / নগদ এর জন্য ন্যূনতম উইথড্র ২৫০ BDT।",
+    min_withdraw_usdt_rule: "ইউএসডিটি এর জন্য ন্যূনতম উইথড্র ৬ USDT।",
+    bonus_lock_rule: "৫০০ BDT সাইন-আপ বোনাস সরাসরি উইথড্র করা যাবে না।",
+    weekend_notice_title: "সাপ্তাহিক অডিট ও সেটেলমেন্ট নোটিশ",
+    weekend_notice_desc: "সাপ্তাহিক অডিট এবং আর্থিক সেটেলমেন্টের কারণে শুক্রবার এবং শনিবার উইথড্র সাময়িকভাবে বন্ধ থাকে। রবিবার সকাল ১০:০০ টায় উইথড্র সেবা পুনরায় চালু হবে।",
+    weekend_badge: "উইথড্র বন্ধ (শুক্রবার ও শনিবার)",
+    i_understand: "আমি বুঝতে পেরেছি",
+    back_to_home: "হোমপেজে ফিরে যান",
+
+    // Recharge Page
+    recharge_title: "রিচার্জ",
+    recharge_amount: "রিচার্জ পরিমাণ",
+    select_payment_channel: "পেমেন্ট মাধ্যম নির্বাচন করুন",
+    confirm_recharge: "রিচার্জ নিশ্চিত করুন",
+    transfer_guide: "পেমেন্ট নির্দেশিকা",
+    min_deposit: "ন্যূনতম ডিপোজিট",
+    exchange_rate: "এক্সচেঞ্জ রেট",
+
+    // Team Page
+    team_title: "আমার টিম",
+    team_overview: "টিম বিবরণ",
+    total_team_members: "মোট টিম মেম্বার",
+    total_team_commission: "টিম কমিশন",
+    level1: "লেভেল ১",
+    level2: "লেভেল ২",
+    level3: "লেভেল ৩",
+    referral_code: "রেফারেল কোড",
+    copy_link: "লিংক কপি করুন",
+    claim_rewards: "কমিশন ক্লেইম করুন",
+
+    // My Bank Page
+    my_bank_title: "আমার ব্যাংক",
+    bind_account: "অ্যাকাউন্ট যুক্ত করুন",
+    account_name: "অ্যাকাউন্টধারীর নাম",
+    account_number: "অ্যাকাউন্ট / ফোন নম্বর",
+    save_changes: "সংরক্ষণ করুন",
+
+    // Auth Pages
+    login_title: "Welcome to Zexo Capital",
+    login_subheading: "Login to continue your investment journey",
+    register_title: "Create Account",
+    register_subheading: "Join Zexo Capital and grow your wealth",
+    phone_placeholder: "ফোন নম্বর",
+    password_placeholder: "পাসওয়ার্ড",
+    login_button: "লগইন করুন",
+    register_button: "অ্যাকাউন্ট তৈরি করুন",
+    dont_have_account: "অ্যাকাউন্ট নেই?",
+    already_have_account: "ইতিমধ্যে অ্যাকাউন্ট আছে?",
+    sign_up_now: "এখনই সাইন আপ করুন",
   },
   ar: {
     // Top Bar & Common
@@ -232,6 +402,13 @@ export const translations: Record<Language, Record<string, string>> = {
     loading: "جار التحميل...",
     success: "نجاح",
     error: "خطأ",
+    back: "رجوع",
+    details: "تفاصيل",
+    all: "الكل",
+    status: "الحالة",
+    time: "الوقت",
+    amount: "المبلغ",
+    action: "إجراء",
 
     // Banner & Announcements
     live_summit: "قمة مباشرة",
@@ -270,12 +447,22 @@ export const translations: Record<Language, Record<string, string>> = {
     nav_profile: "المركز الشخصي",
 
     // VIP Page
+    vip_title: "استثمر وشارك الأرباح",
     vip_privilege: "امتيازات VIP",
+    vip_my_wallet_balance: "رصيد محفظتي",
+    vip_daily_profit: "الربح اليومي",
+    vip_per_order: "لكل طلب",
+    vip_orders_per_day: "طلبات / يوم",
     daily_income: "الدخل اليومي",
     total_revenue: "إجمالي الإيرادات",
     valid_days: "مدة الصلاحية",
     join_now: "انضم الآن",
+    vip_upgrade_join: "ترقية / انضم الآن",
+    vip_active_now: "نشط حالياً",
     current_level: "المستوى الحالي",
+    vip_confirm_modal_title: "تأكيد تفعيل VIP",
+    vip_unlock_rule: "متطلبات مستوى VIP",
+    vip_balance_insufficient: "الرصيد غير كافٍ للترقية. يرجى الشحن أولاً.",
 
     // Profile & Records
     my_profile: "ملفي الشخصي",
@@ -315,9 +502,77 @@ export const translations: Record<Language, Record<string, string>> = {
     add_to_queue: "أضف إلى قائمة الانتظار",
     limit_reached: "تم الوصول للحد اليومي (5/5)",
     order_completed: "اكتمل الطلب!",
-    order_success_desc: "تمت إضافة العمولة بنجاح إلى محفظتك.",
+    order_success_desc: "تمت إضافة عمولتك اليومية بنجاح إلى رصيدك.",
+    earned_profit: "الربح المكتسب",
+    confirm_and_continue: "تأكيد ومتابعة",
     recharge_to_unlock: "اشحن لفتح الطلبات",
     min_vip_required: "الحد الأدنى VIP-1 مطلوب لكسب عمولة الطلب اليومية.",
+    target_vault: "خزنة الهدف",
+    order_settling_desc: "يرجى الانتظار بينما تتم تسوية المعاملة...",
+
+    // Withdraw Page
+    withdraw_title: "سحب",
+    withdraw_balance_label: "الرصيد القابل للسحب",
+    total_balance_label: "الرصيد الإجمالي",
+    bank_card: "bKash / Nagad",
+    crypto_usdt: "USDT (BEP-20)",
+    select_account: "اختر الحساب المستلم",
+    no_wallet_bound: "لم يتم ربط أي محفظة بعد. انتقل إلى 'حسابي البنكي' للربط.",
+    withdraw_amount_label: "مبلغ السحب",
+    enter_amount: "يرجى إدخال المبلغ",
+    withdraw_pwd_label: "كلمة مرور السحب",
+    enter_withdraw_pwd: "أدخل كلمة مرور السحب المكونة من 6 أرقام",
+    confirm_withdraw_btn: "تأكيد السحب",
+    withdraw_rules: "قواعد السحب",
+    min_withdraw_bank_rule: "الحد الأدنى للسحب عبر bKash / Nagad هو 250 BDT.",
+    min_withdraw_usdt_rule: "الحد الأدنى للسحب عبر USDT هو 6 USDT.",
+    bonus_lock_rule: "لا يمكن سحب مكافأة التسجيل البالغة 500 BDT مباشرة.",
+    weekend_notice_title: "إشعار التسوية الأسبوعية",
+    weekend_notice_desc: "عمليات السحب غير متاحة يومي الجمعة والسبت بسبب التدقيق المالي الأسبوعي والتسويات المصرفية. ستستأنف خدمات السحب يوم الأحد الساعة 10:00 صباحاً.",
+    weekend_badge: "السحب مغلق (الجمعة والسبت)",
+    i_understand: "أنا أفهم",
+    back_to_home: "العودة للرئيسية",
+
+    // Recharge Page
+    recharge_title: "شحن الرصيد",
+    recharge_amount: "مبلغ الشحن",
+    select_payment_channel: "اختر قناة الدفع",
+    confirm_recharge: "تأكيد الشحن",
+    transfer_guide: "دليل التحويل",
+    min_deposit: "الحد الأدنى للإيداع",
+    exchange_rate: "سعر الصرف",
+
+    // Team Page
+    team_title: "فريقي",
+    team_overview: "تفاصيل الفريق",
+    total_team_members: "إجمالي أعضاء الفريق",
+    total_team_commission: "عمولة الفريق",
+    level1: "المستوى 1",
+    level2: "المستوى 2",
+    level3: "المستوى 3",
+    referral_code: "رمز الدعوة",
+    copy_link: "نسخ الرابط",
+    claim_rewards: "المطالبة بالعمولة",
+
+    // My Bank Page
+    my_bank_title: "حسابي البنكي",
+    bind_account: "ربط الحساب",
+    account_name: "اسم صاحب الحساب",
+    account_number: "رقم الحساب / الهاتف",
+    save_changes: "حفظ التغييرات",
+
+    // Auth Pages
+    login_title: "Welcome to Zexo Capital",
+    login_subheading: "Login to continue your investment journey",
+    register_title: "Create Account",
+    register_subheading: "Join Zexo Capital and grow your wealth",
+    phone_placeholder: "رقم الهاتف",
+    password_placeholder: "كلمة المرور",
+    login_button: "تسجيل الدخول",
+    register_button: "إنشاء حساب",
+    dont_have_account: "ليس لديك حساب؟",
+    already_have_account: "هل لديك حساب بالفعل؟",
+    sign_up_now: "سجل الآن",
   },
   zh: {
     // Top Bar & Common
@@ -332,6 +587,13 @@ export const translations: Record<Language, Record<string, string>> = {
     loading: "加载中...",
     success: "成功",
     error: "错误",
+    back: "返回",
+    details: "详情",
+    all: "全部",
+    status: "状态",
+    time: "时间",
+    amount: "金额",
+    action: "操作",
 
     // Banner & Announcements
     live_summit: "现场峰会",
@@ -370,12 +632,22 @@ export const translations: Record<Language, Record<string, string>> = {
     nav_profile: "个人中心",
 
     // VIP Page
+    vip_title: "投资并共享收益",
     vip_privilege: "VIP专属特权",
+    vip_my_wallet_balance: "我的钱包余额",
+    vip_daily_profit: "每日利润",
+    vip_per_order: "每单收益",
+    vip_orders_per_day: "每日单数",
     daily_income: "每日收益",
     total_revenue: "累计收益",
     valid_days: "有效周期",
     join_now: "立即加入",
+    vip_upgrade_join: "升级 / 立即加入",
+    vip_active_now: "当前激活",
     current_level: "当前等级",
+    vip_confirm_modal_title: "确认激活VIP",
+    vip_unlock_rule: "VIP等级要求",
+    vip_balance_insufficient: "余额不足，无法升级。请先充值。",
 
     // Profile & Records
     my_profile: "个人资料",
@@ -415,9 +687,77 @@ export const translations: Record<Language, Record<string, string>> = {
     add_to_queue: "加入队列",
     limit_reached: "今日上限已满 (5/5)",
     order_completed: "订单完成!",
-    order_success_desc: "订单佣金已成功存入您的账户钱包。",
+    order_success_desc: "您的每日佣金已成功添加到账户余额。",
+    earned_profit: "获得利润",
+    confirm_and_continue: "确认并继续",
     recharge_to_unlock: "充值升级解锁抢单",
     min_vip_required: "需要至少 VIP-1 等级才能获取每日订单佣金。",
+    target_vault: "目标金库",
+    order_settling_desc: "请等待交易结算完成...",
+
+    // Withdraw Page
+    withdraw_title: "申请提现",
+    withdraw_balance_label: "可提现余额",
+    total_balance_label: "总余额",
+    bank_card: "bKash / Nagad",
+    crypto_usdt: "USDT (BEP-20)",
+    select_account: "选择收款账户",
+    no_wallet_bound: "尚未绑定钱包。请前往“我的银行”进行绑定。",
+    withdraw_amount_label: "提现金额",
+    enter_amount: "请输入提现金额",
+    withdraw_pwd_label: "提现密码",
+    enter_withdraw_pwd: "请输入6位提现密码",
+    confirm_withdraw_btn: "确认提现",
+    withdraw_rules: "提现规则",
+    min_withdraw_bank_rule: "bKash / Nagad 的最低提现金额为 250 BDT。",
+    min_withdraw_usdt_rule: "USDT 的最低提现金额为 6 USDT。",
+    bonus_lock_rule: "500 BDT 注册奖励不可直接提现。",
+    weekend_notice_title: "每周结算与审计通知",
+    weekend_notice_desc: "由于每周财务审计与银行结算，周五和周六暂停提现服务。提现服务将于周日上午10:00恢复。",
+    weekend_badge: "提现已暂停 (周五和周六)",
+    i_understand: "我知道了",
+    back_to_home: "返回首页",
+
+    // Recharge Page
+    recharge_title: "充值充币",
+    recharge_amount: "充值金额",
+    select_payment_channel: "选择支付通道",
+    confirm_recharge: "确认充值",
+    transfer_guide: "转账指南",
+    min_deposit: "最低充值金额",
+    exchange_rate: "参考汇率",
+
+    // Team Page
+    team_title: "我的团队",
+    team_overview: "团队概览",
+    total_team_members: "团队总人数",
+    total_team_commission: "团队佣金",
+    level1: "一级成员",
+    level2: "二级成员",
+    level3: "三级成员",
+    referral_code: "邀请码",
+    copy_link: "复制链接",
+    claim_rewards: "领取佣金",
+
+    // My Bank Page
+    my_bank_title: "我的银行",
+    bind_account: "绑定账户",
+    account_name: "开户姓名",
+    account_number: "账号 / 手机号码",
+    save_changes: "保存更改",
+
+    // Auth Pages
+    login_title: "Welcome to Zexo Capital",
+    login_subheading: "Login to continue your investment journey",
+    register_title: "Create Account",
+    register_subheading: "Join Zexo Capital and grow your wealth",
+    phone_placeholder: "手机号码",
+    password_placeholder: "登录密码",
+    login_button: "立即登录",
+    register_button: "立即注册",
+    dont_have_account: "没有账号？",
+    already_have_account: "已有账号？",
+    sign_up_now: "立即注册",
   },
 };
 
@@ -427,6 +767,9 @@ interface LanguageContextType {
   t: (key: string) => string;
   isRtl: boolean;
   activeLanguageOption: LanguageOption;
+  isLangModalOpen: boolean;
+  openLangModal: () => void;
+  closeLangModal: () => void;
 }
 
 const LanguageContext = createContext<LanguageContextType>({
@@ -435,10 +778,14 @@ const LanguageContext = createContext<LanguageContextType>({
   t: (key: string) => key,
   isRtl: false,
   activeLanguageOption: LANGUAGE_OPTIONS[0],
+  isLangModalOpen: false,
+  openLangModal: () => {},
+  closeLangModal: () => {},
 });
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguageState] = useState<Language>("en");
+  const [isLangModalOpen, setIsLangModalOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -476,6 +823,9 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     applyLanguage(lang);
   };
 
+  const openLangModal = () => setIsLangModalOpen(true);
+  const closeLangModal = () => setIsLangModalOpen(false);
+
   const t = (key: string): string => {
     const langDict = translations[language];
     if (langDict && langDict[key]) {
@@ -497,6 +847,9 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
         t,
         isRtl,
         activeLanguageOption,
+        isLangModalOpen,
+        openLangModal,
+        closeLangModal,
       }}
     >
       {children}

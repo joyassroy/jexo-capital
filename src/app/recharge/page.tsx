@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Header from "@/components/common/Header";
 import CityFooter from "@/components/common/CityFooter";
 import { useTheme } from "@/context/ThemeContext";
+import { useLanguage } from "@/context/LanguageContext";
 import { useToast } from "@/context/ToastContext";
 import {
   Copy,
@@ -26,6 +27,7 @@ import {
 export default function RechargePage() {
   const router = useRouter();
   const { theme } = useTheme();
+  const { t } = useLanguage();
   const { toast } = useToast();
   const [mounted, setMounted] = useState<boolean>(false);
 
@@ -394,7 +396,7 @@ export default function RechargePage() {
         <Header
           title={
             step === "select_amount"
-              ? "Recharge"
+              ? t("recharge_title")
               : step === "bank_step2"
                 ? "Please Complete Your Recharge"
                 : step === "bank_step3"

@@ -15,6 +15,7 @@ import {
   Check,
 } from "lucide-react";
 import { useToast } from "@/context/ToastContext";
+import { useLanguage } from "@/context/LanguageContext";
 
 // Helper to safely convert file to base64 Data URL
 function fileToDataUrl(file: File | Blob): Promise<string> {
@@ -102,6 +103,7 @@ function compressImage(file: File, maxWidth = 1200, quality = 0.75): Promise<Fil
 
 export default function PersonalInfoPage() {
   const { theme } = useTheme();
+  const { t } = useLanguage();
   const [mounted, setMounted] = useState(false);
   const { toast } = useToast();
   const [realName, setRealName] = useState("");
@@ -283,7 +285,7 @@ export default function PersonalInfoPage() {
       }`}
     >
       <div>
-        <Header title="Personal Information" showBack={true} />
+        <Header title={t("personal_info")} showBack={true} />
 
         <div className="p-4 space-y-4 max-w-[420px] mx-auto">
           {/* Status Banners */}

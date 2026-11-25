@@ -5,9 +5,11 @@ import Header from "@/components/common/Header";
 import CityFooter from "@/components/common/CityFooter";
 import { Gift, CheckCircle2, AlertCircle } from "lucide-react";
 import { useToast } from "@/context/ToastContext";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function GiftReceivePage() {
   const { toast } = useToast();
+  const { t } = useLanguage();
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -53,7 +55,7 @@ export default function GiftReceivePage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#020a1f] via-[#051338] to-[#01081a] text-white flex flex-col justify-between pb-28">
       <div>
-        <Header title="Gift Receive" showBack={true} />
+        <Header title={t("gift_receive")} showBack={true} />
 
         <div className="p-4 space-y-4 max-w-[400px] mx-auto">
           {/* 3D Gift Box illustration */}

@@ -12,11 +12,13 @@ import CountryCodeDropdown, {
 } from "@/components/common/CountryCodeDropdown";
 import { Eye, EyeOff, Lock, Phone, Globe } from "lucide-react";
 import { useToast } from "@/context/ToastContext";
+import { useLanguage } from "@/context/LanguageContext";
 
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
+  const { t, activeLanguageOption, openLangModal } = useLanguage();
   const [country, setCountry] = useState<CountryItem>(COUNTRY_LIST[0]);
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
@@ -68,9 +70,8 @@ function LoginForm() {
       toast.success("Login successful! Welcome back.");
       const redirectUrl = searchParams.get("redirect") || "/profile";
       setTimeout(() => {
-        router.push(redirectUrl);
-        router.refresh();
-      }, 850);
+        window.location.href = redirectUrl;
+      }, 700);
     } catch {
       setError("An unexpected error occurred. Please try again.");
       setLoading(false);
@@ -86,10 +87,14 @@ function LoginForm() {
       <div className="flex justify-end items-center p-4 z-10">
         <div className="flex items-center gap-2">
           <ThemeToggle />
-          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#05143a]/90 backdrop-blur-md border border-[#f5ba31]/50 text-xs font-semibold text-white shadow-sm">
-            <Globe size={14} className="text-[#f5ba31]" />
-            <span>English</span>
-          </div>
+          <button
+            type="button"
+            onClick={openLangModal}
+            className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#05143a]/90 backdrop-blur-md border border-[#f5ba31]/50 text-xs font-semibold text-white shadow-sm hover:border-[#f5ba31] active:scale-95 transition-all cursor-pointer"
+          >
+            <span className="text-sm">{activeLanguageOption.flag}</span>
+            <span>{activeLanguageOption.nativeName}</span>
+          </button>
         </div>
       </div>
 

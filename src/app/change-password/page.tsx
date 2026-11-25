@@ -6,10 +6,12 @@ import Header from "@/components/common/Header";
 import CityFooter from "@/components/common/CityFooter";
 import { Lock, Shield, Eye, EyeOff, AlertCircle, CheckCircle } from "lucide-react";
 import { useToast } from "@/context/ToastContext";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function ChangePasswordPage() {
   const router = useRouter();
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -69,7 +71,7 @@ export default function ChangePasswordPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#020a1f] via-[#051338] to-[#01081a] text-white flex flex-col justify-between pb-28">
       <div>
-        <Header title="Change Login Password" showBack={true} />
+        <Header title={t("change_pwd")} showBack={true} />
 
         <div className="p-4 space-y-4 max-w-[400px] mx-auto">
           {/* Shield Badge */}

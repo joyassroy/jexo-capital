@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import ThemeToggle from "@/components/common/ThemeToggle";
 import { useTheme } from "@/context/ThemeContext";
+import { useLanguage } from "@/context/LanguageContext";
 import { useToast } from "@/context/ToastContext";
 
 interface TeamMember {
@@ -114,6 +115,7 @@ function GoldenWing({ flip = false }: { flip?: boolean }) {
 export default function TeamPage() {
   const router = useRouter();
   const { theme } = useTheme();
+  const { t, activeLanguageOption, openLangModal } = useLanguage();
   const { toast } = useToast();
   const [mounted, setMounted] = useState(false);
   const isLight = mounted && theme === "light";
@@ -272,15 +274,30 @@ export default function TeamPage() {
               }`}
             >
               <h1 className="text-lg sm:text-xl font-black text-amber-300 italic tracking-wider drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]">
-                My Team
+                {t("team_title")}
               </h1>
             </div>
 
             <GoldenWing flip />
           </div>
 
-          {/* Theme Toggle in Header */}
-          <div className="w-10 h-10 flex items-center justify-end">
+          {/* Language Switcher + Theme Toggle in Header */}
+          <div className="flex items-center gap-1.5 justify-end">
+            <button
+              type="button"
+              onClick={openLangModal}
+              className={`px-2 py-1 rounded-full border text-xs font-semibold flex items-center gap-1 active:scale-95 transition-all ${
+                isLight
+                  ? "bg-white hover:bg-slate-100 border-slate-200 text-slate-700 shadow-xs"
+                  : "bg-white/10 hover:bg-white/20 border-white/20 text-white shadow-xs"
+              }`}
+              title={t("select_language")}
+            >
+              <span className="text-sm leading-none">{activeLanguageOption.flag}</span>
+              <span className="text-[10px] font-black tracking-wider uppercase">
+                {activeLanguageOption.code}
+              </span>
+            </button>
             <ThemeToggle compact />
           </div>
         </div>

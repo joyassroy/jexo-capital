@@ -5,6 +5,7 @@ import Header from "@/components/common/Header";
 import CityFooter from "@/components/common/CityFooter";
 import { ArrowUpCircle, Clock } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface WithdrawItem {
   _id: string;
@@ -23,6 +24,7 @@ interface WithdrawItem {
 
 export default function WithdrawRecordPage() {
   const { theme } = useTheme();
+  const { t } = useLanguage();
   const [mounted, setMounted] = useState(false);
   const [records, setRecords] = useState<WithdrawItem[]>([]);
   const [usdtRate, setUsdtRate] = useState<number>(127);
@@ -63,7 +65,7 @@ export default function WithdrawRecordPage() {
   return (
     <div className={`min-h-screen ${isLight ? "bg-[#f4f7fb] text-slate-800" : "bg-gradient-to-b from-[#020a1f] via-[#051338] to-[#01081a] text-white"} flex flex-col justify-between pb-28`}>
       <div>
-        <Header title="Withdraw Record" showBack={true} />
+        <Header title={t("withdrawal_records")} showBack={true} />
 
         <div className="p-4 space-y-3 max-w-[420px] mx-auto">
           {loading ? (

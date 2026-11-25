@@ -42,7 +42,7 @@ interface UserProfile {
 
 export default function HomePage() {
   const { theme } = useTheme();
-  const { t, activeLanguageOption } = useLanguage();
+  const { t, activeLanguageOption, openLangModal } = useLanguage();
   const { toast } = useToast();
   const [mounted, setMounted] = useState(false);
   const [user, setUser] = useState<UserProfile | null>(null);
@@ -305,7 +305,7 @@ export default function HomePage() {
             <div className="flex items-center gap-2">
               <ThemeToggle />
               <button
-                onClick={() => setIsLangModalOpen(true)}
+                onClick={openLangModal}
                 className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white shadow-sm hover:bg-white/30 transition-all cursor-pointer text-xs font-semibold"
                 aria-label="Switch Language"
               >
@@ -329,7 +329,7 @@ export default function HomePage() {
           <div className="flex items-center gap-2">
             <ThemeToggle />
             <button
-              onClick={() => setIsLangModalOpen(true)}
+              onClick={openLangModal}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-full backdrop-blur-md bg-[#05143a]/80 border border-[#f5ba31]/70 shadow-[0_0_12px_rgba(245,186,49,0.25)] text-white hover:border-[#f5ba31] cursor-pointer text-xs font-semibold transition-all"
               aria-label="Switch Language"
             >
@@ -773,12 +773,6 @@ export default function HomePage() {
           })}
         </div>
       )}
-
-      {/* Language Switching Modal */}
-      <LanguageModal
-        isOpen={isLangModalOpen}
-        onClose={() => setIsLangModalOpen(false)}
-      />
 
       {/* Luxury Logout Confirmation Modal */}
       <ConfirmModal

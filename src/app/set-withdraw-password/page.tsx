@@ -6,10 +6,12 @@ import Header from "@/components/common/Header";
 import CityFooter from "@/components/common/CityFooter";
 import { Lock, Shield, Eye, EyeOff, AlertCircle, CheckCircle } from "lucide-react";
 import { useToast } from "@/context/ToastContext";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function SetWithdrawPasswordPage() {
   const router = useRouter();
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   const [loginPassword, setLoginPassword] = useState("");
   const [withdrawPassword, setWithdrawPassword] = useState("");
@@ -73,7 +75,7 @@ export default function SetWithdrawPasswordPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#020a1f] via-[#051338] to-[#01081a] text-white flex flex-col justify-between pb-28">
       <div>
-        <Header title="Set Withdrawl Password" showBack={true} />
+        <Header title={t("set_withdraw_pwd")} showBack={true} />
 
         <div className="p-4 space-y-4 max-w-[400px] mx-auto">
           {/* Security Shield Icon Badge */}

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Header from "@/components/common/Header";
 import CityFooter from "@/components/common/CityFooter";
 import { useTheme } from "@/context/ThemeContext";
+import { useLanguage } from "@/context/LanguageContext";
 import { useToast } from "@/context/ToastContext";
 import {
   Share2,
@@ -21,6 +22,7 @@ export default function SharePage() {
   const router = useRouter();
   const { theme } = useTheme();
   const { toast } = useToast();
+  const { t } = useLanguage();
   const [mounted, setMounted] = useState(false);
   const isLight = mounted && theme === "light";
 
@@ -84,7 +86,7 @@ export default function SharePage() {
       }`}
     >
       <div>
-        <Header title="Invite Friends" showBack={true} />
+        <Header title={t("invite_friends")} showBack={true} />
 
         <div className="p-4 space-y-4 max-w-[440px] mx-auto">
           {/* Top Banner Shield Icon */}

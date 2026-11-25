@@ -198,6 +198,8 @@ export default function WithdrawPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          amount: numAmount,
+          currency: activeTab === "Bank" ? "BDT" : "USDT",
           amountBDT: activeTab === "Bank" ? numAmount : undefined,
           amountUSDT: activeTab === "USDT" ? numAmount : undefined,
           method,

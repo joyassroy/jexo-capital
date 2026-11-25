@@ -94,9 +94,9 @@ export default function RechargePage() {
     return () => window.removeEventListener("popstate", handlePopState);
   }, [step]);
 
-  // USDT 10-Minute Countdown Timer Hook with Auto-Cancel & Redirect
+  // 10-Minute Countdown Timer Hook with Auto-Cancel & Redirect (USDT & bKash/Nagad)
   useEffect(() => {
-    if (step === "usdt_step2") {
+    if (step === "usdt_step2" || step === "bank_step3") {
       const expiry = Date.now() + 10 * 60 * 1000; // 10 minutes from now
       setUsdtExpiryTime(expiry);
       setTimerSeconds(600);
@@ -106,7 +106,7 @@ export default function RechargePage() {
   }, [step]);
 
   useEffect(() => {
-    if (step !== "usdt_step2" || !usdtExpiryTime) return;
+    if ((step !== "usdt_step2" && step !== "bank_step3") || !usdtExpiryTime) return;
 
     const interval = setInterval(() => {
       const now = Date.now();
@@ -818,10 +818,67 @@ export default function RechargePage() {
         )}
 
         {/* =========================================================================
-            STEP 3: Admin Account & TxID Submission with Proof Upload
+            STEP 3: Admin Account & TxID Submission
         ========================================================================= */}
         {step === "bank_step3" && (
           <div className="p-4 space-y-4 max-w-[440px] mx-auto">
+            {/* 10-Minute Countdown Timer Card */}
+            <div
+              className={`p-3.5 sm:p-4 rounded-3xl border shadow-lg flex items-center justify-between transition-all ${
+                isLight
+                  ? "bg-white border-amber-300 shadow-amber-500/10"
+                  : "bg-gradient-to-r from-[#04102e] via-[#081b4d] to-[#04102e] border-[#f5ba31]/40 shadow-[0_0_20px_rgba(245,186,49,0.2)]"
+              }`}
+            >
+              <div className="flex items-center gap-2.5">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#e69e05] to-[#ffd369] text-[#020a1f] flex items-center justify-center shadow-md shrink-0">
+                  <Clock size={20} className="stroke-[2.5]" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-1.5">
+                    <span
+                      className={`text-xs font-black tracking-tight ${
+                        isLight ? "text-slate-800" : "text-white"
+                      }`}
+                    >
+                      Payment Time Remaining
+                    </span>
+                    <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-red-500/15 text-red-500 border border-red-500/30 whitespace-nowrap">
+                      10 Min
+                    </span>
+                  </div>
+                  <p
+                    className={`text-[9.5px] font-medium mt-0.5 ${
+                      isLight ? "text-slate-500" : "text-slate-400"
+                    }`}
+                  >
+                    Auto-cancels if not completed in time
+                  </p>
+                </div>
+              </div>
+
+              <div className="text-right shrink-0">
+                <div
+                  className={`font-mono text-xl font-black tracking-wider ${
+                    timerSeconds <= 60
+                      ? "text-red-500 animate-pulse"
+                      : isLight
+                        ? "text-amber-600"
+                        : "text-[#ffd369]"
+                  }`}
+                >
+                  {formatTimer(timerSeconds)}
+                </div>
+                <span
+                  className={`text-[9px] font-bold block ${
+                    timerSeconds <= 60 ? "text-red-500" : "text-emerald-500"
+                  }`}
+                >
+                  {timerSeconds <= 60 ? "Expiring soon!" : "Expires to Home"}
+                </span>
+              </div>
+            </div>
+
             {/* Step 1. Account Information */}
             <div
               className={`p-5 rounded-3xl border space-y-3 transition-all ${
@@ -920,7 +977,7 @@ export default function RechargePage() {
               }`}
             >
               <h3 className="text-xs font-black text-[#f5ba31] uppercase tracking-wider">
-                Step 3. Select Type, TxID & Upload Proof
+                Step 3. Select Payment Type & Enter TxID
               </h3>
 
               <div className="grid grid-cols-2 gap-2.5">
@@ -1014,103 +1071,6 @@ export default function RechargePage() {
                     required
                   />
                 </div>
-              </div>
-
-              {/* Payment Proof Screenshot Input */}
-              <div className="pt-1">
-                <div className="flex items-center justify-between mb-1.5">
-                  <label
-                    className={`text-xs font-bold flex items-center gap-1.5 ${
-                      isLight ? "text-slate-800" : "text-[#f5ba31]"
-                    }`}
-                  >
-                    <UploadCloud size={16} className="text-[#f5ba31]" />
-                    <span>Payment Proof Screenshot (পেমেন্ট প্রুফ)</span>
-                  </label>
-                  <span className="text-[10px] font-semibold text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/30">
-                    Recommended
-                  </span>
-                </div>
-
-                {!proofPreview ? (
-                  <label
-                    htmlFor="bank-proof-upload"
-                    className={`flex flex-col items-center justify-center p-4 rounded-2xl border-2 border-dashed cursor-pointer transition-all ${
-                      isLight
-                        ? "border-amber-300 bg-amber-50/50 hover:bg-amber-50"
-                        : "border-[#f5ba31]/40 bg-[#020a1f]/70 hover:bg-[#020a1f] hover:border-[#f5ba31]"
-                    }`}
-                  >
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#f5ba31]/20 to-[#ffd369]/30 flex items-center justify-center mb-1.5 text-[#f5ba31]">
-                      <ImageIcon size={20} />
-                    </div>
-                    <span
-                      className={`text-xs font-bold ${
-                        isLight ? "text-slate-800" : "text-slate-200"
-                      }`}
-                    >
-                      Click to upload screenshot / voucher
-                    </span>
-                    <span
-                      className={`text-[10px] mt-0.5 ${
-                        isLight ? "text-slate-500" : "text-slate-400"
-                      }`}
-                    >
-                      JPG, PNG, WEBP (Max 10MB)
-                    </span>
-                    <input
-                      id="bank-proof-upload"
-                      type="file"
-                      accept="image/*"
-                      onChange={handleFileChange}
-                      className="hidden"
-                    />
-                  </label>
-                ) : (
-                  <div
-                    className={`relative p-3 rounded-2xl border flex items-center gap-3 ${
-                      isLight
-                        ? "bg-amber-50/60 border-amber-200"
-                        : "bg-[#020a1f] border-[#f5ba31]/30"
-                    }`}
-                  >
-                    <div className="relative w-14 h-14 rounded-xl overflow-hidden border border-[#f5ba31]/40 bg-black/40 shrink-0">
-                      <img
-                        src={proofPreview}
-                        alt="Proof Preview"
-                        className="w-full h-full object-cover"
-                      />
-                      {uploadingProof && (
-                        <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-                          <Loader2 size={16} className="animate-spin text-[#f5ba31]" />
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-1.5">
-                        <CheckCircle2 size={15} className="text-emerald-500 shrink-0" />
-                        <span
-                          className={`text-xs font-bold truncate ${
-                            isLight ? "text-slate-800" : "text-slate-100"
-                          }`}
-                        >
-                          {proofFileName || "Payment Receipt"}
-                        </span>
-                      </div>
-                      <span className="text-[10px] text-emerald-500 font-semibold block mt-0.5">
-                        {uploadingProof ? "Uploading proof..." : "Proof attached for admin verification ✔"}
-                      </span>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={handleRemoveProof}
-                      className="p-1.5 rounded-xl bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-colors"
-                      title="Remove screenshot"
-                    >
-                      <X size={16} />
-                    </button>
-                  </div>
-                )}
               </div>
 
               <button

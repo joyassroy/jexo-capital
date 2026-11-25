@@ -15,10 +15,31 @@ export async function POST(req: NextRequest) {
 
     await connectDB();
     const body = await req.json();
-    const { amount, currency, method, targetAccount, withdrawPassword } = body;
+    const {
+      amount,
+      amountBDT: bodyAmountBDT,
+      amountUSDT: bodyAmountUSDT,
+      currency,
+      method,
+      targetAccount,
+      withdrawPassword,
+    } = body;
 
-    const rawAmount = Number(amount);
-    if (!rawAmount || rawAmount <= 0) {
+    let effectiveAmount = amount;
+    let effectiveCurrency = currency;
+
+    if (effectiveAmount === undefined || effectiveAmount === null || effectiveAmount === "") {
+      if (bodyAmountBDT !== undefined && bodyAmountBDT !== null && bodyAmountBDT !== "") {
+        effectiveAmount = bodyAmountBDT;
+        if (!effectiveCurrency) effectiveCurrency = "BDT";
+      } else if (bodyAmountUSDT !== undefined && bodyAmountUSDT !== null && bodyAmountUSDT !== "") {
+        effectiveAmount = bodyAmountUSDT;
+        if (!effectiveCurrency) effectiveCurrency = "USDT";
+      }
+    }
+
+    const rawAmount = Number(effectiveAmount);
+    if (!rawAmount || isNaN(rawAmount) || rawAmount <= 0) {
       return NextResponse.json(
         { error: "Please enter a valid withdrawal amount." },
         { status: 400 }
@@ -85,7 +106,11 @@ export async function POST(req: NextRequest) {
     let amountBDT: number;
     let amountUSDT: number;
 
-    if (currency === "BDT" || (!currency && (method === "bKash" || method === "Nagad") && rawAmount >= 20)) {
+    if (
+      effectiveCurrency === "BDT" ||
+      bodyAmountBDT !== undefined ||
+      (!effectiveCurrency && (method === "bKash" || method === "Nagad") && rawAmount >= 20)
+    ) {
       amountBDT = Number(rawAmount.toFixed(2));
       amountUSDT = Number((amountBDT / usdtRate).toFixed(4));
     } else {

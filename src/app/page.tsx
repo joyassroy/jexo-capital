@@ -192,70 +192,70 @@ export default function HomePage() {
     },
   ];
 
-  // 9 Glossy Pill Buttons for Dark/Night Mode
+  // 9 Squircle Action Cards for Dark/Night Mode (Identical design to Day Mode, tuned for dark theme)
   const nightActionCards = [
     {
       title: t("app_download"),
       icon: Download,
       href: "/app-download",
-      gradient: "from-[#22c55e] via-[#16a34a] to-[#15803d]",
-      shadow: "shadow-[0_4px_14px_rgba(34,197,94,0.35)]",
+      gradient: "bg-gradient-to-tr from-[#00c853] via-[#00e676] to-[#69f0ae]",
+      shadow: "shadow-[0_4px_14px_rgba(0,200,83,0.4)]",
     },
     {
       title: t("records"),
       icon: ClipboardList,
       href: "/records",
-      gradient: "from-[#ef4444] via-[#dc2626] to-[#b91c1c]",
-      shadow: "shadow-[0_4px_14px_rgba(239,68,68,0.35)]",
+      gradient: "bg-gradient-to-tr from-[#ff1744] via-[#f43f5e] to-[#ff5252]",
+      shadow: "shadow-[0_4px_14px_rgba(255,23,68,0.4)]",
     },
     {
       title: t("gift_receive"),
       icon: Gift,
       href: "/gift-receive",
-      gradient: "from-[#d946ef] via-[#c026d3] to-[#9333ea]",
-      shadow: "shadow-[0_4px_14px_rgba(217,70,239,0.35)]",
+      gradient: "bg-gradient-to-tr from-[#d946ef] via-[#c026d3] to-[#a855f7]",
+      shadow: "shadow-[0_4px_14px_rgba(217,70,239,0.4)]",
     },
     {
       title: t("password"),
       icon: Lock,
       href: "/change-password",
-      gradient: "from-[#3b82f6] via-[#2563eb] to-[#1d4ed8]",
-      shadow: "shadow-[0_4px_14px_rgba(59,130,246,0.35)]",
+      gradient: "bg-gradient-to-tr from-[#1e3a8a] via-[#1d4ed8] to-[#2563eb]",
+      shadow: "shadow-[0_4px_14px_rgba(37,99,235,0.4)]",
     },
     {
       title: t("my_bank"),
       icon: CreditCard,
       href: "/my-bank",
-      gradient: "from-[#0ea5e9] via-[#0284c7] to-[#0369a1]",
-      shadow: "shadow-[0_4px_14px_rgba(14,165,233,0.35)]",
+      gradient: "bg-gradient-to-tr from-[#0091ea] via-[#00b0ff] to-[#40c4ff]",
+      shadow: "shadow-[0_4px_14px_rgba(0,176,255,0.4)]",
     },
     {
       title: t("my_team"),
       icon: Users,
       href: "/team",
-      gradient: "from-[#8b5cf6] via-[#7c3aed] to-[#6d28d9]",
-      shadow: "shadow-[0_4px_14px_rgba(139,92,246,0.35)]",
+      gradient: "bg-gradient-to-tr from-[#7c3aed] via-[#8b5cf6] to-[#a855f7]",
+      shadow: "shadow-[0_4px_14px_rgba(124,58,237,0.4)]",
     },
     {
       title: t("deposit"),
       icon: ArrowDownCircle,
       href: "/recharge",
-      gradient: "from-[#2563eb] via-[#1d4ed8] to-[#1e40af]",
-      shadow: "shadow-[0_4px_14px_rgba(37,99,235,0.35)]",
+      gradient: "bg-gradient-to-tr from-[#0066ff] via-[#0080ff] to-[#00b4d8]",
+      shadow: "shadow-[0_4px_14px_rgba(0,102,255,0.4)]",
     },
     {
       title: t("withdraw"),
       icon: ArrowUpCircle,
       href: "/withdraw",
-      gradient: "from-[#f97316] via-[#ea580c] to-[#c2410c]",
-      shadow: "shadow-[0_4px_14px_rgba(249,115,22,0.35)]",
+      gradient: "bg-gradient-to-tr from-[#ff9100] via-[#ffa726] to-[#ffb74d]",
+      shadow: "shadow-[0_4px_14px_rgba(255,145,0,0.4)]",
     },
     {
       title: t("logout"),
       icon: LogOut,
       onClick: handleLogout,
-      gradient: "from-[#14b8a6] via-[#0d9488] to-[#0f766e]",
-      shadow: "shadow-[0_4px_14px_rgba(20,184,166,0.35)]",
+      gradient: "bg-gradient-to-tr from-[#64748b] via-[#78889b] to-[#94a3b8]",
+      shadow: "shadow-[0_4px_14px_rgba(100,116,139,0.4)]",
     },
   ];
 
@@ -727,32 +727,29 @@ export default function HomePage() {
           })}
         </div>
       ) : (
-        /* Night/Dark Mode: 9 Glossy Pill Buttons */
-        <div className="relative z-10 mx-3 mt-3 grid grid-cols-3 gap-2 sm:gap-2.5">
+        /* Night/Dark Mode: 3x3 Dark Squircle Cards (Matching Day Mode Design) */
+        <div className="relative z-10 mx-3 mt-3.5 grid grid-cols-3 gap-2.5 sm:gap-3">
           {nightActionCards.map((card, idx) => {
             const Icon = card.icon;
-            const buttonContent = (
-              <div
-                className={`w-full py-2.5 sm:py-3 px-2 rounded-[16px] bg-gradient-to-r ${card.gradient} ${card.shadow} border-t border-white/35 flex items-center justify-between text-white active:scale-95 transition-all duration-200 group relative overflow-hidden`}
-              >
-                {/* Gloss highlight overlay */}
-                <div className="absolute inset-0 bg-gradient-to-b from-white/20 via-transparent to-black/10 pointer-events-none rounded-[16px]" />
-
-                {/* Left Circular Badge */}
-                <div className="w-6 h-6 rounded-full bg-white/25 flex items-center justify-center flex-shrink-0 border border-white/30 text-white shadow-inner">
-                  <Icon size={12} className="stroke-[2.5]" />
+            const cardInner = (
+              <div className="w-full bg-[#04102e]/90 backdrop-blur-md rounded-2xl shadow-[0_4px_16px_rgba(0,0,0,0.35)] border border-white/10 hover:border-[#f5ba31]/40 hover:bg-[#071944] py-2.5 px-1 sm:px-1.5 flex flex-col items-center justify-center transition-all duration-200 active:scale-95 group">
+                <div
+                  className={`day-action-badge w-11 h-11 sm:w-11.5 sm:h-11.5 rounded-xl flex items-center justify-center text-white !text-white ${card.gradient} ${card.shadow} transition-transform group-hover:scale-105 flex-shrink-0`}
+                  style={{ color: "#ffffff" }}
+                >
+                  <Icon
+                    size={20}
+                    color="#ffffff"
+                    stroke="#ffffff"
+                    className="stroke-[2.4] text-white !text-white"
+                  />
                 </div>
-
-                {/* Center Title */}
-                <span className="text-[10px] sm:text-[10.5px] font-bold text-white tracking-tight leading-none px-1 text-center flex-1 drop-shadow-sm whitespace-nowrap">
+                <span
+                  style={{ color: "#f8fafc", WebkitTextFillColor: "#f8fafc" }}
+                  className="text-[10.5px] sm:text-[11px] font-bold text-slate-100 !text-slate-100 group-hover:text-white mt-1.5 text-center tracking-tight leading-tight whitespace-nowrap block w-full select-none drop-shadow-sm"
+                >
                   {card.title}
                 </span>
-
-                {/* Right Chevron */}
-                <ChevronRight
-                  size={12}
-                  className="text-white/85 flex-shrink-0 stroke-[2.5]"
-                />
               </div>
             );
 
@@ -763,14 +760,14 @@ export default function HomePage() {
                   onClick={card.onClick}
                   className="w-full focus:outline-none"
                 >
-                  {buttonContent}
+                  {cardInner}
                 </button>
               );
             }
 
             return (
               <Link key={idx} href={card.href || "#"} className="w-full">
-                {buttonContent}
+                {cardInner}
               </Link>
             );
           })}

@@ -123,13 +123,16 @@ export async function seedVipTiersIfEmpty() {
     console.error("Error auto-healing VIP 0 tier:", healErr);
   }
 
-  // 2. Auto-heal any user stuck with vipLevel: 10 who has low balance (< 50 USDT / ~6350 Tk)
+  // 2. Auto-heal any user stuck with non-existent vipLevel (e.g. legacy VIP 10)
   try {
     const settings = await Setting.findOne().lean();
     const usdtRate = settings?.usdtRateBDT || 127;
-    const glitchedUsers = await User.find({ vipLevel: 10, balance: { $lt: 50 } });
+    const allActive = await VipTier.find({ status: "active" }).lean();
+    const maxActiveLevel = allActive.length > 0 ? Math.max(...allActive.map((t) => t.level)) : 5;
+
+    // Find any users with VIP level greater than max active tier (e.g. VIP-10)
+    const glitchedUsers = await User.find({ vipLevel: { $gt: maxActiveLevel } });
     if (glitchedUsers.length > 0) {
-      const allActive = await VipTier.find({ status: "active" }).lean();
       for (const u of glitchedUsers) {
         const correctVip = calculateVipLevelForBalance(u.balance || 0, usdtRate, allActive as unknown as IVipTier[]);
         u.vipLevel = correctVip;
@@ -137,7 +140,7 @@ export async function seedVipTiersIfEmpty() {
       }
     }
   } catch (userErr) {
-    console.error("Error auto-fixing glitched VIP 10 users:", userErr);
+    console.error("Error auto-fixing glitched VIP users:", userErr);
   }
 }
 
@@ -215,20 +218,21 @@ export async function syncUserVipWithBalance(userDoc: any): Promise<number> {
 
     const settings = await Setting.findOne().lean();
     const autoActiveEnabled = settings?.vipAutoActiveEnabled !== false; // default true
-    if (!autoActiveEnabled) {
-      return userDoc.vipLevel ?? 0;
-    }
-
     const usdtRate = settings?.usdtRateBDT || 127;
     const activeTiers = await getActiveVipTiers();
     const targetVip = calculateVipLevelForBalance(userDoc.balance || 0, usdtRate, activeTiers);
 
-    if (userDoc.vipLevel !== targetVip) {
-      userDoc.vipLevel = targetVip;
-      if (typeof userDoc.save === "function") {
-        await userDoc.save();
-      } else if (userDoc._id) {
-        await User.findByIdAndUpdate(userDoc._id, { vipLevel: targetVip });
+    // If VIP auto-activation is enabled, or if user's current VIP level is invalid/non-existent (e.g. legacy VIP 10),
+    // always sync to the correct bracket level for their balance.
+    const currentTierExists = activeTiers.some((t) => t.level === userDoc.vipLevel);
+    if (!currentTierExists || autoActiveEnabled) {
+      if (userDoc.vipLevel !== targetVip) {
+        userDoc.vipLevel = targetVip;
+        if (typeof userDoc.save === "function") {
+          await userDoc.save();
+        } else if (userDoc._id) {
+          await User.findByIdAndUpdate(userDoc._id, { vipLevel: targetVip });
+        }
       }
     }
 

@@ -129,44 +129,26 @@ export async function GET() {
     const totalMembers = l1Total + l2Total + l3Total;
     const activeMembers = l1Active + l2Active + l3Active;
 
-    // 4. Rewards aggregation from Transactions
-    const [referralAgg, cashbackAgg, milestoneTx] = await Promise.all([
-      Transaction.aggregate([
-        {
-          $match: {
-            userId: currentUserId,
-            type: "refer_commission",
-            status: "success",
-          },
-        },
-        { $group: { _id: null, total: { $sum: "$amount" } } },
-      ]),
-      Transaction.aggregate([
-        {
-          $match: {
-            userId: currentUserId,
-            type: "team_return",
-            status: "success",
-          },
-        },
-        { $group: { _id: null, total: { $sum: "$amount" } } },
-      ]),
-      Transaction.findOne({
-        userId: currentUserId,
-        type: "bonus",
-        title: { $regex: /10.*referral/i },
-      }),
-    ]);
+    // 4. Rewards aggregation from user's unclaimed reward fields
+    const referralRewardsUSDT = Number(
+      (currentUser.unclaimedReferralRewardsUSDT || 0).toFixed(4)
+    );
+    const referralRewardsBDT = Number(
+      (referralRewardsUSDT * usdtRate).toFixed(2)
+    );
 
-    const referralRewardsUSDT = referralAgg[0]?.total
-      ? Number(referralAgg[0].total.toFixed(4))
-      : 0;
-    const referralRewardsBDT = Number((referralRewardsUSDT * usdtRate).toFixed(2));
+    const cashbackRewardsUSDT = Number(
+      (currentUser.unclaimedCashbackRewardsUSDT || 0).toFixed(4)
+    );
+    const cashbackRewardsBDT = Number(
+      (cashbackRewardsUSDT * usdtRate).toFixed(2)
+    );
 
-    const cashbackRewardsUSDT = cashbackAgg[0]?.total
-      ? Number(cashbackAgg[0].total.toFixed(4))
-      : 0;
-    const cashbackRewardsBDT = Number((cashbackRewardsUSDT * usdtRate).toFixed(2));
+    const milestoneTx = await Transaction.findOne({
+      userId: currentUserId,
+      type: "bonus",
+      title: { $regex: /10.*referral/i },
+    });
 
     const milestoneClaimed = Boolean(milestoneTx);
     const canClaimMilestone = !milestoneClaimed && l1Total >= 10;
@@ -218,6 +200,108 @@ export async function POST(req: NextRequest) {
     }
 
     const usdtRate = setting?.usdtRateBDT || 127;
+
+    // 1. Claim Referral Rewards (10% 1st deposit reward from direct referrals - Left Button)
+    if (action === "claim_referral") {
+      const unclaimedUSDT = Number(
+        (currentUser.unclaimedReferralRewardsUSDT || 0).toFixed(4)
+      );
+
+      if (unclaimedUSDT <= 0) {
+        return NextResponse.json(
+          { error: "No unclaimed referral rewards available right now." },
+          { status: 400 }
+        );
+      }
+
+      const claimBDT = Number((unclaimedUSDT * usdtRate).toFixed(2));
+      currentUser.balance = Number(
+        (currentUser.balance + unclaimedUSDT).toFixed(4)
+      );
+      currentUser.fundIncome = Number(
+        ((currentUser.fundIncome || 0) + unclaimedUSDT).toFixed(4)
+      );
+      currentUser.totalClaimedReferralRewardsUSDT = Number(
+        (
+          (currentUser.totalClaimedReferralRewardsUSDT || 0) + unclaimedUSDT
+        ).toFixed(4)
+      );
+      currentUser.unclaimedReferralRewardsUSDT = 0;
+      await currentUser.save();
+
+      // Create official transaction record
+      await Transaction.create({
+        userId: currentUserId,
+        type: "refer_commission",
+        title: `Claimed Referral 1st Deposit Bonus (${claimBDT.toFixed(0)} BDT)`,
+        amount: unclaimedUSDT,
+        status: "success",
+        metadata: {
+          amountBDT: claimBDT,
+          amountUSDT: unclaimedUSDT,
+          usdtRate,
+          source: "1st_deposit_10_percent",
+        },
+      });
+
+      return NextResponse.json({
+        success: true,
+        message: `Claimed ${claimBDT.toFixed(0)} BDT referral reward successfully!`,
+        claimedBDT: claimBDT,
+        newBalanceBDT: Number((currentUser.balance * usdtRate).toFixed(2)),
+      });
+    }
+
+    // 2. Claim Cashback Rewards (10% Level 1, 5% Level 2, 3% Level 3 from Team Orders - Right Button)
+    if (action === "claim_cashback") {
+      const unclaimedUSDT = Number(
+        (currentUser.unclaimedCashbackRewardsUSDT || 0).toFixed(4)
+      );
+
+      if (unclaimedUSDT <= 0) {
+        return NextResponse.json(
+          { error: "No unclaimed cashback rewards available right now." },
+          { status: 400 }
+        );
+      }
+
+      const claimBDT = Number((unclaimedUSDT * usdtRate).toFixed(2));
+      currentUser.balance = Number(
+        (currentUser.balance + unclaimedUSDT).toFixed(4)
+      );
+      currentUser.fundIncome = Number(
+        ((currentUser.fundIncome || 0) + unclaimedUSDT).toFixed(4)
+      );
+      currentUser.totalClaimedCashbackRewardsUSDT = Number(
+        (
+          (currentUser.totalClaimedCashbackRewardsUSDT || 0) + unclaimedUSDT
+        ).toFixed(4)
+      );
+      currentUser.unclaimedCashbackRewardsUSDT = 0;
+      await currentUser.save();
+
+      // Create official transaction record
+      await Transaction.create({
+        userId: currentUserId,
+        type: "team_return",
+        title: `Claimed Team Order Cashback (${claimBDT.toFixed(0)} BDT)`,
+        amount: unclaimedUSDT,
+        status: "success",
+        metadata: {
+          amountBDT: claimBDT,
+          amountUSDT: unclaimedUSDT,
+          usdtRate,
+          source: "team_orders_cashback_10_5_3",
+        },
+      });
+
+      return NextResponse.json({
+        success: true,
+        message: `Claimed ${claimBDT.toFixed(0)} BDT cashback reward successfully!`,
+        claimedBDT: claimBDT,
+        newBalanceBDT: Number((currentUser.balance * usdtRate).toFixed(2)),
+      });
+    }
 
     if (action === "claim_milestone") {
       // Check Level 1 count

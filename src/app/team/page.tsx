@@ -143,10 +143,6 @@ export default function TeamPage() {
 
   const [loading, setLoading] = useState<boolean>(true);
   const [claiming, setClaiming] = useState<boolean>(false);
-  const [feedback, setFeedback] = useState<{
-    type: "success" | "info";
-    text: string;
-  } | null>(null);
 
   const fetchTeamData = () => {
     fetch("/api/user/team")
@@ -171,32 +167,38 @@ export default function TeamPage() {
     fetchTeamData();
   }, [router]);
 
-  const handleClaim = (type: "referral" | "cashback") => {
+  const handleClaim = async (type: "referral" | "cashback") => {
     const amount =
       type === "referral" ? team.referralRewardsBDT : team.cashbackRewardsBDT;
 
     if (amount <= 0) {
       const msg = `No unclaimed ${
         type === "referral" ? "Referral" : "Cashback"
-      } commission yet. Share your invite link to build your team!`;
-      setFeedback({
-        type: "info",
-        text: msg,
-      });
+      } rewards yet.`;
       toast.info(msg);
-      setTimeout(() => setFeedback(null), 3800);
       return;
     }
 
-    const claimMsg = `All ${amount.toFixed(
-      2
-    )} BDT commissions are auto-credited to your main balance!`;
-    setFeedback({
-      type: "success",
-      text: claimMsg,
-    });
-    toast.success(claimMsg);
-    setTimeout(() => setFeedback(null), 4000);
+    setClaiming(true);
+    try {
+      const action = type === "referral" ? "claim_referral" : "claim_cashback";
+      const res = await fetch("/api/user/team", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        toast.success(data.message || `Claimed ${type === "referral" ? "Referral" : "Cashback"} successfully!`);
+        fetchTeamData();
+      } else {
+        toast.info(data.error || "Unable to claim rewards.");
+      }
+    } catch {
+      toast.error("Network error while claiming rewards.");
+    } finally {
+      setClaiming(false);
+    }
   };
 
   const handleClaimMilestone = async () => {
@@ -212,28 +214,16 @@ export default function TeamPage() {
         const succMsg =
           data.message ||
           "Congratulations! 300 BDT milestone bonus credited to your balance.";
-        setFeedback({
-          type: "success",
-          text: succMsg,
-        });
         toast.success(succMsg);
         fetchTeamData();
       } else {
         const errMsg = data.error || "Unable to claim milestone bonus.";
-        setFeedback({
-          type: "info",
-          text: errMsg,
-        });
         toast.warning(errMsg);
       }
     } catch {
-      setFeedback({
-        type: "info",
-        text: "Network error while claiming milestone bonus.",
-      });
+      toast.error("Network error while claiming milestone bonus.");
     } finally {
       setClaiming(false);
-      setTimeout(() => setFeedback(null), 4500);
     }
   };
 
@@ -286,26 +276,6 @@ export default function TeamPage() {
             <ThemeToggle compact />
           </div>
         </div>
-
-        {/* Live Feedback Toast Alert */}
-        {feedback && (
-          <div className="mx-4 mt-2 max-w-[420px] mx-auto z-30">
-            <div
-              className={`p-3.5 rounded-2xl border-2 text-xs font-bold text-center shadow-xl flex items-center justify-center gap-2 transition-all animate-in fade-in zoom-in-95 duration-200 ${
-                feedback.type === "success"
-                  ? "bg-emerald-50 border-emerald-400 text-emerald-900 shadow-emerald-500/10"
-                  : "bg-blue-50 border-blue-400 text-blue-900 shadow-blue-500/10"
-              }`}
-            >
-              {feedback.type === "success" ? (
-                <CheckCircle2 size={18} className="text-emerald-600 shrink-0" />
-              ) : (
-                <AlertCircle size={18} className="text-blue-600 shrink-0" />
-              )}
-              <span>{feedback.text}</span>
-            </div>
-          </div>
-        )}
 
         {/* Main Team Card Body */}
         <div className="p-4 space-y-4 max-w-[430px] mx-auto z-10 relative">

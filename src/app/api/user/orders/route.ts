@@ -190,6 +190,54 @@ export async function POST() {
       },
     });
 
+    // 6. 3-Tier Team Cashback Sharing from Order Earnings:
+    // Level 1: 10% of order income
+    // Level 2: 5% of order income
+    // Level 3: 3% of order income
+    // Stored in database in upline's unclaimedCashbackRewardsUSDT for Right-Button Claiming
+    if (user.referredBy && commissionUSDT > 0) {
+      try {
+        const l1User = await User.findById(user.referredBy);
+        if (l1User) {
+          const l1Reward = Number(((commissionUSDT * 10) / 100).toFixed(4));
+          if (l1Reward > 0) {
+            l1User.unclaimedCashbackRewardsUSDT = Number(
+              ((l1User.unclaimedCashbackRewardsUSDT || 0) + l1Reward).toFixed(4)
+            );
+            await l1User.save();
+          }
+
+          if (l1User.referredBy) {
+            const l2User = await User.findById(l1User.referredBy);
+            if (l2User) {
+              const l2Reward = Number(((commissionUSDT * 5) / 100).toFixed(4));
+              if (l2Reward > 0) {
+                l2User.unclaimedCashbackRewardsUSDT = Number(
+                  ((l2User.unclaimedCashbackRewardsUSDT || 0) + l2Reward).toFixed(4)
+                );
+                await l2User.save();
+              }
+
+              if (l2User.referredBy) {
+                const l3User = await User.findById(l2User.referredBy);
+                if (l3User) {
+                  const l3Reward = Number(((commissionUSDT * 3) / 100).toFixed(4));
+                  if (l3Reward > 0) {
+                    l3User.unclaimedCashbackRewardsUSDT = Number(
+                      ((l3User.unclaimedCashbackRewardsUSDT || 0) + l3Reward).toFixed(4)
+                    );
+                    await l3User.save();
+                  }
+                }
+              }
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Error distributing team order commission cashback:", err);
+      }
+    }
+
     return NextResponse.json({
       success: true,
       message: `Order #${user.todayOrdersCount} completed successfully!`,

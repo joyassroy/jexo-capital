@@ -71,6 +71,22 @@ const UserSchema = new Schema<IUser>(
       type: Number,
       default: 0,
     },
+    unclaimedReferralRewardsUSDT: {
+      type: Number,
+      default: 0,
+    },
+    unclaimedCashbackRewardsUSDT: {
+      type: Number,
+      default: 0,
+    },
+    totalClaimedReferralRewardsUSDT: {
+      type: Number,
+      default: 0,
+    },
+    totalClaimedCashbackRewardsUSDT: {
+      type: Number,
+      default: 0,
+    },
     referralCode: {
       type: String,
       required: true,

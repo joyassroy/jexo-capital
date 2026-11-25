@@ -104,63 +104,45 @@ export async function PATCH(req: NextRequest) {
         },
       });
 
-      // 3-Tier Referral Commission Check on Deposit (calculated in USDT)
-      // Level 1: 10%
-      if (user.referredBy) {
-        const level1User = await User.findById(user.referredBy);
-        if (level1User) {
-          const l1Bonus = Number(((creditUSDT * 10) / 100).toFixed(4));
-          level1User.balance += l1Bonus;
-          level1User.fundIncome += l1Bonus;
-          await level1User.save();
+      // 10% First Deposit Bonus for Direct Referrer Only
+      // Only given on the user's first approved deposit! Subsequent deposits do not grant referral commission.
+      const previousApprovedDepositsCount = await Deposit.countDocuments({
+        userId: user._id.toString(),
+        status: "approved",
+        _id: { $ne: deposit._id },
+      });
 
-          await Transaction.create({
-            userId: level1User._id.toString(),
-            type: "refer_commission",
-            title: `Referral commission from ${user.nickname} (10%)`,
-            amount: l1Bonus,
-            status: "success",
-            metadata: { fromUserId: user._id.toString(), level: 1 },
-          });
+      const isFirstDeposit = previousApprovedDepositsCount === 0;
+      deposit.isFirstDeposit = isFirstDeposit;
+      await deposit.save();
 
-          // Level 2: 5%
-          if (level1User.referredBy) {
-            const level2User = await User.findById(level1User.referredBy);
-            if (level2User) {
-              const l2Bonus = Number(((creditUSDT * 5) / 100).toFixed(4));
-              level2User.balance += l2Bonus;
-              level2User.fundIncome += l2Bonus;
-              await level2User.save();
+      if (isFirstDeposit && user.referredBy) {
+        const directReferrer = await User.findById(user.referredBy);
+        if (directReferrer) {
+          const referralBonusUSDT = Number(((creditUSDT * 10) / 100).toFixed(4));
+          if (referralBonusUSDT > 0) {
+            directReferrer.unclaimedReferralRewardsUSDT = Number(
+              ((directReferrer.unclaimedReferralRewardsUSDT || 0) + referralBonusUSDT).toFixed(4)
+            );
+            await directReferrer.save();
 
-              await Transaction.create({
-                userId: level2User._id.toString(),
-                type: "team_return",
-                title: `Team level 2 return commission (5%)`,
-                amount: l2Bonus,
-                status: "success",
-                metadata: { fromUserId: user._id.toString(), level: 2 },
-              });
-
-              // Level 3: 3%
-              if (level2User.referredBy) {
-                const level3User = await User.findById(level2User.referredBy);
-                if (level3User) {
-                  const l3Bonus = Number(((creditUSDT * 3) / 100).toFixed(4));
-                  level3User.balance += l3Bonus;
-                  level3User.fundIncome += l3Bonus;
-                  await level3User.save();
-
-                  await Transaction.create({
-                    userId: level3User._id.toString(),
-                    type: "team_return",
-                    title: `Team level 3 return commission (3%)`,
-                    amount: l3Bonus,
-                    status: "success",
-                    metadata: { fromUserId: user._id.toString(), level: 3 },
-                  });
-                }
-              }
-            }
+            // Track this first-deposit bonus in transactions as pending claim
+            await Transaction.create({
+              userId: directReferrer._id.toString(),
+              type: "refer_commission",
+              title: `10% 1st Deposit Bonus from ${user.nickname} (Pending Claim)`,
+              amount: referralBonusUSDT,
+              status: "pending",
+              metadata: {
+                fromUserId: user._id.toString(),
+                fromUserPhone: user.phone,
+                depositId: deposit._id.toString(),
+                firstDepositUSDT: creditUSDT,
+                bonusUSDT: referralBonusUSDT,
+                bonusBDT: Number((referralBonusUSDT * 127).toFixed(2)),
+                isFirstDeposit: true,
+              },
+            });
           }
         }
       }

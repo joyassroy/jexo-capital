@@ -68,6 +68,10 @@ const DepositSchema = new Schema<IDeposit>(
     reviewedAt: {
       type: Date,
     },
+    isFirstDeposit: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

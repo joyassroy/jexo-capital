@@ -16,6 +16,10 @@ export interface IUser {
   todayCommission?: number;
   freezeBalance?: number;
   signupBonusBDT?: number;
+  unclaimedReferralRewardsUSDT?: number;
+  unclaimedCashbackRewardsUSDT?: number;
+  totalClaimedReferralRewardsUSDT?: number;
+  totalClaimedCashbackRewardsUSDT?: number;
   referralCode: string;
   referredBy?: string;
   referralCount: number;
@@ -48,6 +52,7 @@ export interface IBankWallet {
   reviewedBy?: string;
   reviewedAt?: Date;
   isLocked?: boolean;
+  isFirstDeposit?: boolean;
   createdAt: Date;
 }
 
@@ -81,6 +86,7 @@ export interface IDeposit {
   reviewedBy?: string;
   reviewedAt?: Date;
   isLocked?: boolean;
+  isFirstDeposit?: boolean;
   createdAt: Date;
 }
 
@@ -104,6 +110,7 @@ export interface IWithdrawal {
   reviewedBy?: string;
   reviewedAt?: Date;
   isLocked?: boolean;
+  isFirstDeposit?: boolean;
   createdAt: Date;
 }
 

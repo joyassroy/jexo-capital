@@ -65,6 +65,8 @@ export default function RechargePage() {
   const [proofPreview, setProofPreview] = useState<string>("");
   const [proofFileName, setProofFileName] = useState<string>("");
   const [uploadingProof, setUploadingProof] = useState<boolean>(false);
+  const [isKycCompleted, setIsKycCompleted] = useState<boolean>(true);
+  const [kycStatus, setKycStatus] = useState<string>("pending");
 
   // Feedback states
   const [loading, setLoading] = useState<boolean>(false);
@@ -141,6 +143,12 @@ export default function RechargePage() {
       .then((res) => res.json())
       .then((data) => {
         if (data?.user) setBalance(data.user.balance);
+        if (typeof data?.isKycCompleted === "boolean") {
+          setIsKycCompleted(data.isKycCompleted);
+        }
+        if (data?.kycStatus) {
+          setKycStatus(data.kycStatus);
+        }
       })
       .catch(() => { });
 
@@ -179,6 +187,13 @@ export default function RechargePage() {
   };
 
   const handleInitialRechargeClick = () => {
+    if (!isKycCompleted) {
+      toast.warning("Please complete your profile and submit NID photos before making a deposit.");
+      setTimeout(() => {
+        router.push("/personal-info");
+      }, 1200);
+      return;
+    }
     if (!amount || Number(amount) <= 0) {
       setError("Please select or enter an amount.");
       return;
@@ -295,6 +310,12 @@ export default function RechargePage() {
 
       const data = await res.json();
       if (!res.ok) {
+        if (data.requireKyc) {
+          toast.warning("Please complete your profile and submit NID photos first.");
+          setTimeout(() => router.push("/personal-info"), 1200);
+          setLoading(false);
+          return;
+        }
         setError(data.error || "Deposit submission failed.");
         setLoading(false);
         return;
@@ -334,6 +355,12 @@ export default function RechargePage() {
 
       const data = await res.json();
       if (!res.ok) {
+        if (data.requireKyc) {
+          toast.warning("Please complete your profile and submit NID photos first.");
+          setTimeout(() => router.push("/personal-info"), 1200);
+          setLoading(false);
+          return;
+        }
         setError(data.error || "USDT deposit submission failed.");
         setLoading(false);
         return;
@@ -375,6 +402,31 @@ export default function RechargePage() {
         />
 
         {/* Global Notifications */}
+        {!isKycCompleted && (
+          <div className="mx-4 mt-3 p-4 rounded-3xl border shadow-md flex flex-col gap-3 bg-amber-50/90 border-amber-300 text-slate-800 dark:bg-[#04102e]/95 dark:border-amber-500/50 dark:text-white">
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-2xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center shrink-0">
+                <ShieldAlert size={22} className="text-amber-500 dark:text-amber-400" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h4 className="text-xs font-black uppercase tracking-wider text-amber-600 dark:text-amber-400 mb-0.5">
+                  Profile &amp; NID Verification Required
+                </h4>
+                <p className="text-xs font-semibold text-slate-600 dark:text-slate-300 leading-snug">
+                  To recharge or deposit funds, please complete your profile with your details and National ID (NID) photos.
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => router.push("/personal-info")}
+              className="btn-gold-premium w-full py-2.5 rounded-xl text-xs font-black uppercase tracking-wider"
+            >
+              Complete Profile &amp; NID Now →
+            </button>
+          </div>
+        )}
+
         {error && (
           <div className="mx-4 mt-3 p-3.5 bg-rose-50 dark:bg-red-950/70 border border-rose-300 dark:border-red-500/60 text-rose-800 dark:text-red-100 text-xs font-bold rounded-2xl text-center shadow-sm flex items-center justify-center gap-2">
             <AlertCircle size={18} className="shrink-0 text-rose-600 dark:text-rose-400" />

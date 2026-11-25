@@ -13,8 +13,10 @@ import {
   Image as ImageIcon,
   Check,
 } from "lucide-react";
+import { useToast } from "@/context/ToastContext";
 
 export default function PersonalInfoPage() {
+  const { toast } = useToast();
   const [realName, setRealName] = useState("");
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("Male");
@@ -138,12 +140,16 @@ export default function PersonalInfoPage() {
 
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error || "Submission failed.");
+        const errMsg = data.error || "Submission failed.";
+        setError(errMsg);
+        toast.error(errMsg);
         setLoading(false);
         return;
       }
 
-      setSuccess("National ID documents uploaded to Cloudinary successfully for Admin review!");
+      const succMsg = data.message || "National ID documents submitted successfully for Admin review!";
+      setSuccess(succMsg);
+      toast.success(succMsg);
       setKycStatus("pending");
       if (data.kyc) {
         setFrontPictureUrl(data.kyc.frontPictureUrl || "");
@@ -391,7 +397,7 @@ export default function PersonalInfoPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold text-base shadow-md active:scale-98 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                className="btn-gold-premium w-full py-3.5 rounded-2xl font-black text-sm uppercase tracking-wider shadow-md active:scale-98 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 {loading ? (
                   <>

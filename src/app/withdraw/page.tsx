@@ -45,6 +45,8 @@ export default function WithdrawPage() {
   const [selectedWalletId, setSelectedWalletId] = useState<string>("");
   const [amount, setAmount] = useState<string>("");
   const [withdrawPassword, setWithdrawPassword] = useState<string>("");
+  const [isKycCompleted, setIsKycCompleted] = useState<boolean>(true);
+  const [kycStatus, setKycStatus] = useState<string>("pending");
 
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
@@ -70,6 +72,12 @@ export default function WithdrawPage() {
           const wBDT = data.withdrawable?.withdrawableBDT ?? Math.max(0, balBDT - bonusBDT);
           setWithdrawableUSDT(wUSDT);
           setWithdrawableBDT(wBDT);
+          if (typeof data?.isKycCompleted === "boolean") {
+            setIsKycCompleted(data.isKycCompleted);
+          }
+          if (data?.kycStatus) {
+            setKycStatus(data.kycStatus);
+          }
         }
       })
       .catch(() => { });
@@ -129,6 +137,14 @@ export default function WithdrawPage() {
     e.preventDefault();
     setError("");
     setSuccess("");
+
+    if (!isKycCompleted) {
+      toast.warning("Please complete your profile and submit NID photos before withdrawing.");
+      setTimeout(() => {
+        router.push("/personal-info");
+      }, 1200);
+      return;
+    }
 
     const numAmount = Number(amount);
     if (!amount || numAmount <= 0) {
@@ -245,6 +261,38 @@ export default function WithdrawPage() {
         <Header title="Withdraw" showBack={true} />
 
         <div className="p-4 space-y-4 max-w-[440px] mx-auto">
+          {/* KYC / NID Verification Required Banner */}
+          {!isKycCompleted && (
+            <div
+              className={`p-4 rounded-3xl border shadow-md flex flex-col gap-3 ${
+                isLight
+                  ? "bg-amber-50/90 border-amber-300 text-slate-800"
+                  : "bg-[#04102e]/95 border-amber-500/50 text-white"
+              }`}
+            >
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center shrink-0">
+                  <ShieldAlert size={22} className="text-amber-400" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h4 className="text-xs font-black uppercase tracking-wider text-amber-500 mb-0.5">
+                    Profile &amp; NID Verification Required
+                  </h4>
+                  <p className="text-xs font-semibold text-slate-300 leading-snug">
+                    To withdraw funds, please complete your profile with your details and National ID (NID) photos.
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => router.push("/personal-info")}
+                className="btn-gold-premium w-full py-2.5 rounded-xl text-xs font-black uppercase tracking-wider"
+              >
+                Complete Profile &amp; NID Now →
+              </button>
+            </div>
+          )}
+
           {/* Withdrawal Balance Card */}
           <div
             className={`rounded-3xl backdrop-blur-md p-5 shadow-lg text-center space-y-3 border ${isLight

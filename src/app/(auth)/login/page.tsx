@@ -70,7 +70,7 @@ function LoginForm() {
       setTimeout(() => {
         router.push(redirectUrl);
         router.refresh();
-      }, 500);
+      }, 850);
     } catch {
       setError("An unexpected error occurred. Please try again.");
       setLoading(false);

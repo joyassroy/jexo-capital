@@ -48,6 +48,7 @@ export default function ProfilePage() {
   const { toast } = useToast();
   const [mounted, setMounted] = useState(false);
   const [user, setUser] = useState<UserData | null>(null);
+  const [kycStatus, setKycStatus] = useState<string>("not_submitted");
   const [usdtRate, setUsdtRate] = useState<number>(127);
   const [loading, setLoading] = useState(true);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
@@ -68,6 +69,7 @@ export default function ProfilePage() {
       })
       .then((data) => {
         if (data?.user) setUser(data.user);
+        if (data?.kycStatus) setKycStatus(data.kycStatus);
         if (data?.withdrawable?.usdtRate) setUsdtRate(data.withdrawable.usdtRate);
         setLoading(false);
       })
@@ -583,13 +585,17 @@ export default function ProfilePage() {
           </Link>
         </div>
 
-        {/* Complete Now Action Button */}
+        {/* Complete Now Action Button -> Redirects to NID picture upload page */}
         <div className="mt-3.5">
           <Link
-            href="/vip"
-            className="block w-full py-3.5 rounded-2xl text-center font-black text-sm active:scale-98 transition-all uppercase tracking-wider bg-gradient-to-r from-[#f5ba31] via-[#ffd369] to-[#d49002] text-[#020a1f] shadow-[0_4px_16px_rgba(245,186,49,0.35)] hover:brightness-105 border border-amber-300"
+            href="/personal-info"
+            className="btn-gold-premium block w-full py-3.5 rounded-2xl text-center font-black text-sm active:scale-98 transition-all uppercase tracking-wider shadow-[0_4px_16px_rgba(245,186,49,0.35)]"
           >
-            {t("complete_now")}
+            {kycStatus === "approved"
+              ? "Profile Verified ✓"
+              : kycStatus === "pending"
+              ? "Profile Under Review ⏳"
+              : t("complete_now")}
           </Link>
         </div>
 

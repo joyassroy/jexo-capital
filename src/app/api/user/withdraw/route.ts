@@ -4,6 +4,7 @@ import { User } from "@/models/User";
 import { Withdrawal } from "@/models/Withdrawal";
 import { Setting } from "@/models/Setting";
 import { Transaction } from "@/models/Transaction";
+import { Kyc } from "@/models/Kyc";
 import { getCurrentUser, verifyPassword } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
@@ -14,6 +15,28 @@ export async function POST(req: NextRequest) {
     }
 
     await connectDB();
+
+    // Verify that profile and NID documents are completed before allowing withdrawal
+    const kyc = await Kyc.findOne({ userId: userPayload.userId });
+    if (!kyc || !kyc.nidNumber || !kyc.frontPictureUrl || !kyc.backPictureUrl) {
+      return NextResponse.json(
+        {
+          error: "Please complete your profile and submit your National ID (NID) photos first.",
+          requireKyc: true,
+        },
+        { status: 400 }
+      );
+    }
+    if (kyc.status === "rejected") {
+      return NextResponse.json(
+        {
+          error: "Your NID verification was rejected. Please re-submit your NID photos in Profile.",
+          requireKyc: true,
+        },
+        { status: 400 }
+      );
+    }
+
     const body = await req.json();
     const {
       amount,

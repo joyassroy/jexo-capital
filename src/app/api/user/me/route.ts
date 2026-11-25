@@ -163,6 +163,13 @@ export async function GET() {
 
     // Check KYC status
     const kyc = await Kyc.findOne({ userId: user._id.toString() });
+    const isKycCompleted = Boolean(
+      kyc &&
+      kyc.nidNumber &&
+      kyc.frontPictureUrl &&
+      kyc.backPictureUrl &&
+      kyc.status !== "rejected"
+    );
 
     // Check Bank / Wallets
     const wallets = await BankWallet.find({ userId: user._id.toString() });
@@ -172,6 +179,7 @@ export async function GET() {
       user: userSafe,
       hasWithdrawPassword,
       kycStatus: kyc ? kyc.status : "not_submitted",
+      isKycCompleted,
       wallets,
       withdrawable: {
         totalBalanceUSDT,

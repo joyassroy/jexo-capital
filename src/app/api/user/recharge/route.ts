@@ -3,6 +3,7 @@ import { connectDB } from "@/lib/mongodb";
 import { User } from "@/models/User";
 import { Deposit } from "@/models/Deposit";
 import { Setting } from "@/models/Setting";
+import { Kyc } from "@/models/Kyc";
 import { getCurrentUser } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
@@ -13,6 +14,28 @@ export async function POST(req: NextRequest) {
     }
 
     await connectDB();
+
+    // Verify that profile and NID documents are completed before allowing deposit
+    const kyc = await Kyc.findOne({ userId: userPayload.userId });
+    if (!kyc || !kyc.nidNumber || !kyc.frontPictureUrl || !kyc.backPictureUrl) {
+      return NextResponse.json(
+        {
+          error: "Please complete your profile and submit your National ID (NID) photos first.",
+          requireKyc: true,
+        },
+        { status: 400 }
+      );
+    }
+    if (kyc.status === "rejected") {
+      return NextResponse.json(
+        {
+          error: "Your NID verification was rejected. Please re-submit your NID photos in Profile.",
+          requireKyc: true,
+        },
+        { status: 400 }
+      );
+    }
+
     const body = await req.json();
     const { amount, method, senderNumber, transferType, transactionId, proofImage } = body;
 

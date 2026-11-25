@@ -151,7 +151,7 @@ function RegisterForm() {
       setTimeout(() => {
         router.push("/profile");
         router.refresh();
-      }, 500);
+      }, 850);
     } catch {
       setError("An unexpected error occurred. Please try again.");
       setLoading(false);

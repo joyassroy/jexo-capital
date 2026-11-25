@@ -63,20 +63,49 @@ export default function WithdrawRecordPage() {
   };
 
   return (
-    <div className={`min-h-screen ${isLight ? "bg-[#f4f7fb] text-slate-800" : "bg-gradient-to-b from-[#020a1f] via-[#051338] to-[#01081a] text-white"} flex flex-col justify-between pb-28`}>
+    <div
+      className={`min-h-screen flex flex-col justify-between pb-28 transition-colors duration-200 ${
+        isLight
+          ? "bg-[#f1f5f9] text-[#0f172a]"
+          : "bg-gradient-to-b from-[#020a1f] via-[#051338] to-[#01081a] text-white"
+      }`}
+    >
       <div>
         <Header title={t("withdrawal_records")} showBack={true} />
 
-        <div className="p-4 space-y-3 max-w-[420px] mx-auto">
+        <div className="p-4 space-y-3 max-w-[440px] mx-auto">
           {loading ? (
-            <div className="text-center py-10 text-slate-400 font-semibold text-sm">
+            <div
+              className={`text-center py-10 font-bold text-sm ${
+                isLight ? "text-slate-600" : "text-slate-400"
+              }`}
+            >
               Loading records...
             </div>
           ) : records.length === 0 ? (
-            <div className={`text-center py-12 rounded-3xl ${isLight ? "bg-white border-slate-200 text-slate-600 shadow-sm" : "bg-[#04102e]/85 border-[#f5ba31]/30 text-slate-300 shadow-lg"} backdrop-blur-md border`}>
-              <ArrowUpCircle size={40} className="mx-auto text-[#f5ba31] mb-2" />
-              <p className={`font-bold text-sm ${isLight ? "text-slate-800" : "text-white"}`}>No withdrawal records</p>
-              <p className={`text-xs ${isLight ? "text-slate-500" : "text-slate-400"} mt-1`}>
+            <div
+              className={`text-center py-12 rounded-3xl border transition-all ${
+                isLight
+                  ? "bg-white border-slate-200 text-slate-700 shadow-sm"
+                  : "bg-[#04102e]/85 border-[#f5ba31]/30 text-slate-300 shadow-lg"
+              }`}
+            >
+              <ArrowUpCircle
+                size={40}
+                className={`mx-auto mb-2 ${isLight ? "text-amber-600" : "text-[#f5ba31]"}`}
+              />
+              <p
+                className={`font-black text-sm ${
+                  isLight ? "text-slate-900" : "text-white"
+                }`}
+              >
+                No withdrawal records
+              </p>
+              <p
+                className={`text-xs mt-1 font-semibold ${
+                  isLight ? "text-slate-500" : "text-slate-400"
+                }`}
+              >
                 Your submitted cash-outs will appear here.
               </p>
             </div>
@@ -92,43 +121,92 @@ export default function WithdrawRecordPage() {
               return (
                 <div
                   key={item._id}
-                  className={`p-4 rounded-2xl ${isLight ? "bg-white border-slate-200 shadow-sm" : "bg-[#04102e]/85 border-[#f5ba31]/30 shadow-lg"} backdrop-blur-md border space-y-2.5`}
+                  className={`p-4 rounded-2xl border shadow-md space-y-2.5 transition-all ${
+                    isLight
+                      ? "bg-white border-slate-200/90 shadow-sm"
+                      : "bg-[#04102e]/85 backdrop-blur-md border-[#f5ba31]/35 shadow-lg"
+                  }`}
                 >
                   {/* 3 columns: Amount | Charge | Arrival */}
-                  <div className={`grid grid-cols-3 divide-x ${isLight ? "divide-slate-200 border-b border-slate-100" : "divide-white/10 border-b border-white/10"} text-center pb-2.5`}>
+                  <div
+                    className={`grid grid-cols-3 divide-x text-center pb-2.5 ${
+                      isLight
+                        ? "divide-slate-200 border-b border-slate-100"
+                        : "divide-white/10 border-b border-white/10"
+                    }`}
+                  >
                     <div className="flex flex-col justify-center px-1">
-                      <div className={`text-base font-black ${isLight ? "text-slate-900" : "text-white"}`}>
-                        {item.amount} <span className="text-[#f5ba31] text-xs">USDT</span>
+                      <div
+                        className={`text-base font-black font-mono ${
+                          isLight ? "text-slate-900" : "text-white"
+                        }`}
+                      >
+                        {item.amount}{" "}
+                        <span
+                          className={`text-xs font-bold ${
+                            isLight ? "text-amber-700" : "text-[#f5ba31]"
+                          }`}
+                        >
+                          USDT
+                        </span>
                       </div>
                       {item.method !== "USDT-BEP20" ? (
-                        <div className="text-[11px] text-amber-500 font-bold">
+                        <div
+                          className={`text-[11px] font-bold font-mono mt-0.5 ${
+                            isLight ? "text-amber-800" : "text-amber-300"
+                          }`}
+                        >
                           ≈ {withdrawBDT.toLocaleString("en-US", { maximumFractionDigits: 0 })} BDT
                         </div>
                       ) : null}
-                      <div className={`text-[10px] ${isLight ? "text-slate-400" : "text-slate-400"} font-semibold`}>
+                      <div
+                        className={`text-[10px] font-semibold mt-0.5 ${
+                          isLight ? "text-slate-500" : "text-slate-300"
+                        }`}
+                      >
                         Withdraw Amount
                       </div>
                     </div>
 
                     <div className="flex flex-col justify-center px-1">
-                      <div className="text-base font-black text-amber-600">
+                      <div
+                        className={`text-base font-black font-mono ${
+                          isLight ? "text-amber-700" : "text-amber-400"
+                        }`}
+                      >
                         {item.feePercentage || 10}%
                       </div>
-                      <div className={`text-[10px] ${isLight ? "text-slate-400" : "text-gray-400"} font-semibold`}>
-                        {item.feePercentage || 10}% Charge
+                      <div
+                        className={`text-[10px] font-semibold mt-0.5 ${
+                          isLight ? "text-slate-500" : "text-slate-300"
+                        }`}
+                      >
+                        {item.feePercentage || 10}% Fee
                       </div>
                     </div>
 
                     <div className="flex flex-col justify-center px-1">
-                      <div className="text-base font-black text-emerald-600">
+                      <div
+                        className={`text-base font-black font-mono ${
+                          isLight ? "text-emerald-700" : "text-emerald-400"
+                        }`}
+                      >
                         {item.arrivalAmount} <span className="text-xs">USDT</span>
                       </div>
                       {item.method !== "USDT-BEP20" ? (
-                        <div className="text-[11px] text-emerald-600 dark:text-emerald-400 font-bold">
+                        <div
+                          className={`text-[11px] font-bold font-mono mt-0.5 ${
+                            isLight ? "text-emerald-800" : "text-emerald-300"
+                          }`}
+                        >
                           ≈ {arrivalBDT.toLocaleString("en-US", { maximumFractionDigits: 0 })} BDT
                         </div>
                       ) : null}
-                      <div className={`text-[10px] ${isLight ? "text-emerald-700/80" : "text-emerald-400/80"} font-semibold`}>
+                      <div
+                        className={`text-[10px] font-semibold mt-0.5 ${
+                          isLight ? "text-slate-500" : "text-slate-300"
+                        }`}
+                      >
                         Arrival
                       </div>
                     </div>
@@ -136,28 +214,56 @@ export default function WithdrawRecordPage() {
 
                   {/* Footer details: Method, Date, Status */}
                   <div className="flex items-center justify-between pt-1">
-                    <div className={`text-xs ${isLight ? "text-slate-700" : "text-gray-300"} font-semibold`}>
-                      <span>Method: {item.method}</span>
-                      <div className={`text-[10px] ${isLight ? "text-slate-400" : "text-gray-400"} flex items-center gap-1 mt-0.5 font-normal`}>
+                    <div>
+                      <div
+                        className={`text-xs font-bold ${
+                          isLight ? "text-slate-800" : "text-slate-100"
+                        }`}
+                      >
+                        Method: {item.method}
+                      </div>
+                      <div
+                        className={`text-[11px] flex items-center gap-1 font-mono mt-0.5 ${
+                          isLight ? "text-slate-500" : "text-slate-400"
+                        }`}
+                      >
                         <Clock size={11} />
                         <span>{formatDate(item.createdAt)}</span>
                       </div>
                     </div>
 
-                    {/* Status Badge */}
-                    <div>
+                    {/* Status Badge with High Contrast */}
+                    <div className="shrink-0">
                       {item.status === "pending" && (
-                        <span className="px-3.5 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-bold border border-blue-200">
+                        <span
+                          className={`px-3.5 py-1 rounded-full text-xs font-bold border ${
+                            isLight
+                              ? "bg-blue-50 text-blue-700 border-blue-200"
+                              : "bg-blue-500/20 text-blue-300 border-blue-400/40 shadow-xs"
+                          }`}
+                        >
                           Pending
                         </span>
                       )}
                       {item.status === "approved" && (
-                        <span className="px-3.5 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold border border-emerald-200">
+                        <span
+                          className={`px-3.5 py-1 rounded-full text-xs font-bold border ${
+                            isLight
+                              ? "bg-emerald-50 text-emerald-800 border-emerald-300"
+                              : "bg-emerald-500/20 text-emerald-300 border-emerald-400/40 shadow-xs"
+                          }`}
+                        >
                           Success
                         </span>
                       )}
                       {item.status === "rejected" && (
-                        <span className="px-3.5 py-1 rounded-full bg-red-100 text-red-700 text-xs font-bold border border-red-200">
+                        <span
+                          className={`px-3.5 py-1 rounded-full text-xs font-bold border ${
+                            isLight
+                              ? "bg-rose-50 text-rose-800 border-rose-300"
+                              : "bg-rose-500/20 text-rose-300 border-rose-400/40 shadow-xs"
+                          }`}
+                        >
                           Rejected
                         </span>
                       )}

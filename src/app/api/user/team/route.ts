@@ -129,7 +129,7 @@ export async function GET() {
     const totalMembers = l1Total + l2Total + l3Total;
     const activeMembers = l1Active + l2Active + l3Active;
 
-    // 4. Rewards aggregation from user's unclaimed reward fields
+    // 4. Rewards aggregation from user's unclaimed & claimed reward fields
     const referralRewardsUSDT = Number(
       (currentUser.unclaimedReferralRewardsUSDT || 0).toFixed(4)
     );
@@ -142,6 +142,20 @@ export async function GET() {
     );
     const cashbackRewardsBDT = Number(
       (cashbackRewardsUSDT * usdtRate).toFixed(2)
+    );
+
+    const totalClaimedReferralRewardsUSDT = Number(
+      (currentUser.totalClaimedReferralRewardsUSDT || 0).toFixed(4)
+    );
+    const totalClaimedReferralRewardsBDT = Number(
+      (totalClaimedReferralRewardsUSDT * usdtRate).toFixed(2)
+    );
+
+    const totalClaimedCashbackRewardsUSDT = Number(
+      (currentUser.totalClaimedCashbackRewardsUSDT || 0).toFixed(4)
+    );
+    const totalClaimedCashbackRewardsBDT = Number(
+      (totalClaimedCashbackRewardsUSDT * usdtRate).toFixed(2)
     );
 
     const milestoneTx = await Transaction.findOne({
@@ -165,6 +179,10 @@ export async function GET() {
         referralRewardsBDT,
         cashbackRewardsUSDT,
         cashbackRewardsBDT,
+        totalClaimedReferralRewardsUSDT,
+        totalClaimedReferralRewardsBDT,
+        totalClaimedCashbackRewardsUSDT,
+        totalClaimedCashbackRewardsBDT,
         milestoneClaimed,
         canClaimMilestone,
       },

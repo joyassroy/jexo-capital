@@ -47,11 +47,14 @@ export default function AdminDepositsPage() {
     fetchDeposits();
   }, [filter]);
 
-  const handleAction = async (depositId: string, action: "approve" | "reject") => {
+  const handleAction = async (item: DepositItem, action: "approve" | "reject") => {
+    const depositId = item._id;
+    const bdt = item.amountBDT || item.amount;
+    const usdt = item.amountUSDT || Number((bdt / 127).toFixed(2));
     const confirmText =
       action === "approve"
-        ? "Approve this deposit and credit user balance?"
-        : "Reject this deposit request?";
+        ? `Approve deposit of ${bdt} BDT (≈ ${usdt} USDT) and credit user "${item.userNickname}"?`
+        : `Reject deposit request of ${bdt} BDT (≈ ${usdt} USDT) from "${item.userNickname}"?`;
 
     if (!confirm(confirmText)) return;
 
@@ -241,7 +244,7 @@ export default function AdminDepositsPage() {
                       {item.status === "pending" ? (
                         <div className="flex items-center justify-end gap-1.5">
                           <button
-                            onClick={() => handleAction(item._id, "approve")}
+                            onClick={() => handleAction(item, "approve")}
                             disabled={actionLoading === item._id}
                             className="p-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition-colors disabled:opacity-50"
                             title="Approve & Credit Balance"
@@ -249,7 +252,7 @@ export default function AdminDepositsPage() {
                             <Check size={16} />
                           </button>
                           <button
-                            onClick={() => handleAction(item._id, "reject")}
+                            onClick={() => handleAction(item, "reject")}
                             disabled={actionLoading === item._id}
                             className="p-1.5 rounded-lg bg-red-600 hover:bg-red-500 text-white font-bold transition-colors disabled:opacity-50"
                             title="Reject"

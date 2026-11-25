@@ -31,14 +31,9 @@ function fileToDataUrl(file: File | Blob): Promise<string> {
 }
 
 // Helper to compress camera images on mobile before uploading to prevent Vercel 4.5MB payload limit
-function compressImage(file: File, maxWidth = 1280, quality = 0.8): Promise<File> {
+function compressImage(file: File, maxWidth = 1200, quality = 0.75): Promise<File> {
   return new Promise((resolve) => {
     try {
-      if (file.size <= 400 * 1024) {
-        resolve(file);
-        return;
-      }
-
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = (event) => {
@@ -228,20 +223,12 @@ export default function PersonalInfoPage() {
 
       if (processedFront) {
         formData.append("frontPicture", processedFront);
-        try {
-          const frontB64 = await fileToDataUrl(processedFront);
-          if (frontB64) formData.append("frontPictureBase64", frontB64);
-        } catch { }
       } else if (frontPictureUrl) {
         formData.append("frontPictureUrl", frontPictureUrl);
       }
 
       if (processedBack) {
         formData.append("backPicture", processedBack);
-        try {
-          const backB64 = await fileToDataUrl(processedBack);
-          if (backB64) formData.append("backPictureBase64", backB64);
-        } catch { }
       } else if (backPictureUrl) {
         formData.append("backPictureUrl", backPictureUrl);
       }

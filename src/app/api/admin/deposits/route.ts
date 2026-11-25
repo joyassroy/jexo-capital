@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import { Deposit } from "@/models/Deposit";
 import { User } from "@/models/User";
+import { Setting } from "@/models/Setting";
 import { Transaction } from "@/models/Transaction";
 import { getCurrentAdmin } from "@/lib/auth";
 import { syncUserVipWithBalance } from "@/lib/vip";
@@ -73,12 +74,23 @@ export async function PATCH(req: NextRequest) {
       deposit.adminNote = adminNote || "Approved by admin";
       deposit.reviewedBy = admin.username;
       deposit.reviewedAt = new Date();
-      await deposit.save();
 
-      // Determine USDT credit amount (1 USDT = 127 BDT)
-      const creditUSDT = deposit.amountUSDT > 0
+      // Fetch dynamic USDT rate from Settings
+      const setting = await Setting.findOne({ key: "default_settings" });
+      const usdtRate = setting?.usdtRateBDT || 127;
+
+      // Determine accurate credit in both USDT and BDT
+      // User requests are always initiated in BDT or calibrated against usdtRate
+      const creditUSDT = deposit.amountUSDT && deposit.amountUSDT > 0
         ? deposit.amountUSDT
-        : Number((deposit.amountBDT / (deposit.method === "USDT-BEP20" ? 1 : 127)).toFixed(4));
+        : Number(((deposit.amountBDT || deposit.amount) / usdtRate).toFixed(4));
+      const creditBDT = deposit.amountBDT && deposit.amountBDT > 0
+        ? deposit.amountBDT
+        : Number((creditUSDT * usdtRate).toFixed(2));
+
+      deposit.amountBDT = creditBDT;
+      deposit.amountUSDT = creditUSDT;
+      await deposit.save();
 
       // Credit user's balance and totalFund in USDT
       user.balance = Number((user.balance + creditUSDT).toFixed(4));
@@ -88,7 +100,7 @@ export async function PATCH(req: NextRequest) {
       // Automatically sync and upgrade user's VIP level if new balance qualifies
       await syncUserVipWithBalance(user);
 
-      // Create transaction record
+      // Create transaction record with dual currency
       await Transaction.create({
         userId: user._id.toString(),
         type: "recharge",
@@ -99,8 +111,9 @@ export async function PATCH(req: NextRequest) {
           depositId: deposit._id.toString(),
           method: deposit.method,
           transactionId: deposit.transactionId,
-          amountBDT: deposit.amountBDT,
+          amountBDT: creditBDT,
           amountUSDT: creditUSDT,
+          usdtRate,
         },
       });
 
@@ -120,13 +133,14 @@ export async function PATCH(req: NextRequest) {
         const directReferrer = await User.findById(user.referredBy);
         if (directReferrer) {
           const referralBonusUSDT = Number(((creditUSDT * 10) / 100).toFixed(4));
+          const referralBonusBDT = Number((referralBonusUSDT * usdtRate).toFixed(2));
           if (referralBonusUSDT > 0) {
             directReferrer.unclaimedReferralRewardsUSDT = Number(
               ((directReferrer.unclaimedReferralRewardsUSDT || 0) + referralBonusUSDT).toFixed(4)
             );
             await directReferrer.save();
 
-            // Track this first-deposit bonus in transactions as pending claim
+            // Track this first-deposit bonus in transactions as pending claim with dual currency
             await Transaction.create({
               userId: directReferrer._id.toString(),
               type: "refer_commission",
@@ -138,8 +152,10 @@ export async function PATCH(req: NextRequest) {
                 fromUserPhone: user.phone,
                 depositId: deposit._id.toString(),
                 firstDepositUSDT: creditUSDT,
+                firstDepositBDT: creditBDT,
                 bonusUSDT: referralBonusUSDT,
-                bonusBDT: Number((referralBonusUSDT * 127).toFixed(2)),
+                bonusBDT: referralBonusBDT,
+                usdtRate,
                 isFirstDeposit: true,
               },
             });
@@ -149,7 +165,7 @@ export async function PATCH(req: NextRequest) {
 
       return NextResponse.json({
         success: true,
-        message: `Deposit of ${deposit.amountBDT} BDT (${creditUSDT.toFixed(2)} USDT) approved and credited to user account.`,
+        message: `Deposit of ${creditBDT} BDT (≈ ${creditUSDT.toFixed(2)} USDT) approved and credited to user account.`,
         deposit,
       });
     } else {

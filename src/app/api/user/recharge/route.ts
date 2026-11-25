@@ -96,18 +96,10 @@ export async function POST(req: NextRequest) {
     const setting = await Setting.findOne({ key: "default_settings" });
     const usdtRate = setting?.usdtRateBDT || 127;
 
-    const depositAmount = Number(amount);
-    let amountBDT = 0;
-    let amountUSDT = 0;
-
-    if (method === "USDT-BEP20") {
-      amountUSDT = depositAmount;
-      amountBDT = Number((depositAmount * usdtRate).toFixed(2));
-    } else {
-      // Local mobile bank: user sent BDT via bKash/Nagad
-      amountBDT = depositAmount;
-      amountUSDT = Number((depositAmount / usdtRate).toFixed(4));
-    }
+    // In the application workflow, recharge amount is always initiated in BDT (Taka)
+    const rawInputBDT = Number(body.amountBDT || body.amount || 0);
+    const amountBDT = Math.round(rawInputBDT * 100) / 100;
+    const amountUSDT = Number((amountBDT / usdtRate).toFixed(4));
 
     const user = await User.findById(userPayload.userId);
     if (!user) {
@@ -119,7 +111,7 @@ export async function POST(req: NextRequest) {
       userPhone: user.phone,
       userNickname: user.nickname,
       method,
-      amount: depositAmount,
+      amount: amountBDT,
       amountBDT,
       amountUSDT,
       senderNumber: effectiveSender,

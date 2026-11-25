@@ -39,6 +39,10 @@ interface TeamData {
   referralRewardsBDT: number;
   cashbackRewardsUSDT: number;
   cashbackRewardsBDT: number;
+  totalClaimedReferralRewardsUSDT?: number;
+  totalClaimedReferralRewardsBDT?: number;
+  totalClaimedCashbackRewardsUSDT?: number;
+  totalClaimedCashbackRewardsBDT?: number;
   milestoneClaimed?: boolean;
   canClaimMilestone?: boolean;
 }
@@ -124,6 +128,10 @@ export default function TeamPage() {
     referralRewardsBDT: 0,
     cashbackRewardsUSDT: 0,
     cashbackRewardsBDT: 0,
+    totalClaimedReferralRewardsUSDT: 0,
+    totalClaimedReferralRewardsBDT: 0,
+    totalClaimedCashbackRewardsUSDT: 0,
+    totalClaimedCashbackRewardsBDT: 0,
     milestoneClaimed: false,
     canClaimMilestone: false,
   });
@@ -296,23 +304,41 @@ export default function TeamPage() {
               >
                 Referral Rewards
               </span>
-              <div
-                className={`text-3xl sm:text-4xl font-black font-mono tracking-tight my-2 ${
-                  isLight ? "text-[#020a1f]" : "text-[#ffd369]"
-                }`}
-              >
-                {loading
-                  ? "..."
-                  : team.referralRewardsBDT > 0
-                  ? team.referralRewardsBDT.toFixed(0)
-                  : "0"}
+              <div className="my-2 flex flex-col items-center">
+                <div
+                  className={`text-2xl sm:text-3xl font-black font-mono tracking-tight ${
+                    isLight ? "text-[#020a1f]" : "text-[#ffd369]"
+                  }`}
+                >
+                  {loading
+                    ? "..."
+                    : `${(team.referralRewardsUSDT || 0).toFixed(2)} USDT`}
+                </div>
+                <div className="text-xs font-bold text-amber-500 font-mono mt-0.5">
+                  ≈ {loading ? "..." : (team.referralRewardsBDT || 0).toFixed(0)} Tk
+                </div>
+                {(team.totalClaimedReferralRewardsUSDT || 0) > 0 && (
+                  <div className="text-[10px] text-emerald-500 font-bold mt-1.5 leading-tight">
+                    Claimed: {(team.totalClaimedReferralRewardsUSDT || 0).toFixed(2)} USDT
+                    <span className="block text-emerald-400/90 font-mono">
+                      (≈ {(team.totalClaimedReferralRewardsBDT || 0).toFixed(0)} Tk)
+                    </span>
+                  </div>
+                )}
               </div>
               <button
                 type="button"
                 onClick={() => handleClaim("referral")}
-                className="w-full py-2.5 px-4 rounded-full bg-gradient-to-r from-[#f5ba31] via-[#ffd369] to-[#d49002] text-[#020a1f] font-black text-xs shadow-[0_3px_12px_rgba(245,186,49,0.35)] active:scale-95 hover:brightness-105 transition-all border border-amber-200/80 tracking-wide uppercase"
+                disabled={claiming || (team.referralRewardsUSDT || 0) <= 0}
+                className="w-full py-2.5 px-3 rounded-full bg-gradient-to-r from-[#f5ba31] via-[#ffd369] to-[#d49002] text-[#020a1f] font-black text-xs shadow-[0_3px_12px_rgba(245,186,49,0.35)] active:scale-95 hover:brightness-105 transition-all border border-amber-200/80 tracking-wide uppercase disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
               >
-                Claim
+                {claiming
+                  ? "Claiming..."
+                  : (team.referralRewardsUSDT || 0) > 0
+                  ? "Claim"
+                  : (team.totalClaimedReferralRewardsUSDT || 0) > 0
+                  ? "Claimed"
+                  : "Claim"}
               </button>
             </div>
 
@@ -331,23 +357,41 @@ export default function TeamPage() {
               >
                 Cashback Rewards
               </span>
-              <div
-                className={`text-3xl sm:text-4xl font-black font-mono tracking-tight my-2 ${
-                  isLight ? "text-[#020a1f]" : "text-[#ffd369]"
-                }`}
-              >
-                {loading
-                  ? "..."
-                  : team.cashbackRewardsBDT > 0
-                  ? team.cashbackRewardsBDT.toFixed(0)
-                  : "0"}
+              <div className="my-2 flex flex-col items-center">
+                <div
+                  className={`text-2xl sm:text-3xl font-black font-mono tracking-tight ${
+                    isLight ? "text-[#020a1f]" : "text-[#ffd369]"
+                  }`}
+                >
+                  {loading
+                    ? "..."
+                    : `${(team.cashbackRewardsUSDT || 0).toFixed(2)} USDT`}
+                </div>
+                <div className="text-xs font-bold text-amber-500 font-mono mt-0.5">
+                  ≈ {loading ? "..." : (team.cashbackRewardsBDT || 0).toFixed(0)} Tk
+                </div>
+                {(team.totalClaimedCashbackRewardsUSDT || 0) > 0 && (
+                  <div className="text-[10px] text-emerald-500 font-bold mt-1.5 leading-tight">
+                    Claimed: {(team.totalClaimedCashbackRewardsUSDT || 0).toFixed(2)} USDT
+                    <span className="block text-emerald-400/90 font-mono">
+                      (≈ {(team.totalClaimedCashbackRewardsBDT || 0).toFixed(0)} Tk)
+                    </span>
+                  </div>
+                )}
               </div>
               <button
                 type="button"
                 onClick={() => handleClaim("cashback")}
-                className="w-full py-2.5 px-4 rounded-full bg-gradient-to-r from-[#f5ba31] via-[#ffd369] to-[#d49002] text-[#020a1f] font-black text-xs shadow-[0_3px_12px_rgba(245,186,49,0.35)] active:scale-95 hover:brightness-105 transition-all border border-amber-200/80 tracking-wide uppercase"
+                disabled={claiming || (team.cashbackRewardsUSDT || 0) <= 0}
+                className="w-full py-2.5 px-3 rounded-full bg-gradient-to-r from-[#f5ba31] via-[#ffd369] to-[#d49002] text-[#020a1f] font-black text-xs shadow-[0_3px_12px_rgba(245,186,49,0.35)] active:scale-95 hover:brightness-105 transition-all border border-amber-200/80 tracking-wide uppercase disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
               >
-                Claim
+                {claiming
+                  ? "Claiming..."
+                  : (team.cashbackRewardsUSDT || 0) > 0
+                  ? "Claim"
+                  : (team.totalClaimedCashbackRewardsUSDT || 0) > 0
+                  ? "Claimed"
+                  : "Claim"}
               </button>
             </div>
           </div>
@@ -828,7 +872,7 @@ export default function TeamPage() {
                         : "text-amber-400 font-black"
                     }
                   >
-                    300 BDT
+                    300 BDT (≈ 2.36 USDT)
                   </strong>
                   .
                 </p>

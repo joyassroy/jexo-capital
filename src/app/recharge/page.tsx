@@ -300,6 +300,8 @@ export default function RechargePage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           amount: Number(amount),
+          amountBDT: Number(amount),
+          amountUSDT: Number((Number(amount) / usdtRate).toFixed(4)),
           method: paymentChannel,
           senderNumber,
           transferType,
@@ -346,6 +348,8 @@ export default function RechargePage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           amount: Number(amount),
+          amountBDT: Number(amount),
+          amountUSDT: Number((Number(amount) / usdtRate).toFixed(4)),
           method: "USDT-BEP20",
           senderNumber: "USDT-Wallet",
           transferType: "send_money",

@@ -83,14 +83,7 @@ function LoginForm() {
       <div className="absolute top-0 left-0 right-0 h-40 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-amber-400/10 via-transparent to-transparent pointer-events-none" />
 
       {/* Top Bar: Theme Toggle & Language Selector */}
-      <div className="flex justify-between items-center p-4 z-10">
-        <Link
-          href="/"
-          className="text-xs font-bold text-slate-400 hover:text-white transition-colors flex items-center gap-1"
-        >
-          <span>←</span>
-          <span>Home</span>
-        </Link>
+      <div className="flex justify-end items-center p-4 z-10">
         <div className="flex items-center gap-2">
           <ThemeToggle />
           <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#05143a]/90 backdrop-blur-md border border-[#f5ba31]/50 text-xs font-semibold text-white shadow-sm">

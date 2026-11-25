@@ -281,14 +281,7 @@ export default function RegisterPage() {
   return (
     <div className="relative min-h-screen flex flex-col justify-between overflow-hidden bg-gradient-to-b from-[#020a1f] via-[#051338] to-[#01081a] text-white">
       {/* Top Bar: Theme Toggle & Language Selector */}
-      <div className="flex justify-between items-center p-4 z-10">
-        <Link
-          href="/"
-          className="text-xs font-bold text-slate-400 hover:text-white transition-colors flex items-center gap-1"
-        >
-          <span>←</span>
-          <span>Home</span>
-        </Link>
+      <div className="flex justify-end items-center p-4 z-10">
         <div className="flex items-center gap-2">
           <ThemeToggle />
           <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#05143a]/90 backdrop-blur-md border border-[#f5ba31]/50 text-xs font-semibold text-white shadow-sm">

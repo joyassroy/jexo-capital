@@ -33,15 +33,17 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               try {
+                var isAdm = window.location.pathname.indexOf('/admin') === 0;
                 var t = localStorage.getItem('zexo_theme');
-                if (t === 'light') {
-                  document.documentElement.classList.add('light');
-                  document.documentElement.classList.remove('dark');
-                  document.documentElement.setAttribute('data-theme', 'light');
-                } else {
+                if (isAdm || t === 'dark') {
                   document.documentElement.classList.add('dark');
                   document.documentElement.classList.remove('light');
                   document.documentElement.setAttribute('data-theme', 'dark');
+                } else {
+                  // Default initial theme is White / Light Mode!
+                  document.documentElement.classList.add('light');
+                  document.documentElement.classList.remove('dark');
+                  document.documentElement.setAttribute('data-theme', 'light');
                 }
               } catch (e) {}
 
@@ -59,7 +61,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="antialiased min-h-screen bg-[#0b192c] flex justify-center items-start transition-colors duration-300">
+      <body className="antialiased min-h-screen bg-[#f1f5f9] text-[#0f172a] flex justify-center items-start transition-colors duration-300">
         <ThemeProvider>
           <LanguageProvider>
             <ToastProvider>

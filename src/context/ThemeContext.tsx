@@ -11,13 +11,13 @@ interface ThemeContextType {
 }
 
 const ThemeContext = createContext<ThemeContextType>({
-  theme: "dark",
+  theme: "light",
   toggleTheme: () => {},
   setTheme: () => {},
 });
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>("dark");
+  const [theme, setThemeState] = useState<Theme>("light");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -30,11 +30,12 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         return;
       }
       const saved = localStorage.getItem("zexo_theme") as Theme | null;
-      const initialTheme: Theme = saved === "light" ? "light" : "dark";
+      // Initial default theme is White / Light mode unless explicitly switched to dark by the user
+      const initialTheme: Theme = saved === "dark" ? "dark" : "light";
       setThemeState(initialTheme);
       applyTheme(initialTheme);
     } catch {
-      applyTheme("dark");
+      applyTheme("light");
     }
   }, []);
 

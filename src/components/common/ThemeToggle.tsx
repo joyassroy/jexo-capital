@@ -20,7 +20,7 @@ export default function ThemeToggle({
     setMounted(true);
   }, []);
 
-  const isDark = mounted ? theme === "dark" : true;
+  const isDark = mounted ? theme === "dark" : false;
 
   if (compact) {
     return (

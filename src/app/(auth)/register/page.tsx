@@ -160,20 +160,6 @@ function RegisterForm() {
 
   return (
     <form onSubmit={handleRegister} className="space-y-3.5">
-      {/* 500 BDT Welcome Deposit Callout */}
-      <div className="auth-bonus-banner py-2.5 px-3.5 rounded-2xl text-center shadow-md transition-all">
-        <span className="text-xs font-bold flex items-center justify-center gap-1.5 auth-bonus-text">
-          <span>🎁</span>
-          <span>
-            Register now &amp; get{" "}
-            <strong className="auth-bonus-highlight font-black px-2 py-0.5 rounded-md border ml-0.5">
-              500 BDT Free Deposit
-            </strong>
-            !
-          </span>
-        </span>
-      </div>
-
       {/* Error notification */}
       {error && (
         <div className="mb-4 p-3.5 bg-rose-50 dark:bg-red-950/70 border border-rose-300 dark:border-red-500/60 text-rose-800 dark:text-red-100 text-xs font-bold rounded-xl text-center shadow-sm">

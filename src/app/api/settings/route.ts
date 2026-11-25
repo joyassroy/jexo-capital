@@ -32,6 +32,8 @@ export async function GET() {
         telegramGroupUrl: setting.telegramGroupUrl,
         telegramChannelUrl: setting.telegramChannelUrl,
         homeTickerText: setting.homeTickerText,
+        homeBanner1: setting.homeBanner1 || "/homepage-banner.jpg",
+        homeBanner2: setting.homeBanner2 || "/homepage-banner-2.jpg",
         noticeItems: setting.noticeItems,
         minWithdrawBDT: setting.minWithdrawBDT,
         minWithdrawUSDT: setting.minWithdrawUSDT,

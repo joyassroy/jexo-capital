@@ -67,6 +67,14 @@ const SettingSchema = new Schema<ISetting>(
       type: String,
       default: "Zexo Capital is a USA-based International Investment Platform.",
     },
+    homeBanner1: {
+      type: String,
+      default: "/homepage-banner.jpg",
+    },
+    homeBanner2: {
+      type: String,
+      default: "/homepage-banner-2.jpg",
+    },
     noticeItems: {
       type: [String],
       default: [

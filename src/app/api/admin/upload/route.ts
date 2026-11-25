@@ -16,10 +16,15 @@ export async function POST(req: NextRequest) {
     const contentType = req.headers.get("content-type") || "";
     let buffer: Buffer | null = null;
     let fileExtension = "png";
+    let prefix = "file";
 
     if (contentType.includes("multipart/form-data")) {
       const formData = await req.formData();
       const file = formData.get("file") as File | null;
+      const customPrefix = formData.get("prefix") as string | null;
+      if (customPrefix) {
+        prefix = customPrefix.replace(/[^a-zA-Z0-9_-]/g, "");
+      }
       if (!file) {
         return NextResponse.json({ error: "No file provided" }, { status: 400 });
       }
@@ -70,7 +75,7 @@ export async function POST(req: NextRequest) {
           const stream = cloudinary.uploader.upload_stream(
             {
               folder: "zexo_capital/admin",
-              public_id: `qr_${Date.now()}`,
+              public_id: `${prefix}_${Date.now()}`,
               quality: "auto",
               fetch_format: "auto",
             },
@@ -90,7 +95,7 @@ export async function POST(req: NextRequest) {
     if (!finalUrl) {
       const uploadDir = path.join(process.cwd(), "public", "uploads", "admin");
       await fs.mkdir(uploadDir, { recursive: true });
-      const filename = `qr_${Date.now()}.${fileExtension}`;
+      const filename = `${prefix}_${Date.now()}.${fileExtension}`;
       const filePath = path.join(uploadDir, filename);
       await fs.writeFile(filePath, buffer);
       finalUrl = `/uploads/admin/${filename}`;

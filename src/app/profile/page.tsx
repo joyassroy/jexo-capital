@@ -197,7 +197,7 @@ export default function ProfilePage() {
       {/* Header Building Image with Avatar */}
       <div className="relative h-36 w-full bg-slate-950 overflow-hidden shadow-inner">
         <Image
-          src="/profile-banner.jpg"
+          src="/profile-banner-hq.jpg"
           alt="Zexo Capital International Headquarters"
           fill
           className={`object-cover object-center transition-opacity duration-300 ${

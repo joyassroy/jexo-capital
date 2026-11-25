@@ -14,7 +14,7 @@ export default function CompanyInfoPage() {
           {/* Company Building Image with Gold Frame */}
           <div className="relative h-48 w-full rounded-3xl overflow-hidden shadow-[0_0_20px_rgba(245,186,49,0.25)] border-2 border-[#f5ba31]/60">
             <Image
-              src="/profile-banner.jpg"
+              src="/profile-banner-hq.jpg"
               alt="Zexo Capital Building"
               fill
               className="object-cover opacity-85"

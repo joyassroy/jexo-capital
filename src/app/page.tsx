@@ -52,10 +52,12 @@ export default function HomePage() {
   const isLight = mounted && theme === "light";
   const [tickerText, setTickerText] = useState("");
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [banner1, setBanner1] = useState("/homepage-banner.jpg");
+  const [banner2, setBanner2] = useState("/homepage-banner-2.jpg");
 
   const bannerSlides = [
     {
-      src: "/homepage-banner.jpg",
+      src: banner1 || "/homepage-banner.jpg",
       alt: "Zexo Capital Global Conference",
       tag: t("live_summit"),
       badge: t("usa_official"),
@@ -63,7 +65,7 @@ export default function HomePage() {
       subtitle: t("conf_subtitle"),
     },
     {
-      src: "/homepage-banner-2.jpg",
+      src: banner2 || "/homepage-banner-2.jpg",
       alt: "Zexo Capital Global Investor Delegation",
       tag: t("delegates_tag"),
       badge: t("global_forum"),
@@ -99,6 +101,12 @@ export default function HomePage() {
         }
         if (data?.settings?.usdtRateBDT) {
           setUsdtRate(data.settings.usdtRateBDT);
+        }
+        if (data?.settings?.homeBanner1) {
+          setBanner1(data.settings.homeBanner1);
+        }
+        if (data?.settings?.homeBanner2) {
+          setBanner2(data.settings.homeBanner2);
         }
       })
       .catch(() => {});
@@ -353,6 +361,7 @@ export default function HomePage() {
                   fill
                   className="object-cover"
                   priority={idx === 0}
+                  unoptimized
                 />
               </div>
             ))}
@@ -422,6 +431,7 @@ export default function HomePage() {
                   fill
                   className="object-cover"
                   priority={idx === 0}
+                  unoptimized
                 />
               </div>
             ))}

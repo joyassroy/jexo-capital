@@ -181,6 +181,8 @@ export interface ISetting {
   telegramChannelUrl: string;
   // Announcment / Notice
   homeTickerText: string;
+  homeBanner1?: string;
+  homeBanner2?: string;
   noticeItems: string[];
   // Withdrawal Rules
   minWithdrawBDT: number;

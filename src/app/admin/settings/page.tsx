@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Save, AlertCircle, CheckCircle2, Upload, QrCode, Trash2 } from "lucide-react";
+import { Save, AlertCircle, CheckCircle2, Upload, QrCode, Trash2, Image as ImageIcon, RotateCcw, Loader2 } from "lucide-react";
 
 export default function AdminSettingsPage() {
   const [bkashNumber, setBkashNumber] = useState("");
@@ -17,6 +17,10 @@ export default function AdminSettingsPage() {
   const [telegramGroupUrl, setTelegramGroupUrl] = useState("");
   const [telegramChannelUrl, setTelegramChannelUrl] = useState("");
   const [homeTickerText, setHomeTickerText] = useState("");
+  const [homeBanner1, setHomeBanner1] = useState("/homepage-banner.jpg");
+  const [homeBanner2, setHomeBanner2] = useState("/homepage-banner-2.jpg");
+  const [uploadingBanner1, setUploadingBanner1] = useState(false);
+  const [uploadingBanner2, setUploadingBanner2] = useState(false);
   const [minWithdrawBDT, setMinWithdrawBDT] = useState(250);
   const [minWithdrawUSDT, setMinWithdrawUSDT] = useState(6);
   const [signupBonusBDT, setSignupBonusBDT] = useState(500);
@@ -48,6 +52,8 @@ export default function AdminSettingsPage() {
           setTelegramGroupUrl(s.telegramGroupUrl || "");
           setTelegramChannelUrl(s.telegramChannelUrl || "");
           setHomeTickerText(s.homeTickerText || "");
+          setHomeBanner1(s.homeBanner1 || "/homepage-banner.jpg");
+          setHomeBanner2(s.homeBanner2 || "/homepage-banner-2.jpg");
           setMinWithdrawBDT(s.minWithdrawBDT || 250);
           setMinWithdrawUSDT(s.minWithdrawUSDT || 6);
           setSignupBonusBDT(s.signupBonusBDT ?? 500);
@@ -68,6 +74,7 @@ export default function AdminSettingsPage() {
     try {
       const formData = new FormData();
       formData.append("file", file);
+      formData.append("prefix", "qr");
 
       const res = await fetch("/api/admin/upload", {
         method: "POST",
@@ -84,6 +91,50 @@ export default function AdminSettingsPage() {
       alert("Network error while uploading QR code.");
     } finally {
       setUploadingQr(false);
+      e.target.value = "";
+    }
+  };
+
+  const handleBannerUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    bannerIndex: 1 | 2
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      alert("Please upload a valid image file (JPG, PNG, WEBP).");
+      return;
+    }
+
+    if (bannerIndex === 1) setUploadingBanner1(true);
+    else setUploadingBanner2(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("prefix", `home_banner_${bannerIndex}`);
+
+      const res = await fetch("/api/admin/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (res.ok && data.url) {
+        if (bannerIndex === 1) {
+          setHomeBanner1(data.url);
+        } else {
+          setHomeBanner2(data.url);
+        }
+      } else {
+        alert(data.error || `Failed to upload Banner ${bannerIndex}`);
+      }
+    } catch {
+      alert(`Network error while uploading Banner ${bannerIndex}`);
+    } finally {
+      if (bannerIndex === 1) setUploadingBanner1(false);
+      else setUploadingBanner2(false);
       e.target.value = "";
     }
   };
@@ -109,6 +160,8 @@ export default function AdminSettingsPage() {
           telegramGroupUrl,
           telegramChannelUrl,
           homeTickerText,
+          homeBanner1,
+          homeBanner2,
           minWithdrawBDT,
           minWithdrawUSDT,
           signupBonusBDT,
@@ -405,6 +458,163 @@ export default function AdminSettingsPage() {
                 onChange={(e) => setWithdrawEndTime(e.target.value)}
                 className="w-full px-4 py-2.5 rounded-xl bg-[#0F172A] border border-slate-700 text-sm text-white outline-none"
               />
+            </div>
+          </div>
+        </div>
+
+        {/* Homepage Carousel Banners (Banner 1 & Banner 2) */}
+        <div className="p-6 rounded-2xl bg-[#1E293B] border border-slate-800 space-y-5">
+          <div className="flex items-center justify-between border-b border-slate-700/60 pb-3">
+            <div>
+              <h2 className="text-sm font-extrabold text-cyan-400 uppercase tracking-wider flex items-center gap-2">
+                <ImageIcon size={18} className="text-amber-400" />
+                <span>Homepage Carousel Banners</span>
+              </h2>
+              <p className="text-xs text-slate-400 mt-0.5">
+                Upload custom banners displayed on the home page carousel slider (Recommended ratio: 825x365 or 16:9).
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Banner 1 */}
+            <div className="p-4 rounded-xl bg-[#0F172A] border border-slate-700/70 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-amber-400 uppercase tracking-wider">
+                  Carousel Slide 1 Banner
+                </span>
+                {homeBanner1 !== "/homepage-banner.jpg" && (
+                  <button
+                    type="button"
+                    onClick={() => setHomeBanner1("/homepage-banner.jpg")}
+                    className="text-[11px] text-slate-400 hover:text-white flex items-center gap-1 transition-colors"
+                  >
+                    <RotateCcw size={12} />
+                    Reset Default
+                  </button>
+                )}
+              </div>
+
+              {/* Preview Box */}
+              <div className="relative aspect-[825/365] w-full rounded-lg overflow-hidden border border-slate-700 bg-slate-900 shadow-inner group">
+                <img
+                  src={homeBanner1 || "/homepage-banner.jpg"}
+                  alt="Homepage Banner 1 Preview"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <span className="text-xs text-white font-medium bg-black/70 px-2.5 py-1 rounded-md">
+                    Slide 1 Live Preview
+                  </span>
+                </div>
+              </div>
+
+              {/* Upload Controls */}
+              <div className="space-y-2">
+                <label className="flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-bold text-xs cursor-pointer shadow-md transition-all active:scale-98">
+                  {uploadingBanner1 ? (
+                    <>
+                      <Loader2 size={15} className="animate-spin" />
+                      <span>Uploading Banner 1...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Upload size={15} />
+                      <span>Upload Banner 1 Image</span>
+                    </>
+                  )}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleBannerUpload(e, 1)}
+                    disabled={uploadingBanner1}
+                    className="hidden"
+                  />
+                </label>
+
+                <div>
+                  <label className="block text-[11px] text-slate-400 mb-1">
+                    Or Enter Image URL:
+                  </label>
+                  <input
+                    type="text"
+                    value={homeBanner1}
+                    onChange={(e) => setHomeBanner1(e.target.value)}
+                    placeholder="/homepage-banner.jpg or https://..."
+                    className="w-full px-3 py-2 rounded-lg bg-[#1E293B] border border-slate-700 text-xs text-white font-mono outline-none focus:border-amber-500"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Banner 2 */}
+            <div className="p-4 rounded-xl bg-[#0F172A] border border-slate-700/70 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-blue-400 uppercase tracking-wider">
+                  Carousel Slide 2 Banner
+                </span>
+                {homeBanner2 !== "/homepage-banner-2.jpg" && (
+                  <button
+                    type="button"
+                    onClick={() => setHomeBanner2("/homepage-banner-2.jpg")}
+                    className="text-[11px] text-slate-400 hover:text-white flex items-center gap-1 transition-colors"
+                  >
+                    <RotateCcw size={12} />
+                    Reset Default
+                  </button>
+                )}
+              </div>
+
+              {/* Preview Box */}
+              <div className="relative aspect-[825/365] w-full rounded-lg overflow-hidden border border-slate-700 bg-slate-900 shadow-inner group">
+                <img
+                  src={homeBanner2 || "/homepage-banner-2.jpg"}
+                  alt="Homepage Banner 2 Preview"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <span className="text-xs text-white font-medium bg-black/70 px-2.5 py-1 rounded-md">
+                    Slide 2 Live Preview
+                  </span>
+                </div>
+              </div>
+
+              {/* Upload Controls */}
+              <div className="space-y-2">
+                <label className="flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-bold text-xs cursor-pointer shadow-md transition-all active:scale-98">
+                  {uploadingBanner2 ? (
+                    <>
+                      <Loader2 size={15} className="animate-spin" />
+                      <span>Uploading Banner 2...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Upload size={15} />
+                      <span>Upload Banner 2 Image</span>
+                    </>
+                  )}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleBannerUpload(e, 2)}
+                    disabled={uploadingBanner2}
+                    className="hidden"
+                  />
+                </label>
+
+                <div>
+                  <label className="block text-[11px] text-slate-400 mb-1">
+                    Or Enter Image URL:
+                  </label>
+                  <input
+                    type="text"
+                    value={homeBanner2}
+                    onChange={(e) => setHomeBanner2(e.target.value)}
+                    placeholder="/homepage-banner-2.jpg or https://..."
+                    className="w-full px-3 py-2 rounded-lg bg-[#1E293B] border border-slate-700 text-xs text-white font-mono outline-none focus:border-amber-500"
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>

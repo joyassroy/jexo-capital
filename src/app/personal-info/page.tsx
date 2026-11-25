@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Header from "@/components/common/Header";
 import CityFooter from "@/components/common/CityFooter";
+import { useTheme } from "@/context/ThemeContext";
 import {
   Upload,
   CheckCircle2,
@@ -15,7 +16,72 @@ import {
 } from "lucide-react";
 import { useToast } from "@/context/ToastContext";
 
+// Helper to compress camera images on mobile before uploading to prevent Vercel 4.5MB payload limit
+function compressImage(file: File, maxWidth = 1280, quality = 0.8): Promise<File> {
+  return new Promise((resolve) => {
+    if (file.size <= 400 * 1024) {
+      resolve(file);
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      const img = new window.Image();
+      img.src = event.target?.result as string;
+      img.onload = () => {
+        let width = img.width;
+        let height = img.height;
+
+        if (width > maxWidth || height > maxWidth) {
+          if (width > height) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          } else {
+            width = Math.round((width * maxWidth) / height);
+            height = maxWidth;
+          }
+        }
+
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) {
+          resolve(file);
+          return;
+        }
+
+        ctx.drawImage(img, 0, 0, width, height);
+        canvas.toBlob(
+          (blob) => {
+            if (blob) {
+              const compressedFile = new File(
+                [blob],
+                file.name.replace(/\.[^.]+$/, ".jpg"),
+                {
+                  type: "image/jpeg",
+                  lastModified: Date.now(),
+                }
+              );
+              resolve(compressedFile);
+            } else {
+              resolve(file);
+            }
+          },
+          "image/jpeg",
+          quality
+        );
+      };
+      img.onerror = () => resolve(file);
+    };
+    reader.onerror = () => resolve(file);
+  });
+}
+
 export default function PersonalInfoPage() {
+  const { theme } = useTheme();
+  const [mounted, setMounted] = useState(false);
   const { toast } = useToast();
   const [realName, setRealName] = useState("");
   const [age, setAge] = useState("");
@@ -63,8 +129,11 @@ export default function PersonalInfoPage() {
   };
 
   useEffect(() => {
+    setMounted(true);
     loadKyc();
   }, []);
+
+  const isLight = mounted && theme === "light";
 
   const handleFrontFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -115,20 +184,30 @@ export default function PersonalInfoPage() {
     setLoading(true);
 
     try {
+      // Compress camera photos on mobile before uploading to prevent Vercel 4.5MB payload limit
+      let processedFront = frontFile;
+      let processedBack = backFile;
+      if (frontFile) {
+        processedFront = await compressImage(frontFile);
+      }
+      if (backFile) {
+        processedBack = await compressImage(backFile);
+      }
+
       const formData = new FormData();
       formData.append("realName", realName);
       formData.append("age", age);
       formData.append("gender", gender);
       formData.append("nidNumber", nidNumber);
 
-      if (frontFile) {
-        formData.append("frontPicture", frontFile);
+      if (processedFront) {
+        formData.append("frontPicture", processedFront);
       } else if (frontPictureUrl) {
         formData.append("frontPictureUrl", frontPictureUrl);
       }
 
-      if (backFile) {
-        formData.append("backPicture", backFile);
+      if (processedBack) {
+        formData.append("backPicture", processedBack);
       } else if (backPictureUrl) {
         formData.append("backPictureUrl", backPictureUrl);
       }
@@ -138,9 +217,16 @@ export default function PersonalInfoPage() {
         body: formData,
       });
 
-      const data = await res.json();
+      let data: any = {};
+      try {
+        data = await res.json();
+      } catch {
+        const text = await res.text().catch(() => "");
+        throw new Error(text || `Server responded with error status ${res.status}`);
+      }
+
       if (!res.ok) {
-        const errMsg = data.error || "Submission failed.";
+        const errMsg = data.error || "Submission failed. Please check your information.";
         setError(errMsg);
         toast.error(errMsg);
         setLoading(false);
@@ -156,8 +242,11 @@ export default function PersonalInfoPage() {
         setBackPictureUrl(data.kyc.backPictureUrl || "");
       }
       setLoading(false);
-    } catch {
-      setError("An unexpected error occurred. Please try again.");
+    } catch (err: any) {
+      console.error("KYC submission error:", err);
+      const message = err?.message || "An unexpected error occurred. Please try again.";
+      setError(message);
+      toast.error(message);
       setLoading(false);
     }
   };
@@ -165,63 +254,140 @@ export default function PersonalInfoPage() {
   const isApproved = kycStatus === "approved";
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#020a1f] via-[#051338] to-[#01081a] text-white flex flex-col justify-between pb-28">
+    <div
+      className={`min-h-screen flex flex-col justify-between pb-28 transition-colors duration-200 ${
+        isLight
+          ? "bg-slate-50 text-slate-800"
+          : "bg-gradient-to-b from-[#020a1f] via-[#051338] to-[#01081a] text-white"
+      }`}
+    >
       <div>
         <Header title="Personal Information" showBack={true} />
 
         <div className="p-4 space-y-4 max-w-[420px] mx-auto">
           {/* Status Banners */}
           {kycStatus === "pending" && (
-            <div className="p-3.5 bg-amber-500/20 border border-amber-500/40 text-amber-200 text-xs rounded-2xl shadow-sm flex items-start gap-2.5">
-              <Clock size={18} className="text-[#f5ba31] flex-shrink-0 mt-0.5" />
-              <div>
-                <span className="font-bold">Under Review: </span>
+            <div
+              className={`p-3.5 rounded-2xl shadow-xs flex items-start gap-2.5 transition-colors ${
+                isLight
+                  ? "bg-amber-50 border-2 border-amber-300 text-amber-950"
+                  : "bg-amber-950/40 border border-amber-500/50 text-amber-100"
+              }`}
+            >
+              <Clock
+                size={19}
+                className={`flex-shrink-0 mt-0.5 ${
+                  isLight ? "text-amber-600" : "text-amber-400"
+                }`}
+              />
+              <div className="text-xs leading-relaxed">
+                <span
+                  className={`font-black ${
+                    isLight ? "text-amber-900" : "text-amber-300"
+                  }`}
+                >
+                  Under Review:{" "}
+                </span>
                 Your National ID documents are currently pending review by Admin.
               </div>
             </div>
           )}
 
           {kycStatus === "approved" && (
-            <div className="p-3.5 bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs rounded-2xl shadow-sm flex items-start gap-2.5">
-              <ShieldCheck size={20} className="text-emerald-400 flex-shrink-0 mt-0.5" />
-              <div>
-                <span className="font-bold">Verified Account: </span>
+            <div
+              className={`p-3.5 rounded-2xl shadow-xs flex items-start gap-2.5 transition-colors ${
+                isLight
+                  ? "bg-emerald-50 border-2 border-emerald-300 text-emerald-950"
+                  : "bg-emerald-950/40 border border-emerald-500/50 text-emerald-100"
+              }`}
+            >
+              <ShieldCheck
+                size={20}
+                className={`flex-shrink-0 mt-0.5 ${
+                  isLight ? "text-emerald-600" : "text-emerald-400"
+                }`}
+              />
+              <div className="text-xs leading-relaxed">
+                <span
+                  className={`font-black ${
+                    isLight ? "text-emerald-900" : "text-emerald-300"
+                  }`}
+                >
+                  Verified Account:{" "}
+                </span>
                 Your identity and National ID documents have been successfully approved by Admin.
               </div>
             </div>
           )}
 
           {kycStatus === "rejected" && (
-            <div className="p-3.5 bg-rose-500/20 border border-rose-500/40 text-rose-300 text-xs rounded-2xl shadow-sm flex items-start gap-2.5">
-              <AlertCircle size={18} className="text-rose-400 flex-shrink-0 mt-0.5" />
-              <div>
-                <span className="font-bold">Verification Rejected: </span>
+            <div
+              className={`p-3.5 rounded-2xl shadow-xs flex items-start gap-2.5 transition-colors ${
+                isLight
+                  ? "bg-rose-50 border-2 border-rose-300 text-rose-950"
+                  : "bg-rose-950/40 border border-rose-500/50 text-rose-100"
+              }`}
+            >
+              <AlertCircle
+                size={19}
+                className={`flex-shrink-0 mt-0.5 ${
+                  isLight ? "text-rose-600" : "text-rose-400"
+                }`}
+              />
+              <div className="text-xs leading-relaxed">
+                <span
+                  className={`font-black ${
+                    isLight ? "text-rose-900" : "text-rose-300"
+                  }`}
+                >
+                  Verification Rejected:{" "}
+                </span>
                 {adminNote || "Please upload clear, legible photos of your National ID and re-submit."}
               </div>
             </div>
           )}
 
           {error && (
-            <div className="p-3.5 bg-rose-50 dark:bg-red-950/70 border border-rose-300 dark:border-red-500/60 text-rose-800 dark:text-red-100 text-xs font-bold rounded-2xl text-center shadow-sm flex items-center justify-center gap-2">
-              <AlertCircle size={18} className="shrink-0 text-rose-600 dark:text-rose-400" />
+            <div
+              className={`p-3.5 rounded-2xl text-xs font-bold text-center shadow-xs flex items-center justify-center gap-2 ${
+                isLight
+                  ? "bg-rose-50 border border-rose-300 text-rose-800"
+                  : "bg-red-950/70 border border-red-500/60 text-red-100"
+              }`}
+            >
+              <AlertCircle size={18} className="shrink-0 text-rose-600" />
               <span>{error}</span>
             </div>
           )}
 
           {success && (
-            <div className="p-3.5 bg-emerald-50 dark:bg-emerald-950/70 border border-emerald-300 dark:border-emerald-500/60 text-emerald-900 dark:text-emerald-100 text-xs font-bold rounded-2xl text-center shadow-sm flex items-center justify-center gap-2">
-              <CheckCircle2 size={18} className="shrink-0 text-emerald-600 dark:text-emerald-400" />
+            <div
+              className={`p-3.5 rounded-2xl text-xs font-bold text-center shadow-xs flex items-center justify-center gap-2 ${
+                isLight
+                  ? "bg-emerald-50 border border-emerald-300 text-emerald-900"
+                  : "bg-emerald-950/70 border border-emerald-500/60 text-emerald-100"
+              }`}
+            >
+              <CheckCircle2 size={18} className="shrink-0 text-emerald-600" />
               <span>{success}</span>
             </div>
           )}
 
           <form
             onSubmit={handleSubmit}
-            className="p-5 rounded-3xl bg-[#04102e]/85 backdrop-blur-md border border-[#f5ba31]/30 shadow-lg space-y-4"
+            className={`p-5 rounded-3xl transition-all shadow-md space-y-4 ${
+              isLight
+                ? "bg-white border border-slate-200/90 shadow-[0_4px_24px_rgba(0,0,0,0.06)]"
+                : "bg-[#04102e]/85 backdrop-blur-md border border-[#f5ba31]/30 shadow-lg"
+            }`}
           >
             {/* Real Name */}
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1">
+              <label
+                className={`block text-xs font-bold mb-1.5 ${
+                  isLight ? "text-slate-700" : "text-slate-300"
+                }`}
+              >
                 Your Name
               </label>
               <input
@@ -230,14 +396,22 @@ export default function PersonalInfoPage() {
                 value={realName}
                 onChange={(e) => setRealName(e.target.value)}
                 disabled={isApproved}
-                className="w-full px-3.5 py-2.5 rounded-2xl bg-[#020a1f] border border-slate-700 text-sm font-semibold text-white outline-none focus:border-[#f5ba31] disabled:opacity-75"
+                className={`w-full px-3.5 py-2.5 rounded-2xl text-sm font-semibold outline-none transition-all disabled:opacity-75 ${
+                  isLight
+                    ? "bg-slate-50 border border-slate-300 text-slate-900 placeholder-slate-400 focus:border-amber-500 focus:bg-white focus:ring-2 focus:ring-amber-500/20"
+                    : "bg-[#020a1f] border border-slate-700 text-white placeholder-slate-500 focus:border-[#f5ba31] focus:ring-2 focus:ring-[#f5ba31]/20"
+                }`}
                 required
               />
             </div>
 
             {/* Age */}
             <div>
-              <label className="block text-xs font-bold text-blue-900 mb-1">
+              <label
+                className={`block text-xs font-bold mb-1.5 ${
+                  isLight ? "text-slate-700" : "text-slate-300"
+                }`}
+              >
                 Age
               </label>
               <input
@@ -248,14 +422,22 @@ export default function PersonalInfoPage() {
                 min={18}
                 max={60}
                 disabled={isApproved}
-                className="w-full px-3.5 py-2.5 rounded-2xl bg-blue-50/50 border border-blue-200 text-sm font-semibold text-gray-800 outline-none focus:border-blue-500 disabled:opacity-75"
+                className={`w-full px-3.5 py-2.5 rounded-2xl text-sm font-semibold outline-none transition-all disabled:opacity-75 ${
+                  isLight
+                    ? "bg-slate-50 border border-slate-300 text-slate-900 placeholder-slate-400 focus:border-amber-500 focus:bg-white focus:ring-2 focus:ring-amber-500/20"
+                    : "bg-[#020a1f] border border-slate-700 text-white placeholder-slate-500 focus:border-[#f5ba31] focus:ring-2 focus:ring-[#f5ba31]/20"
+                }`}
                 required
               />
             </div>
 
             {/* Gender */}
             <div>
-              <label className="block text-xs font-bold text-blue-900 mb-1.5">
+              <label
+                className={`block text-xs font-bold mb-1.5 ${
+                  isLight ? "text-slate-700" : "text-slate-300"
+                }`}
+              >
                 Gender
               </label>
               <div className="grid grid-cols-3 gap-2">
@@ -269,8 +451,10 @@ export default function PersonalInfoPage() {
                       onClick={() => setGender(g)}
                       className={`py-2.5 px-3 rounded-2xl text-xs font-bold transition-all border ${
                         isSelected
-                          ? "bg-gradient-to-r from-[#ffe58f] via-[#f5ba31] to-[#d48b06] text-[#020a1f] font-black border-amber-300 shadow-sm"
-                          : "bg-blue-50/50 text-slate-700 border-blue-200 hover:border-blue-300"
+                          ? "bg-gradient-to-r from-[#ffe58f] via-[#f5ba31] to-[#d48b06] text-slate-950 font-black border-amber-300 shadow-xs"
+                          : isLight
+                            ? "bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200/80"
+                            : "bg-[#020a1f] text-slate-300 border-slate-700 hover:border-slate-600"
                       } disabled:opacity-75`}
                     >
                       {g}
@@ -282,7 +466,11 @@ export default function PersonalInfoPage() {
 
             {/* National ID */}
             <div>
-              <label className="block text-xs font-bold text-blue-900 mb-1">
+              <label
+                className={`block text-xs font-bold mb-1.5 ${
+                  isLight ? "text-slate-700" : "text-slate-300"
+                }`}
+              >
                 National ID Number
               </label>
               <input
@@ -291,15 +479,23 @@ export default function PersonalInfoPage() {
                 value={nidNumber}
                 onChange={(e) => setNidNumber(e.target.value)}
                 disabled={isApproved}
-                className="w-full px-3.5 py-2.5 rounded-2xl bg-blue-50/50 border border-blue-200 text-sm font-semibold text-gray-800 outline-none focus:border-blue-500 disabled:opacity-75"
+                className={`w-full px-3.5 py-2.5 rounded-2xl text-sm font-semibold outline-none transition-all disabled:opacity-75 ${
+                  isLight
+                    ? "bg-slate-50 border border-slate-300 text-slate-900 placeholder-slate-400 focus:border-amber-500 focus:bg-white focus:ring-2 focus:ring-amber-500/20"
+                    : "bg-[#020a1f] border border-slate-700 text-white placeholder-slate-500 focus:border-[#f5ba31] focus:ring-2 focus:ring-[#f5ba31]/20"
+                }`}
                 required
               />
             </div>
 
             {/* Upload Front and Back Cards */}
             <div>
-              <label className="block text-xs font-bold text-blue-900 mb-1.5">
-                NID Card Photos (Cloudinary Saved)
+              <label
+                className={`block text-xs font-bold mb-1.5 ${
+                  isLight ? "text-slate-700" : "text-slate-300"
+                }`}
+              >
+                NID Card Photos (Front & Back)
               </label>
 
               {/* Hidden file inputs */}
@@ -324,10 +520,15 @@ export default function PersonalInfoPage() {
                 {/* Front Card Box */}
                 <div
                   onClick={() => !isApproved && frontInputRef.current?.click()}
-                  className={`p-3 border-2 border-dashed rounded-2xl transition-all ${frontPreview
-                    ? "border-emerald-400 bg-emerald-50/30"
-                    : "border-blue-300 bg-blue-50/40 hover:bg-blue-50"
-                    } text-center flex flex-col items-center justify-center cursor-pointer min-h-[120px] relative overflow-hidden group`}
+                  className={`p-3 border-2 border-dashed rounded-2xl transition-all ${
+                    frontPreview
+                      ? isLight
+                        ? "border-emerald-400 bg-emerald-50/70"
+                        : "border-emerald-500/60 bg-emerald-950/30"
+                      : isLight
+                        ? "border-slate-300 bg-slate-50 hover:bg-slate-100/80"
+                        : "border-slate-700 bg-[#020a1f]/80 hover:bg-[#020a1f]"
+                  } text-center flex flex-col items-center justify-center cursor-pointer min-h-[120px] relative overflow-hidden group`}
                 >
                   {frontPreview ? (
                     <div className="w-full flex flex-col items-center">
@@ -343,18 +544,22 @@ export default function PersonalInfoPage() {
                           </span>
                         </div>
                       </div>
-                      <span className="text-[10px] font-bold text-emerald-700 flex items-center gap-1">
-                        <Check size={12} className="text-emerald-600" />
+                      <span
+                        className={`text-[10px] font-bold flex items-center gap-1 ${
+                          isLight ? "text-emerald-700" : "text-emerald-400"
+                        }`}
+                      >
+                        <Check size={12} className={isLight ? "text-emerald-600" : "text-emerald-400"} />
                         Front Photo Ready
                       </span>
                     </div>
                   ) : (
                     <>
-                      <Upload size={24} className="text-blue-500 mb-1" />
-                      <span className="text-[11px] font-bold text-blue-900">
+                      <Upload size={24} className={`mb-1 ${isLight ? "text-amber-500" : "text-amber-400"}`} />
+                      <span className={`text-[11px] font-bold ${isLight ? "text-slate-800" : "text-slate-200"}`}>
                         Upload Front Picture
                       </span>
-                      <span className="text-[9px] text-gray-500 mt-0.5">
+                      <span className={`text-[9px] mt-0.5 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
                         JPG, PNG (Max 5MB)
                       </span>
                     </>
@@ -364,10 +569,15 @@ export default function PersonalInfoPage() {
                 {/* Back Card Box */}
                 <div
                   onClick={() => !isApproved && backInputRef.current?.click()}
-                  className={`p-3 border-2 border-dashed rounded-2xl transition-all ${backPreview
-                    ? "border-emerald-400 bg-emerald-50/30"
-                    : "border-blue-300 bg-blue-50/40 hover:bg-blue-50"
-                    } text-center flex flex-col items-center justify-center cursor-pointer min-h-[120px] relative overflow-hidden group`}
+                  className={`p-3 border-2 border-dashed rounded-2xl transition-all ${
+                    backPreview
+                      ? isLight
+                        ? "border-emerald-400 bg-emerald-50/70"
+                        : "border-emerald-500/60 bg-emerald-950/30"
+                      : isLight
+                        ? "border-slate-300 bg-slate-50 hover:bg-slate-100/80"
+                        : "border-slate-700 bg-[#020a1f]/80 hover:bg-[#020a1f]"
+                  } text-center flex flex-col items-center justify-center cursor-pointer min-h-[120px] relative overflow-hidden group`}
                 >
                   {backPreview ? (
                     <div className="w-full flex flex-col items-center">
@@ -383,18 +593,22 @@ export default function PersonalInfoPage() {
                           </span>
                         </div>
                       </div>
-                      <span className="text-[10px] font-bold text-emerald-700 flex items-center gap-1">
-                        <Check size={12} className="text-emerald-600" />
+                      <span
+                        className={`text-[10px] font-bold flex items-center gap-1 ${
+                          isLight ? "text-emerald-700" : "text-emerald-400"
+                        }`}
+                      >
+                        <Check size={12} className={isLight ? "text-emerald-600" : "text-emerald-400"} />
                         Back Photo Ready
                       </span>
                     </div>
                   ) : (
                     <>
-                      <Upload size={24} className="text-blue-500 mb-1" />
-                      <span className="text-[11px] font-bold text-blue-900">
+                      <Upload size={24} className={`mb-1 ${isLight ? "text-amber-500" : "text-amber-400"}`} />
+                      <span className={`text-[11px] font-bold ${isLight ? "text-slate-800" : "text-slate-200"}`}>
                         Upload Back Picture
                       </span>
-                      <span className="text-[9px] text-gray-500 mt-0.5">
+                      <span className={`text-[9px] mt-0.5 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
                         JPG, PNG (Max 5MB)
                       </span>
                     </>
@@ -412,7 +626,7 @@ export default function PersonalInfoPage() {
                 {loading ? (
                   <>
                     <RefreshCw size={18} className="animate-spin" />
-                    <span>Uploading to Cloudinary...</span>
+                    <span>Uploading NID Photos...</span>
                   </>
                 ) : (
                   <span>{kycStatus === "rejected" ? "Re-submit NID" : "Submit NID for Review"}</span>

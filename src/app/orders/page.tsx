@@ -118,10 +118,11 @@ export default function OrdersPage() {
     if (!data) return;
 
     if (!data.isQualified) {
+      const minRequired = data.minBDTRequired ?? 1000;
       toast.warning(
-        `Minimum VIP-1 required (Balance ≥ 1,000 Tk / ~${(1000 / usdtRate).toFixed(2)} USDT) to earn commission on daily orders.`
+        `Minimum ${data.tierName || "VIP"} required (Balance ≥ ${minRequired.toLocaleString()} Tk / ~${(minRequired / usdtRate).toFixed(2)} USDT) to earn commission on daily orders.`
       );
-      router.push("/vip");
+      router.push("/recharge");
       return;
     }
 
@@ -260,10 +261,10 @@ export default function OrdersPage() {
             </div>
             <div>
               <h2 className="text-sm font-black text-white leading-tight">
-                Daily necessities
+                {data?.tierName || "Daily necessities"}
               </h2>
               <div className="text-[10px] text-slate-300 font-semibold mt-0.5">
-                Daily necessities
+                {data?.tierName ? `${data.tierName} Plan` : "Daily necessities"}
               </div>
               <div className="text-[11px] font-black text-[#f5ba31] flex items-center gap-1 mt-0.5">
                 <span>
@@ -530,7 +531,9 @@ export default function OrdersPage() {
               href="/recharge"
               className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-black text-sm shadow-[0_0_20px_rgba(16,185,129,0.35)] flex items-center justify-center gap-2 hover:brightness-105 active:scale-98 transition-all"
             >
-              <span>Recharge to Unlock Orders (Min 1,000 Tk)</span>
+              <span>
+                Recharge to Unlock Orders (Min {(data.minBDTRequired ?? 1000).toLocaleString()} Tk)
+              </span>
               <ArrowRight size={18} />
             </Link>
           ) : data && data.todayOrdersCount >= data.maxOrders ? (

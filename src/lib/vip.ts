@@ -1,9 +1,25 @@
 import { connectDB } from "@/lib/mongodb";
 import { VipTier } from "@/models/VipTier";
 import { Setting } from "@/models/Setting";
+import { User } from "@/models/User";
 import { IVipTier } from "@/types";
 
 export const DEFAULT_VIP_TIERS = [
+  {
+    level: 0,
+    name: "Vip-0",
+    dailyReturn: "2.50%",
+    dailyReturnPercent: 2.5,
+    numberOfOrders: 5,
+    commissionPerOrder: "0.5%",
+    commissionPerOrderPercent: 0.5,
+    minBDT: 0,
+    maxBDT: 999,
+    minUSDT: 0,
+    maxUSDT: 7.86,
+    status: "active",
+    order: 0,
+  },
   {
     level: 1,
     name: "Vip-1",
@@ -71,6 +87,57 @@ export async function seedVipTiersIfEmpty() {
   const count = await VipTier.countDocuments();
   if (count === 0) {
     await VipTier.insertMany(DEFAULT_VIP_TIERS);
+    return;
+  }
+
+  // 1. Auto-healing: detect and fix accidental VIP 10 that was intended as VIP 0
+  try {
+    const accidentalTen = await VipTier.findOne({
+      level: 10,
+      $or: [
+        { minBDT: { $lte: 999 } },
+        { name: { $regex: /vip\s*0/i } },
+        { name: { $regex: /vip-0/i } },
+        { name: { $regex: /vip 0/i } },
+        { name: "0" },
+      ],
+    });
+
+    const existingZero = await VipTier.findOne({ level: 0 });
+
+    if (accidentalTen) {
+      if (!existingZero) {
+        accidentalTen.level = 0;
+        accidentalTen.name = "Vip-0";
+        accidentalTen.minBDT = 0;
+        accidentalTen.maxBDT = accidentalTen.maxBDT > 0 && accidentalTen.maxBDT <= 2000 ? accidentalTen.maxBDT : 999;
+        accidentalTen.order = 0;
+        await accidentalTen.save();
+      } else {
+        await VipTier.deleteOne({ _id: accidentalTen._id });
+      }
+    } else if (!existingZero) {
+      await VipTier.create(DEFAULT_VIP_TIERS[0]);
+    }
+  } catch (healErr) {
+    console.error("Error auto-healing VIP 0 tier:", healErr);
+  }
+
+  // 2. Auto-heal any user stuck with vipLevel: 10 who has low balance (< 50 USDT / ~6350 Tk)
+  try {
+    const settings = await Setting.findOne().lean();
+    const usdtRate = settings?.usdtRateBDT || 127;
+    const glitchedUsers = await User.find({ vipLevel: 10, balance: { $lt: 50 } });
+    if (glitchedUsers.length > 0) {
+      const allActive = await VipTier.find({ status: "active" }).lean();
+      for (const u of glitchedUsers) {
+        const correctVip = calculateVipLevelForBalance(u.balance || 0, usdtRate, allActive as unknown as IVipTier[]);
+        u.vipLevel = correctVip;
+        await u.save();
+      }
+    }
+  } catch (userErr) {
+    console.error("Error auto-fixing glitched VIP 10 users:", userErr);
   }
 }
 
@@ -89,24 +156,47 @@ export async function getAllVipTiersAdmin(): Promise<IVipTier[]> {
 }
 
 /**
- * Evaluates the qualifying VIP level based on user balance in USDT
- * Converted using current USDT rate (e.g. 1 USDT = 127 BDT)
+ * Evaluates the qualifying VIP level strictly based on user balance in USDT.
+ * Bracket-based matching against all active VIP tiers in database.
  */
 export function calculateVipLevelForBalance(
   balanceUSDT: number,
   usdtRate: number = 127,
   tiers: IVipTier[] = []
 ): number {
-  if (balanceUSDT <= 0) return 0;
-  const balanceBDT = balanceUSDT * usdtRate;
+  const balanceBDT = Math.round(((balanceUSDT || 0) * usdtRate) * 100) / 100;
 
-  // Sort descending by level (highest tier first: VIP-4, VIP-3, VIP-2, VIP-1)
-  const sorted = [...tiers].sort((a, b) => b.level - a.level);
+  // Filter active tiers only
+  const activeTiers = tiers.filter((t) => t.status !== "inactive");
+  if (activeTiers.length === 0) return 0;
 
-  for (const tier of sorted) {
-    if (balanceBDT >= tier.minBDT) {
+  // Sort descending by minBDT (highest minimum balance requirement first: VIP-4, VIP-3, VIP-2, VIP-1, VIP-0)
+  const sortedByMinDesc = [...activeTiers].sort(
+    (a, b) => (b.minBDT - a.minBDT) || (b.level - a.level)
+  );
+
+  // 1. Check exact bracket match [minBDT, maxBDT]
+  const exactMatch = sortedByMinDesc.find((tier) => {
+    const min = tier.minBDT ?? 0;
+    const max = tier.maxBDT && tier.maxBDT > 0 ? tier.maxBDT : Infinity;
+    return balanceBDT >= (min - 0.5) && balanceBDT <= (max + 0.5);
+  });
+
+  if (exactMatch) {
+    return exactMatch.level;
+  }
+
+  // 2. If balanceBDT exceeds all defined maxBDTs, assign the tier with highest minBDT
+  for (const tier of sortedByMinDesc) {
+    if (balanceBDT >= (tier.minBDT ?? 0) - 0.5) {
       return tier.level;
     }
+  }
+
+  // 3. Fallback: tier with level 0 or minBDT 0
+  const zeroTier = activeTiers.find((t) => t.level === 0 || t.minBDT === 0);
+  if (zeroTier) {
+    return zeroTier.level;
   }
 
   return 0;
@@ -121,6 +211,8 @@ export async function syncUserVipWithBalance(userDoc: any): Promise<number> {
 
   try {
     await connectDB();
+    await seedVipTiersIfEmpty();
+
     const settings = await Setting.findOne().lean();
     const autoActiveEnabled = settings?.vipAutoActiveEnabled !== false; // default true
     if (!autoActiveEnabled) {
@@ -133,7 +225,11 @@ export async function syncUserVipWithBalance(userDoc: any): Promise<number> {
 
     if (userDoc.vipLevel !== targetVip) {
       userDoc.vipLevel = targetVip;
-      await userDoc.save();
+      if (typeof userDoc.save === "function") {
+        await userDoc.save();
+      } else if (userDoc._id) {
+        await User.findByIdAndUpdate(userDoc._id, { vipLevel: targetVip });
+      }
     }
 
     return targetVip;

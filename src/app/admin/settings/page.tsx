@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Save, AlertCircle, CheckCircle2, Upload, QrCode, Trash2, Image as ImageIcon, RotateCcw, Loader2 } from "lucide-react";
+import { Save, AlertCircle, CheckCircle2, Upload, QrCode, Trash2, Image as ImageIcon, RotateCcw, Loader2, User } from "lucide-react";
 
 export default function AdminSettingsPage() {
   const [bkashNumber, setBkashNumber] = useState("");
@@ -19,8 +19,10 @@ export default function AdminSettingsPage() {
   const [homeTickerText, setHomeTickerText] = useState("");
   const [homeBanner1, setHomeBanner1] = useState("/homepage-banner.jpg");
   const [homeBanner2, setHomeBanner2] = useState("/homepage-banner-2.jpg");
+  const [profileBanner, setProfileBanner] = useState("/profile-banner-hq.jpg");
   const [uploadingBanner1, setUploadingBanner1] = useState(false);
   const [uploadingBanner2, setUploadingBanner2] = useState(false);
+  const [uploadingProfileBanner, setUploadingProfileBanner] = useState(false);
   const [minWithdrawBDT, setMinWithdrawBDT] = useState(250);
   const [minWithdrawUSDT, setMinWithdrawUSDT] = useState(6);
   const [signupBonusBDT, setSignupBonusBDT] = useState(500);
@@ -54,6 +56,7 @@ export default function AdminSettingsPage() {
           setHomeTickerText(s.homeTickerText || "");
           setHomeBanner1(s.homeBanner1 || "/homepage-banner.jpg");
           setHomeBanner2(s.homeBanner2 || "/homepage-banner-2.jpg");
+          setProfileBanner(s.profileBanner || "/profile-banner-hq.jpg");
           setMinWithdrawBDT(s.minWithdrawBDT || 250);
           setMinWithdrawUSDT(s.minWithdrawUSDT || 6);
           setSignupBonusBDT(s.signupBonusBDT ?? 500);
@@ -139,6 +142,40 @@ export default function AdminSettingsPage() {
     }
   };
 
+  const handleProfileBannerUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      alert("Please upload a valid image file (JPG, PNG, WEBP).");
+      return;
+    }
+
+    setUploadingProfileBanner(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("prefix", "profile_banner");
+
+      const res = await fetch("/api/admin/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (res.ok && data.url) {
+        setProfileBanner(data.url);
+      } else {
+        alert(data.error || "Failed to upload Profile Banner.");
+      }
+    } catch {
+      alert("Network error while uploading Profile Banner.");
+    } finally {
+      setUploadingProfileBanner(false);
+      e.target.value = "";
+    }
+  };
+
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
@@ -162,6 +199,7 @@ export default function AdminSettingsPage() {
           homeTickerText,
           homeBanner1,
           homeBanner2,
+          profileBanner,
           minWithdrawBDT,
           minWithdrawUSDT,
           signupBonusBDT,
@@ -462,16 +500,16 @@ export default function AdminSettingsPage() {
           </div>
         </div>
 
-        {/* Homepage Carousel Banners (Banner 1 & Banner 2) */}
+        {/* Homepage & Profile Banners */}
         <div className="p-6 rounded-2xl bg-[#1E293B] border border-slate-800 space-y-5">
           <div className="flex items-center justify-between border-b border-slate-700/60 pb-3">
             <div>
               <h2 className="text-sm font-extrabold text-cyan-400 uppercase tracking-wider flex items-center gap-2">
                 <ImageIcon size={18} className="text-amber-400" />
-                <span>Homepage Carousel Banners</span>
+                <span>Platform Banners (Homepage & Profile)</span>
               </h2>
               <p className="text-xs text-slate-400 mt-0.5">
-                Upload custom banners displayed on the home page carousel slider (Recommended ratio: 825x365 or 16:9).
+                Upload custom banners displayed on the home page carousel slider and profile page header.
               </p>
             </div>
           </div>
@@ -612,6 +650,89 @@ export default function AdminSettingsPage() {
                     onChange={(e) => setHomeBanner2(e.target.value)}
                     placeholder="/homepage-banner-2.jpg or https://..."
                     className="w-full px-3 py-2 rounded-lg bg-[#1E293B] border border-slate-700 text-xs text-white font-mono outline-none focus:border-amber-500"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Profile Page Header Banner */}
+            <div className="p-4 rounded-xl bg-[#0F172A] border border-slate-700/70 space-y-3 md:col-span-2">
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+                    <User size={14} />
+                    Personal Center / Profile Page Header Banner
+                  </span>
+                  <p className="text-[11px] text-slate-400 mt-0.5">
+                    Displayed at the top of the user&apos;s Profile Page (/profile) behind their avatar.
+                  </p>
+                </div>
+                {profileBanner !== "/profile-banner-hq.jpg" && (
+                  <button
+                    type="button"
+                    onClick={() => setProfileBanner("/profile-banner-hq.jpg")}
+                    className="text-[11px] text-slate-400 hover:text-white flex items-center gap-1 transition-colors"
+                  >
+                    <RotateCcw size={12} />
+                    Reset Default
+                  </button>
+                )}
+              </div>
+
+              {/* Preview Box */}
+              <div className="relative h-32 sm:h-36 w-full rounded-lg overflow-hidden border border-slate-700 bg-slate-900 shadow-inner group">
+                <img
+                  src={profileBanner || "/profile-banner-hq.jpg"}
+                  alt="Profile Banner Preview"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent flex items-end p-3 pointer-events-none">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-10 h-10 rounded-full border-2 border-amber-400 bg-slate-800 flex items-center justify-center text-white text-xs font-black shadow-md">
+                      ZC
+                    </div>
+                    <div>
+                      <div className="text-xs text-white font-bold">
+                        User Profile Live Header
+                      </div>
+                      <div className="text-[10px] text-slate-300">
+                        Shows behind user avatar on /profile
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Upload Controls */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                <label className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-slate-950 font-bold text-xs cursor-pointer shadow-md transition-all active:scale-98">
+                  {uploadingProfileBanner ? (
+                    <>
+                      <Loader2 size={15} className="animate-spin" />
+                      <span>Uploading Profile Banner...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Upload size={15} />
+                      <span>Upload Profile Banner Image</span>
+                    </>
+                  )}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleProfileBannerUpload}
+                    disabled={uploadingProfileBanner}
+                    className="hidden"
+                  />
+                </label>
+
+                <div>
+                  <input
+                    type="text"
+                    value={profileBanner}
+                    onChange={(e) => setProfileBanner(e.target.value)}
+                    placeholder="/profile-banner-hq.jpg or https://..."
+                    className="w-full px-3 py-2.5 rounded-xl bg-[#1E293B] border border-slate-700 text-xs text-white font-mono outline-none focus:border-amber-500"
                   />
                 </div>
               </div>

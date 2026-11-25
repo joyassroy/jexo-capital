@@ -75,6 +75,10 @@ const SettingSchema = new Schema<ISetting>(
       type: String,
       default: "/homepage-banner-2.jpg",
     },
+    profileBanner: {
+      type: String,
+      default: "/profile-banner-hq.jpg",
+    },
     noticeItems: {
       type: [String],
       default: [

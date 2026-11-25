@@ -4,7 +4,7 @@ import { User } from "@/models/User";
 import { Setting } from "@/models/Setting";
 import { Transaction } from "@/models/Transaction";
 import { getCurrentUser } from "@/lib/auth";
-import { getActiveVipTiers, syncUserVipWithBalance } from "@/lib/vip";
+import { getActiveVipTiers, syncUserVipWithBalance, calculateVipLevelForBalance } from "@/lib/vip";
 import { getTodayDateStringDhaka, syncDailyOrdersAndEarnings } from "@/lib/dailyStats";
 
 export const dynamic = "force-dynamic";
@@ -36,22 +36,38 @@ export async function GET() {
     const usdtRate = settings?.usdtRateBDT || 127;
     const todayStr = getTodayDateStringDhaka();
 
-    const currentVipLevel = user.vipLevel || 0;
-    const tier = activeTiers.find((t) => t.level === currentVipLevel);
+    const userBalanceUSDT = user.balance || 0;
+    const userBalanceBDT = Number((userBalanceUSDT * usdtRate).toFixed(2));
+
+    const currentVipLevel = user.vipLevel ?? 0;
+    let tier = activeTiers.find((t) => t.level === currentVipLevel);
+
+    // If tier not found for currentVipLevel, check if user qualifies for any active tier by balance
+    if (!tier && activeTiers.length > 0) {
+      const qualifyingLevel = calculateVipLevelForBalance(userBalanceUSDT, usdtRate, activeTiers);
+      tier = activeTiers.find((t) => t.level === qualifyingLevel);
+    }
+
+    const lowestActiveTier = activeTiers.length > 0
+      ? [...activeTiers].sort((a, b) => a.minBDT - b.minBDT)[0]
+      : null;
+
+    const minBDTRequired = tier ? tier.minBDT : (lowestActiveTier?.minBDT ?? 1000);
+    const isQualified = tier
+      ? userBalanceBDT >= tier.minBDT
+      : userBalanceBDT >= (lowestActiveTier?.minBDT ?? 1000);
 
     const maxOrders = tier?.numberOfOrders || 5;
     const commissionPercent = tier?.commissionPerOrderPercent || 0.5;
     const dailyReturnPercent = tier?.dailyReturnPercent || (commissionPercent * maxOrders);
 
-    const userBalanceUSDT = user.balance || 0;
-    const userBalanceBDT = Number((userBalanceUSDT * usdtRate).toFixed(2));
     const todayCommissionUSDT = user.todayCommission || 0;
     const todayCommissionBDT = Number((todayCommissionUSDT * usdtRate).toFixed(2));
     const todayOrdersCount = user.todayOrdersCount || 0;
     const freezeFundsBDT = Number(((user.freezeBalance || 0) * usdtRate).toFixed(2));
 
     const estimatedNextCommissionUSDT =
-      currentVipLevel > 0
+      tier && isQualified
         ? Number(((userBalanceUSDT * commissionPercent) / 100).toFixed(4))
         : 0;
     const estimatedNextCommissionBDT = Number(
@@ -61,8 +77,8 @@ export async function GET() {
     return NextResponse.json({
       success: true,
       user: {
-        vipLevel: currentVipLevel,
-        tierName: tier?.name || `VIP-${currentVipLevel}`,
+        vipLevel: tier?.level ?? currentVipLevel,
+        tierName: tier?.name || (currentVipLevel === 0 ? "VIP-0" : `VIP-${currentVipLevel}`),
         balanceUSDT: userBalanceUSDT,
         balanceBDT: userBalanceBDT,
         freezeFundsBDT,
@@ -75,8 +91,8 @@ export async function GET() {
         estimatedNextCommissionUSDT,
         estimatedNextCommissionBDT,
         hasReachedLimit: todayOrdersCount >= maxOrders,
-        isQualified: currentVipLevel >= 1 && userBalanceBDT >= 1000,
-        minBDTRequired: tier?.minBDT || 1000,
+        isQualified,
+        minBDTRequired,
       },
       usdtRate,
       todayDate: todayStr,
@@ -122,21 +138,32 @@ export async function POST() {
     const usdtRate = settings?.usdtRateBDT || 127;
     const todayStr = getTodayDateStringDhaka();
 
-    const currentVipLevel = user.vipLevel || 0;
-    const tier = activeTiers.find((t) => t.level === currentVipLevel);
-    const maxOrders = tier?.numberOfOrders || 5;
+    const currentVipLevel = user.vipLevel ?? 0;
+    let tier = activeTiers.find((t) => t.level === currentVipLevel);
+    if (!tier && activeTiers.length > 0) {
+      const qualifyingLevel = calculateVipLevelForBalance(user.balance || 0, usdtRate, activeTiers);
+      tier = activeTiers.find((t) => t.level === qualifyingLevel);
+    }
 
-    // 1. Check if user meets minimum VIP-1 requirements
+    const lowestActiveTier = activeTiers.length > 0
+      ? [...activeTiers].sort((a, b) => a.minBDT - b.minBDT)[0]
+      : null;
+
+    const minRequiredBDT = tier ? tier.minBDT : (lowestActiveTier?.minBDT ?? 1000);
     const balanceBDT = (user.balance || 0) * usdtRate;
-    if (currentVipLevel < 1 || balanceBDT < 1000) {
+
+    // 1. Check if user meets minimum requirements for active tier
+    if (!tier || balanceBDT < minRequiredBDT) {
+      const tierName = tier?.name || lowestActiveTier?.name || "VIP";
       return NextResponse.json(
         {
-          error:
-            "Minimum VIP-1 balance (1,000 Tk / ~7.87 USDT) required to earn daily order commission. Please recharge your wallet.",
+          error: `Minimum ${tierName} balance (${minRequiredBDT.toLocaleString()} Tk / ~${(minRequiredBDT / usdtRate).toFixed(2)} USDT) required to earn daily order commission. Please recharge your wallet.`,
         },
         { status: 400 }
       );
     }
+
+    const maxOrders = tier?.numberOfOrders || 5;
 
     // 2. Check if daily orders limit (5) has been reached
     if ((user.todayOrdersCount || 0) >= maxOrders) {

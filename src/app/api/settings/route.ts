@@ -34,6 +34,7 @@ export async function GET() {
         homeTickerText: setting.homeTickerText,
         homeBanner1: setting.homeBanner1 || "/homepage-banner.jpg",
         homeBanner2: setting.homeBanner2 || "/homepage-banner-2.jpg",
+        profileBanner: setting.profileBanner || "/profile-banner-hq.jpg",
         noticeItems: setting.noticeItems,
         minWithdrawBDT: setting.minWithdrawBDT,
         minWithdrawUSDT: setting.minWithdrawUSDT,

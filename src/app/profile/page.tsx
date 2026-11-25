@@ -53,6 +53,7 @@ export default function ProfilePage() {
   const [usdtRate, setUsdtRate] = useState<number>(127);
   const [loading, setLoading] = useState(true);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [profileBanner, setProfileBanner] = useState("/profile-banner-hq.jpg");
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
@@ -78,6 +79,16 @@ export default function ProfilePage() {
         console.error("Profile load error:", err);
         setLoading(false);
       });
+
+    // Fetch dynamic profile banner from settings
+    fetch("/api/settings")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.settings?.profileBanner) {
+          setProfileBanner(data.settings.profileBanner);
+        }
+      })
+      .catch(() => {});
   }, []);
 
   const [showLogoutModal, setShowLogoutModal] = useState(false);
@@ -197,23 +208,15 @@ export default function ProfilePage() {
       {/* Header Building Image with Avatar */}
       <div className="relative h-36 w-full bg-slate-950 overflow-hidden shadow-inner">
         <Image
-          src="/profile-banner-hq.jpg"
+          src={profileBanner || "/profile-banner-hq.jpg"}
           alt="Zexo Capital International Headquarters"
           fill
-          className={`object-cover object-center transition-opacity duration-300 ${
-            isLight ? "opacity-90" : "opacity-85"
-          }`}
+          className="object-cover object-center"
           priority
           unoptimized
         />
-        {/* Day vs Night Gradient Overlay */}
-        <div
-          className={`absolute inset-0 transition-all duration-300 ${
-            isLight
-              ? "bg-gradient-to-t from-[#f4f7fc] via-black/25 to-black/60"
-              : "bg-gradient-to-t from-[#020a1f] via-[#020a1f]/60 to-black/60"
-          }`}
-        />
+        {/* Subtle top edge gradient so theme toggle is visible, zero whitish tint */}
+        <div className="absolute inset-x-0 top-0 h-14 bg-gradient-to-b from-black/50 to-transparent pointer-events-none" />
 
         {/* Top Bar with Theme Toggle only (Personal Center removed per user request) */}
         <div className="absolute top-3 right-4 z-20 flex items-center justify-end">

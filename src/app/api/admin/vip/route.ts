@@ -47,9 +47,9 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
 
     const level = Number(body.level);
-    if (!level || isNaN(level) || level <= 0) {
+    if (isNaN(level) || level < 0) {
       return NextResponse.json(
-        { error: "A valid positive VIP level number is required." },
+        { error: "A valid VIP level number (0 or higher) is required." },
         { status: 400 }
       );
     }
@@ -63,8 +63,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const minBDT = Number(body.minBDT) || 1000;
-    const maxBDT = Number(body.maxBDT) || 2999;
+    const minBDT = typeof body.minBDT === "number" ? body.minBDT : Number(body.minBDT) || 0;
+    const maxBDT = typeof body.maxBDT === "number" ? body.maxBDT : Number(body.maxBDT) || 2999;
     const dailyReturnPercent = Number(body.dailyReturnPercent) || 5.0;
     const commissionPerOrderPercent = Number(body.commissionPerOrderPercent) || 0.5;
     const numberOfOrders = Number(body.numberOfOrders) || 5;
@@ -141,7 +141,7 @@ export async function PUT(req: NextRequest) {
     const usdtRate = settings?.usdtRateBDT || 127;
 
     if (body.name) tier.name = body.name.trim();
-    if (typeof body.level === "number") tier.level = body.level;
+    if (typeof body.level === "number" && body.level >= 0) tier.level = body.level;
     if (typeof body.dailyReturnPercent === "number") {
       tier.dailyReturnPercent = body.dailyReturnPercent;
       tier.dailyReturn = `${body.dailyReturnPercent.toFixed(2)}%`;

@@ -48,6 +48,18 @@ const DEFAULT_USDT_RATE = 127;
 
 const DEFAULT_VIP_PLANS: VipTier[] = [
   {
+    id: "vip-0",
+    level: 0,
+    name: "Vip-0",
+    dailyReturn: "2.50%",
+    numberOfOrders: 5,
+    commissionPerOrder: "0.5%",
+    minBDT: 0,
+    maxBDT: 999,
+    minUSDT: 0,
+    maxUSDT: Number((999 / DEFAULT_USDT_RATE).toFixed(2)),
+  },
+  {
     id: "vip-1",
     level: 1,
     name: "Vip-1",
@@ -141,7 +153,7 @@ export default function VipPage() {
 
         const tiersData = await tiersRes.json();
         if (tiersData?.tiers && tiersData.tiers.length > 0) {
-          setVipPlans(tiersData.tiers);
+          setVipPlans(tiersData.tiers.sort((a: VipTier, b: VipTier) => a.level - b.level));
         }
         if (tiersData?.usdtRate) {
           setUsdtRate(tiersData.usdtRate);
@@ -284,7 +296,7 @@ export default function VipPage() {
           <div className="vip-badge-pill flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-amber-500/20 to-amber-600/20 border border-[#f5ba31] text-[#f5ba31] shadow-[0_0_10px_rgba(245,186,49,0.25)]">
             <Crown size={14} className="text-[#f5ba31]" />
             <span className="text-xs font-black">
-              {user && user.vipLevel > 0 ? `VIP-${user.vipLevel}` : "VIP-0"}
+              {user ? (user.vipLevel === 0 ? "VIP-0" : `VIP-${user.vipLevel}`) : "VIP-0"}
             </span>
           </div>
         </div>
@@ -298,8 +310,9 @@ export default function VipPage() {
             </div>
           ) : (
             vipPlans.map((item) => {
-              const isActive = user?.vipLevel === item.level;
-              const isCompleted = user ? user.vipLevel > item.level : false;
+              const userLevel = user ? (user.vipLevel ?? 0) : 0;
+              const isActive = userLevel === item.level;
+              const isCompleted = userLevel > item.level;
 
               return (
                 <div

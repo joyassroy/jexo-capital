@@ -58,6 +58,7 @@ export async function PUT(req: NextRequest) {
     if (body.homeTickerText !== undefined) setting.homeTickerText = body.homeTickerText;
     if (body.homeBanner1 !== undefined) setting.homeBanner1 = body.homeBanner1;
     if (body.homeBanner2 !== undefined) setting.homeBanner2 = body.homeBanner2;
+    if (body.profileBanner !== undefined) setting.profileBanner = body.profileBanner;
     if (body.minWithdrawBDT !== undefined) setting.minWithdrawBDT = Number(body.minWithdrawBDT);
     if (body.minWithdrawUSDT !== undefined) setting.minWithdrawUSDT = Number(body.minWithdrawUSDT);
     if (body.signupBonusBDT !== undefined) setting.signupBonusBDT = Number(body.signupBonusBDT);

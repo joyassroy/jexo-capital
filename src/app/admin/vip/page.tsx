@@ -122,15 +122,16 @@ export default function AdminVipManagementPage() {
 
   // Open Add Modal
   const openAddModal = () => {
-    const nextLevel = tiers.length > 0 ? Math.max(...tiers.map((t) => t.level)) + 1 : 1;
+    const hasZero = tiers.some((t) => t.level === 0);
+    const nextLevel = !hasZero ? 0 : (tiers.length > 0 ? Math.max(...tiers.map((t) => t.level)) + 1 : 1);
     setFormData({
       level: nextLevel,
       name: `Vip-${nextLevel}`,
-      dailyReturnPercent: 5.0,
+      dailyReturnPercent: nextLevel === 0 ? 2.5 : 5.0,
       numberOfOrders: 5,
       commissionPerOrderPercent: 0.5,
-      minBDT: 1000,
-      maxBDT: 2999,
+      minBDT: nextLevel === 0 ? 0 : 1000,
+      maxBDT: nextLevel === 0 ? 999 : 2999,
       status: "active",
     });
     setIsEditing(false);
@@ -390,7 +391,7 @@ export default function AdminVipManagementPage() {
             </button>
           </div>
         ) : (
-          tiers.map((tier) => {
+          [...tiers].sort((a, b) => a.level - b.level).map((tier) => {
             const minUSDT = (tier.minBDT / usdtRate).toFixed(2);
             const maxUSDT = (tier.maxBDT / usdtRate).toFixed(2);
             const isTierActive = tier.status === "active";
@@ -552,7 +553,7 @@ export default function AdminVipManagementPage() {
                   </label>
                   <input
                     type="number"
-                    min="1"
+                    min="0"
                     max="50"
                     value={formData.level}
                     onChange={(e) =>

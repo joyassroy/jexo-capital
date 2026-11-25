@@ -183,6 +183,7 @@ export interface ISetting {
   homeTickerText: string;
   homeBanner1?: string;
   homeBanner2?: string;
+  profileBanner?: string;
   noticeItems: string[];
   // Withdrawal Rules
   minWithdrawBDT: number;

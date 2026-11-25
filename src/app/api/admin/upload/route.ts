@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCurrentAdmin } from "@/lib/auth";
-import cloudinary, { isCloudinaryConfigured } from "@/lib/cloudinary";
+import cloudinary, { isCloudinaryConfigured, uploadImageBuffer } from "@/lib/cloudinary";
 import path from "path";
 import fs from "fs/promises";
 
@@ -69,36 +69,36 @@ export async function POST(req: NextRequest) {
 
     let finalUrl = "";
 
+    // Upload to Cloudinary CDN
     if (isCloudinaryConfigured) {
       try {
-        const uploadResult = await new Promise<{ secure_url: string }>((resolve, reject) => {
-          const stream = cloudinary.uploader.upload_stream(
-            {
-              folder: "zexo_capital/admin",
-              public_id: `${prefix}_${Date.now()}`,
-              quality: "auto",
-              fetch_format: "auto",
-            },
-            (err, result) => {
-              if (err || !result) reject(err || new Error("Cloudinary upload failed"));
-              else resolve(result as { secure_url: string });
-            }
-          );
-          stream.end(buffer);
-        });
-        finalUrl = uploadResult.secure_url;
+        finalUrl = await uploadImageBuffer(
+          buffer,
+          "zexo_capital/admin",
+          `${prefix}_${Date.now()}`,
+          [
+            { quality: "auto" },
+            { fetch_format: "auto" },
+          ]
+        );
       } catch (e) {
-        console.error("Cloudinary failed, falling back to local storage:", e);
+        console.error("Cloudinary upload error, falling back to local or base64 storage:", e);
       }
     }
 
     if (!finalUrl) {
-      const uploadDir = path.join(process.cwd(), "public", "uploads", "admin");
-      await fs.mkdir(uploadDir, { recursive: true });
-      const filename = `${prefix}_${Date.now()}.${fileExtension}`;
-      const filePath = path.join(uploadDir, filename);
-      await fs.writeFile(filePath, buffer);
-      finalUrl = `/uploads/admin/${filename}`;
+      try {
+        const uploadDir = path.join(process.cwd(), "public", "uploads", "admin");
+        await fs.mkdir(uploadDir, { recursive: true });
+        const filename = `${prefix}_${Date.now()}.${fileExtension}`;
+        const filePath = path.join(uploadDir, filename);
+        await fs.writeFile(filePath, buffer);
+        finalUrl = `/uploads/admin/${filename}`;
+      } catch (fsErr) {
+        console.warn("Local storage fallback failed (serverless read-only):", fsErr);
+        const mime = fileExtension === "png" ? "image/png" : "image/jpeg";
+        finalUrl = `data:${mime};base64,${buffer.toString("base64")}`;
+      }
     }
 
     return NextResponse.json({ success: true, url: finalUrl });

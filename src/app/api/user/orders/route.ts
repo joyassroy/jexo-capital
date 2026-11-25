@@ -37,7 +37,7 @@ export async function GET() {
     const todayStr = getTodayDateStringDhaka();
 
     const userBalanceUSDT = user.balance || 0;
-    const userBalanceBDT = Number((userBalanceUSDT * usdtRate).toFixed(2));
+    const userBalanceBDT = Math.round(userBalanceUSDT * usdtRate * 100) / 100;
 
     const currentVipLevel = user.vipLevel ?? 0;
     let tier = activeTiers.find((t) => t.level === currentVipLevel);
@@ -52,13 +52,16 @@ export async function GET() {
       ? [...activeTiers].sort((a, b) => a.minBDT - b.minBDT)[0]
       : null;
 
-    const minBDTRequired = tier ? tier.minBDT : (lowestActiveTier?.minBDT ?? 1000);
-    const isQualified = tier
-      ? userBalanceBDT >= tier.minBDT
-      : userBalanceBDT >= (lowestActiveTier?.minBDT ?? 1000);
+    const minBDTRequired = tier ? tier.minBDT : (lowestActiveTier?.minBDT ?? 500);
+    // VIP-0 / Free 500 Tk signup bonus users are fully qualified to place daily orders!
+    const isLevelZero = (tier?.level === 0) || (currentVipLevel === 0);
+    const hasSignupBonus = (user.signupBonusBDT ?? 0) > 0 || userBalanceUSDT >= 3.9;
+    const isQualified = isLevelZero
+      ? (userBalanceUSDT > 0 || hasSignupBonus)
+      : (tier ? (userBalanceBDT + 2) >= tier.minBDT : (userBalanceBDT + 2) >= (lowestActiveTier?.minBDT ?? 1000));
 
     const maxOrders = tier?.numberOfOrders || 5;
-    const commissionPercent = tier?.commissionPerOrderPercent || 0.5;
+    const commissionPercent = tier?.commissionPerOrderPercent || 0.2;
     const dailyReturnPercent = tier?.dailyReturnPercent || (commissionPercent * maxOrders);
 
     const todayCommissionUSDT = user.todayCommission || 0;
@@ -66,9 +69,13 @@ export async function GET() {
     const todayOrdersCount = user.todayOrdersCount || 0;
     const freezeFundsBDT = Number(((user.freezeBalance || 0) * usdtRate).toFixed(2));
 
+    const effectiveBalanceUSDT = Math.max(
+      userBalanceUSDT,
+      user.signupBonusBDT ? Number((user.signupBonusBDT / usdtRate).toFixed(4)) : 3.937
+    );
     const estimatedNextCommissionUSDT =
       tier && isQualified
-        ? Number(((userBalanceUSDT * commissionPercent) / 100).toFixed(4))
+        ? Number(((effectiveBalanceUSDT * commissionPercent) / 100).toFixed(4))
         : 0;
     const estimatedNextCommissionBDT = Number(
       (estimatedNextCommissionUSDT * usdtRate).toFixed(2)
@@ -149,11 +156,19 @@ export async function POST() {
       ? [...activeTiers].sort((a, b) => a.minBDT - b.minBDT)[0]
       : null;
 
-    const minRequiredBDT = tier ? tier.minBDT : (lowestActiveTier?.minBDT ?? 1000);
-    const balanceBDT = (user.balance || 0) * usdtRate;
+    const minRequiredBDT = tier ? tier.minBDT : (lowestActiveTier?.minBDT ?? 500);
+    const balanceBDT = Math.round(((user.balance || 0) * usdtRate) * 100) / 100;
 
     // 1. Check if user meets minimum requirements for active tier
-    if (!tier || balanceBDT < minRequiredBDT) {
+    // For VIP 0 / Level 0, users with free 500 Tk signup bonus (or any positive balance) are fully qualified!
+    // For other tiers, allow a 2 Tk rounding margin.
+    const isLevelZero = (tier?.level === 0) || (currentVipLevel === 0);
+    const hasSignupBonus = (user.signupBonusBDT ?? 0) > 0 || (user.balance || 0) >= 3.9;
+    const qualifiesByBalance = isLevelZero
+      ? ((user.balance || 0) > 0 || hasSignupBonus)
+      : ((balanceBDT + 2) >= minRequiredBDT);
+
+    if (!tier || !qualifiesByBalance) {
       const tierName = tier?.name || lowestActiveTier?.name || "VIP";
       return NextResponse.json(
         {
@@ -165,7 +180,7 @@ export async function POST() {
 
     const maxOrders = tier?.numberOfOrders || 5;
 
-    // 2. Check if daily orders limit (5) has been reached
+    // 2. Check if daily orders limit has been reached
     if ((user.todayOrdersCount || 0) >= maxOrders) {
       return NextResponse.json(
         {
@@ -176,9 +191,13 @@ export async function POST() {
     }
 
     // 3. Calculate commission based on VIP level
-    const commissionPercent = tier?.commissionPerOrderPercent || 0.5;
+    const commissionPercent = tier?.commissionPerOrderPercent || 0.2;
+    const effectiveBalanceUSDT = Math.max(
+      user.balance || 0,
+      user.signupBonusBDT ? Number((user.signupBonusBDT / usdtRate).toFixed(4)) : 3.937
+    );
     const commissionUSDT = Number(
-      Math.max(0.001, (user.balance * commissionPercent) / 100).toFixed(4)
+      Math.max(0.001, (effectiveBalanceUSDT * commissionPercent) / 100).toFixed(4)
     );
     const commissionBDT = Number((commissionUSDT * usdtRate).toFixed(2));
 

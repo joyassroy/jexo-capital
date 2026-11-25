@@ -16,66 +16,92 @@ import {
 } from "lucide-react";
 import { useToast } from "@/context/ToastContext";
 
+// Helper to safely convert file to base64 Data URL
+function fileToDataUrl(file: File | Blob): Promise<string> {
+  return new Promise((resolve) => {
+    try {
+      const reader = new FileReader();
+      reader.onload = () => resolve((reader.result as string) || "");
+      reader.onerror = () => resolve("");
+      reader.readAsDataURL(file);
+    } catch {
+      resolve("");
+    }
+  });
+}
+
 // Helper to compress camera images on mobile before uploading to prevent Vercel 4.5MB payload limit
 function compressImage(file: File, maxWidth = 1280, quality = 0.8): Promise<File> {
   return new Promise((resolve) => {
-    if (file.size <= 400 * 1024) {
-      resolve(file);
-      return;
-    }
+    try {
+      if (file.size <= 400 * 1024) {
+        resolve(file);
+        return;
+      }
 
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = (event) => {
-      const img = new window.Image();
-      img.src = event.target?.result as string;
-      img.onload = () => {
-        let width = img.width;
-        let height = img.height;
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        try {
+          const img = new window.Image();
+          img.src = event.target?.result as string;
+          img.onload = () => {
+            try {
+              let width = img.width;
+              let height = img.height;
 
-        if (width > maxWidth || height > maxWidth) {
-          if (width > height) {
-            height = Math.round((height * maxWidth) / width);
-            width = maxWidth;
-          } else {
-            width = Math.round((width * maxWidth) / height);
-            height = maxWidth;
-          }
-        }
-
-        const canvas = document.createElement("canvas");
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext("2d");
-        if (!ctx) {
-          resolve(file);
-          return;
-        }
-
-        ctx.drawImage(img, 0, 0, width, height);
-        canvas.toBlob(
-          (blob) => {
-            if (blob) {
-              const compressedFile = new File(
-                [blob],
-                file.name.replace(/\.[^.]+$/, ".jpg"),
-                {
-                  type: "image/jpeg",
-                  lastModified: Date.now(),
+              if (width > maxWidth || height > maxWidth) {
+                if (width > height) {
+                  height = Math.round((height * maxWidth) / width);
+                  width = maxWidth;
+                } else {
+                  width = Math.round((width * maxWidth) / height);
+                  height = maxWidth;
                 }
+              }
+
+              const canvas = document.createElement("canvas");
+              canvas.width = width;
+              canvas.height = height;
+              const ctx = canvas.getContext("2d");
+              if (!ctx) {
+                resolve(file);
+                return;
+              }
+
+              ctx.drawImage(img, 0, 0, width, height);
+              canvas.toBlob(
+                (blob) => {
+                  if (blob) {
+                    const compressedFile = new File(
+                      [blob],
+                      file.name.replace(/\.[^.]+$/, ".jpg"),
+                      {
+                        type: "image/jpeg",
+                        lastModified: Date.now(),
+                      }
+                    );
+                    resolve(compressedFile);
+                  } else {
+                    resolve(file);
+                  }
+                },
+                "image/jpeg",
+                quality
               );
-              resolve(compressedFile);
-            } else {
+            } catch {
               resolve(file);
             }
-          },
-          "image/jpeg",
-          quality
-        );
+          };
+          img.onerror = () => resolve(file);
+        } catch {
+          resolve(file);
+        }
       };
-      img.onerror = () => resolve(file);
-    };
-    reader.onerror = () => resolve(file);
+      reader.onerror = () => resolve(file);
+    } catch {
+      resolve(file);
+    }
   });
 }
 
@@ -202,12 +228,20 @@ export default function PersonalInfoPage() {
 
       if (processedFront) {
         formData.append("frontPicture", processedFront);
+        try {
+          const frontB64 = await fileToDataUrl(processedFront);
+          if (frontB64) formData.append("frontPictureBase64", frontB64);
+        } catch { }
       } else if (frontPictureUrl) {
         formData.append("frontPictureUrl", frontPictureUrl);
       }
 
       if (processedBack) {
         formData.append("backPicture", processedBack);
+        try {
+          const backB64 = await fileToDataUrl(processedBack);
+          if (backB64) formData.append("backPictureBase64", backB64);
+        } catch { }
       } else if (backPictureUrl) {
         formData.append("backPictureUrl", backPictureUrl);
       }
@@ -268,81 +302,99 @@ export default function PersonalInfoPage() {
           {/* Status Banners */}
           {kycStatus === "pending" && (
             <div
-              className={`p-3.5 rounded-2xl shadow-xs flex items-start gap-2.5 transition-colors ${
+              className={`p-3.5 rounded-2xl shadow-xs flex items-start gap-2.5 transition-colors border-2 ${
                 isLight
-                  ? "bg-amber-50 border-2 border-amber-300 text-amber-950"
-                  : "bg-amber-950/40 border border-amber-500/50 text-amber-100"
+                  ? "bg-amber-100/95 border-amber-400 text-amber-950"
+                  : "bg-amber-950/60 border-amber-500/70 text-amber-100"
               }`}
             >
               <Clock
-                size={19}
+                size={20}
                 className={`flex-shrink-0 mt-0.5 ${
-                  isLight ? "text-amber-600" : "text-amber-400"
+                  isLight ? "text-amber-800" : "text-amber-400"
                 }`}
               />
-              <div className="text-xs leading-relaxed">
+              <div
+                className={`text-xs leading-relaxed ${
+                  isLight ? "text-amber-950" : "text-amber-100"
+                }`}
+              >
                 <span
-                  className={`font-black ${
-                    isLight ? "text-amber-900" : "text-amber-300"
+                  className={`font-black tracking-wide ${
+                    isLight ? "text-amber-950" : "text-amber-300"
                   }`}
                 >
                   Under Review:{" "}
                 </span>
-                Your National ID documents are currently pending review by Admin.
+                <span className={isLight ? "text-amber-950 font-bold" : "text-amber-200 font-medium"}>
+                  Your National ID documents are currently pending review by Admin.
+                </span>
               </div>
             </div>
           )}
 
           {kycStatus === "approved" && (
             <div
-              className={`p-3.5 rounded-2xl shadow-xs flex items-start gap-2.5 transition-colors ${
+              className={`p-3.5 rounded-2xl shadow-xs flex items-start gap-2.5 transition-colors border-2 ${
                 isLight
-                  ? "bg-emerald-50 border-2 border-emerald-300 text-emerald-950"
-                  : "bg-emerald-950/40 border border-emerald-500/50 text-emerald-100"
+                  ? "bg-emerald-100/95 border-emerald-400 text-emerald-950"
+                  : "bg-emerald-950/60 border-emerald-500/70 text-emerald-100"
               }`}
             >
               <ShieldCheck
-                size={20}
+                size={21}
                 className={`flex-shrink-0 mt-0.5 ${
-                  isLight ? "text-emerald-600" : "text-emerald-400"
+                  isLight ? "text-emerald-800" : "text-emerald-400"
                 }`}
               />
-              <div className="text-xs leading-relaxed">
+              <div
+                className={`text-xs leading-relaxed ${
+                  isLight ? "text-emerald-950" : "text-emerald-100"
+                }`}
+              >
                 <span
-                  className={`font-black ${
-                    isLight ? "text-emerald-900" : "text-emerald-300"
+                  className={`font-black tracking-wide ${
+                    isLight ? "text-emerald-950" : "text-emerald-300"
                   }`}
                 >
                   Verified Account:{" "}
                 </span>
-                Your identity and National ID documents have been successfully approved by Admin.
+                <span className={isLight ? "text-emerald-950 font-bold" : "text-emerald-200 font-medium"}>
+                  Your identity and National ID documents have been successfully approved by Admin.
+                </span>
               </div>
             </div>
           )}
 
           {kycStatus === "rejected" && (
             <div
-              className={`p-3.5 rounded-2xl shadow-xs flex items-start gap-2.5 transition-colors ${
+              className={`p-3.5 rounded-2xl shadow-xs flex items-start gap-2.5 transition-colors border-2 ${
                 isLight
-                  ? "bg-rose-50 border-2 border-rose-300 text-rose-950"
-                  : "bg-rose-950/40 border border-rose-500/50 text-rose-100"
+                  ? "bg-rose-100/95 border-rose-400 text-rose-950"
+                  : "bg-rose-950/60 border-rose-500/70 text-rose-100"
               }`}
             >
               <AlertCircle
-                size={19}
+                size={20}
                 className={`flex-shrink-0 mt-0.5 ${
-                  isLight ? "text-rose-600" : "text-rose-400"
+                  isLight ? "text-rose-800" : "text-rose-400"
                 }`}
               />
-              <div className="text-xs leading-relaxed">
+              <div
+                className={`text-xs leading-relaxed ${
+                  isLight ? "text-rose-950" : "text-rose-100"
+                }`}
+              >
                 <span
-                  className={`font-black ${
-                    isLight ? "text-rose-900" : "text-rose-300"
+                  className={`font-black tracking-wide ${
+                    isLight ? "text-rose-950" : "text-rose-300"
                   }`}
                 >
                   Verification Rejected:{" "}
                 </span>
-                {adminNote || "Please upload clear, legible photos of your National ID and re-submit."}
+                <span className={isLight ? "text-rose-950 font-bold" : "text-rose-200 font-medium"}>
+                  {adminNote || "Please upload clear, legible photos of your National ID and re-submit."}
+                </span>
               </div>
             </div>
           )}

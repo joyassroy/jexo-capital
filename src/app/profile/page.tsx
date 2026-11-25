@@ -43,6 +43,95 @@ interface UserData {
   fundIncome: number;
 }
 
+// Helper to safely convert file to base64 Data URL
+function fileToDataUrl(file: File | Blob): Promise<string> {
+  return new Promise((resolve) => {
+    try {
+      const reader = new FileReader();
+      reader.onload = () => resolve((reader.result as string) || "");
+      reader.onerror = () => resolve("");
+      reader.readAsDataURL(file);
+    } catch {
+      resolve("");
+    }
+  });
+}
+
+// Compress avatar image before upload for speed and safety
+function compressImage(file: File, maxWidth = 800, quality = 0.85): Promise<File> {
+  return new Promise((resolve) => {
+    try {
+      if (file.size <= 250 * 1024) {
+        resolve(file);
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        try {
+          const img = new window.Image();
+          img.src = event.target?.result as string;
+          img.onload = () => {
+            try {
+              let width = img.width;
+              let height = img.height;
+
+              if (width > maxWidth || height > maxWidth) {
+                if (width > height) {
+                  height = Math.round((height * maxWidth) / width);
+                  width = maxWidth;
+                } else {
+                  width = Math.round((width * maxWidth) / height);
+                  height = maxWidth;
+                }
+              }
+
+              const canvas = document.createElement("canvas");
+              canvas.width = width;
+              canvas.height = height;
+              const ctx = canvas.getContext("2d");
+              if (!ctx) {
+                resolve(file);
+                return;
+              }
+
+              ctx.drawImage(img, 0, 0, width, height);
+              canvas.toBlob(
+                (blob) => {
+                  if (blob) {
+                    const compressedFile = new File(
+                      [blob],
+                      file.name.replace(/\.[^.]+$/, ".jpg"),
+                      {
+                        type: "image/jpeg",
+                        lastModified: Date.now(),
+                      }
+                    );
+                    resolve(compressedFile);
+                  } else {
+                    resolve(file);
+                  }
+                },
+                "image/jpeg",
+                quality
+              );
+            } catch {
+              resolve(file);
+            }
+          };
+          img.onerror = () => resolve(file);
+        } catch {
+          resolve(file);
+        }
+      };
+      reader.onerror = () => resolve(file);
+    } catch {
+      resolve(file);
+    }
+  });
+}
+
 export default function ProfilePage() {
   const { theme } = useTheme();
   const { t } = useLanguage();
@@ -128,16 +217,18 @@ export default function ProfilePage() {
       return;
     }
 
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error("Image size should not exceed 5MB.");
-      return;
-    }
-
     setUploadingAvatar(true);
 
     try {
+      const processedFile = await compressImage(file);
       const formData = new FormData();
-      formData.append("file", file);
+      formData.append("file", processedFile);
+
+      // Also append base64 for dual redundancy
+      try {
+        const b64 = await fileToDataUrl(processedFile);
+        if (b64) formData.append("imageBase64", b64);
+      } catch { }
 
       const res = await fetch("/api/user/avatar", {
         method: "POST",

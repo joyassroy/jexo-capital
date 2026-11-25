@@ -27,7 +27,8 @@ export function middleware(request: NextRequest) {
   const isPublicAuthRoute =
     pathname === "/login" ||
     pathname === "/register" ||
-    pathname === "/app-download";
+    pathname === "/app-download" ||
+    pathname === "/support";
 
   const userToken = request.cookies.get(USER_COOKIE_NAME)?.value;
 

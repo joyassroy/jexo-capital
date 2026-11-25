@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
-import cloudinary, { isCloudinaryConfigured } from "@/lib/cloudinary";
+import cloudinary, { isCloudinaryConfigured, uploadImageBuffer } from "@/lib/cloudinary";
 import path from "path";
 import fs from "fs/promises";
 
@@ -69,46 +69,40 @@ export async function POST(req: NextRequest) {
 
     let finalProofUrl = "";
 
-    // If Cloudinary credentials are provided, upload to Cloudinary CDN
+    // Upload to Cloudinary CDN
     if (isCloudinaryConfigured) {
       try {
-        const uploadResult = await new Promise<{ secure_url: string }>(
-          (resolve, reject) => {
-            const stream = cloudinary.uploader.upload_stream(
-              {
-                folder: "zexo_capital/deposits",
-                public_id: `proof_${userPayload.userId}_${Date.now()}`,
-                transformation: [
-                  { width: 1200, height: 1600, crop: "limit" },
-                  { quality: "auto" },
-                  { fetch_format: "auto" },
-                ],
-              },
-              (err, result) => {
-                if (err || !result) reject(err || new Error("Cloudinary upload failed"));
-                else resolve(result as { secure_url: string });
-              }
-            );
-            stream.end(buffer);
-          }
+        finalProofUrl = await uploadImageBuffer(
+          buffer,
+          "zexo_capital/deposits",
+          `proof_${userPayload.userId}_${Date.now()}`,
+          [
+            { width: 1200, height: 1600, crop: "limit" },
+            { quality: "auto" },
+            { fetch_format: "auto" },
+          ]
         );
-
-        finalProofUrl = uploadResult.secure_url;
       } catch (cloudErr) {
-        console.error("Cloudinary upload error, falling back to local storage:", cloudErr);
+        console.error("Cloudinary upload error, falling back to local or base64 storage:", cloudErr);
       }
     }
 
     // Local file fallback if Cloudinary is not configured or failed
     if (!finalProofUrl) {
-      const uploadsDir = path.join(process.cwd(), "public", "uploads", "deposits");
-      await fs.mkdir(uploadsDir, { recursive: true });
+      try {
+        const uploadsDir = path.join(process.cwd(), "public", "uploads", "deposits");
+        await fs.mkdir(uploadsDir, { recursive: true });
 
-      const fileName = `proof_${userPayload.userId}_${Date.now()}.${fileExtension}`;
-      const filePath = path.join(uploadsDir, fileName);
-      await fs.writeFile(filePath, buffer);
+        const fileName = `proof_${userPayload.userId}_${Date.now()}.${fileExtension}`;
+        const filePath = path.join(uploadsDir, fileName);
+        await fs.writeFile(filePath, buffer);
 
-      finalProofUrl = `/uploads/deposits/${fileName}`;
+        finalProofUrl = `/uploads/deposits/${fileName}`;
+      } catch (fsErr) {
+        console.warn("Local storage fallback failed (serverless read-only):", fsErr);
+        const mime = fileExtension === "png" ? "image/png" : "image/jpeg";
+        finalProofUrl = `data:${mime};base64,${buffer.toString("base64")}`;
+      }
     }
 
     return NextResponse.json({

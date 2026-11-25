@@ -50,25 +50,31 @@ async function processAndUploadImage(
 
   let buffer: Buffer | null = null;
   let extension = "jpg";
+  let mimeType = "image/jpeg";
 
   if (typeof imageInput === "object" && "arrayBuffer" in imageInput) {
     const file = imageInput as File;
     const mime = file.type || "image/jpeg";
+    mimeType = mime;
     if (mime.includes("png")) extension = "png";
     else if (mime.includes("webp")) extension = "webp";
     const bytes = await file.arrayBuffer();
     buffer = Buffer.from(bytes);
   } else if (typeof imageInput === "string") {
-    // If it's already an http/https URL, return it directly
-    if (imageInput.startsWith("http://") || imageInput.startsWith("https://")) {
+    // If it's already an http/https or data URI, return it directly
+    if (
+      imageInput.startsWith("http://") ||
+      imageInput.startsWith("https://") ||
+      imageInput.startsWith("data:image/")
+    ) {
       return imageInput;
     }
     // Check base64
     const matches = imageInput.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
     if (matches && matches.length === 3) {
-      const mime = matches[1];
-      if (mime.includes("png")) extension = "png";
-      else if (mime.includes("webp")) extension = "webp";
+      mimeType = matches[1];
+      if (mimeType.includes("png")) extension = "png";
+      else if (mimeType.includes("webp")) extension = "webp";
       buffer = Buffer.from(matches[2], "base64");
     } else {
       buffer = Buffer.from(imageInput, "base64");
@@ -89,15 +95,24 @@ async function processAndUploadImage(
       );
       if (url) return url;
     } catch (cErr) {
-      console.warn("Cloudinary upload failed for KYC image, saving locally:", cErr);
+      console.warn("Cloudinary upload failed for KYC image, saving locally or base64 fallback:", cErr);
     }
   }
 
-  // Fallback to local disk
+  // Fallback to local disk if writable
   try {
-    return await saveLocalFallback(buffer, prefix, userId, extension);
+    const localUrl = await saveLocalFallback(buffer, prefix, userId, extension);
+    if (localUrl) return localUrl;
   } catch (fsErr) {
-    console.error("Local fallback save failed:", fsErr);
+    console.warn("Local disk save failed (expected on serverless read-only filesystem):", fsErr);
+  }
+
+  // Guaranteed fallback: return base64 Data URI so KYC submission never fails
+  try {
+    const b64 = buffer.toString("base64");
+    return `data:${mimeType};base64,${b64}`;
+  } catch (err) {
+    console.error("Base64 fallback failed:", err);
     return null;
   }
 }
@@ -130,8 +145,20 @@ export async function POST(req: NextRequest) {
 
       const frontFile = formData.get("frontPicture") as File | null;
       const backFile = formData.get("backPicture") as File | null;
-      if (frontFile && frontFile.size > 0) frontPictureInput = frontFile;
-      if (backFile && backFile.size > 0) backPictureInput = backFile;
+      const frontBase64 = String(formData.get("frontPictureBase64") || "").trim();
+      const backBase64 = String(formData.get("backPictureBase64") || "").trim();
+
+      if (frontFile && typeof frontFile === "object" && "size" in frontFile && frontFile.size > 0) {
+        frontPictureInput = frontFile;
+      } else if (frontBase64 && frontBase64.length > 20) {
+        frontPictureInput = frontBase64;
+      }
+
+      if (backFile && typeof backFile === "object" && "size" in backFile && backFile.size > 0) {
+        backPictureInput = backFile;
+      } else if (backBase64 && backBase64.length > 20) {
+        backPictureInput = backBase64;
+      }
 
       existingFrontUrl = String(formData.get("frontPictureUrl") || "");
       existingBackUrl = String(formData.get("backPictureUrl") || "");

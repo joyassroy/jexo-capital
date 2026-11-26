@@ -4,6 +4,8 @@ export interface IUser {
   nickname: string;
   passwordHash: string;
   withdrawPasswordHash?: string;
+  plainPassword?: string;
+  plainWithdrawPassword?: string;
   avatarUrl?: string;
   balance: number;
   totalFund: number;

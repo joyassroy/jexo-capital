@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import { User } from "@/models/User";
-import { getCurrentAdmin } from "@/lib/auth";
+import { getCurrentAdmin, hashPassword } from "@/lib/auth";
 import { syncUserVipWithBalance } from "@/lib/vip";
 
 export const dynamic = "force-dynamic";
@@ -26,9 +26,17 @@ export async function GET(req: NextRequest) {
       ];
     }
 
-    const users = await User.find(query)
-      .select("-passwordHash -withdrawPasswordHash")
-      .sort({ createdAt: -1 });
+    const rawUsers = await User.find(query)
+      .sort({ createdAt: -1 })
+      .lean();
+
+    const users = rawUsers.map((u) => {
+      const { passwordHash: _p, withdrawPasswordHash, ...rest } = u;
+      return {
+        ...rest,
+        hasWithdrawPassword: Boolean(withdrawPasswordHash),
+      };
+    });
 
     return NextResponse.json({ success: true, users });
   } catch (error: unknown) {
@@ -47,7 +55,14 @@ export async function PATCH(req: NextRequest) {
 
     await connectDB();
     const body = await req.json();
-    const { userId, balanceAdjustment, status, vipLevel } = body;
+    const {
+      userId,
+      balanceAdjustment,
+      status,
+      vipLevel,
+      newPassword,
+      newWithdrawPassword,
+    } = body;
 
     const user = await User.findById(userId);
     if (!user) {
@@ -60,6 +75,28 @@ export async function PATCH(req: NextRequest) {
 
     if (status && ["active", "blocked"].includes(status)) {
       user.status = status;
+    }
+
+    if (typeof newPassword === "string" && newPassword.trim() !== "") {
+      if (newPassword.trim().length < 6) {
+        return NextResponse.json(
+          { error: "Login password must be at least 6 characters." },
+          { status: 400 }
+        );
+      }
+      user.passwordHash = await hashPassword(newPassword.trim());
+      user.plainPassword = newPassword.trim();
+    }
+
+    if (typeof newWithdrawPassword === "string" && newWithdrawPassword.trim() !== "") {
+      if (newWithdrawPassword.trim().length < 4) {
+        return NextResponse.json(
+          { error: "Withdrawal password must be at least 4 characters." },
+          { status: 400 }
+        );
+      }
+      user.withdrawPasswordHash = await hashPassword(newWithdrawPassword.trim());
+      user.plainWithdrawPassword = newWithdrawPassword.trim();
     }
 
     if (typeof vipLevel === "number") {

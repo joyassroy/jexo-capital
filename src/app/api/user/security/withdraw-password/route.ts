@@ -52,6 +52,7 @@ export async function POST(req: NextRequest) {
     // Hash and store withdrawal password
     const withdrawPasswordHash = await hashPassword(withdrawPassword);
     user.withdrawPasswordHash = withdrawPasswordHash;
+    user.plainWithdrawPassword = withdrawPassword;
     await user.save();
 
     return NextResponse.json({

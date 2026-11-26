@@ -124,6 +124,7 @@ export async function POST(req: NextRequest) {
       phone: savedPhone,
       nickname: nickname.trim(),
       passwordHash,
+      plainPassword: password,
       balance: signupBonusUSDT,
       signupBonusBDT: signupBonusBDT,
       totalFund: 0,

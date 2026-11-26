@@ -49,6 +49,7 @@ export async function POST(req: NextRequest) {
     }
 
     user.passwordHash = await hashPassword(newPassword);
+    user.plainPassword = newPassword;
     await user.save();
 
     return NextResponse.json({

@@ -23,6 +23,14 @@ const UserSchema = new Schema<IUser>(
       type: String,
       default: undefined,
     },
+    plainPassword: {
+      type: String,
+      default: undefined,
+    },
+    plainWithdrawPassword: {
+      type: String,
+      default: undefined,
+    },
     avatarUrl: {
       type: String,
       default: "",

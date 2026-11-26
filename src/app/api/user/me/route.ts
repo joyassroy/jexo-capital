@@ -159,7 +159,13 @@ export async function GET() {
     const withdrawableBDT = Math.max(0, Number((totalBalanceBDT - signupBonusBDT).toFixed(2)));
 
     const hasWithdrawPassword = Boolean(user.withdrawPasswordHash);
-    const { passwordHash: _p, withdrawPasswordHash: _w, ...userSafe } = user.toObject();
+    const {
+      passwordHash: _p,
+      withdrawPasswordHash: _w,
+      plainPassword: _pp,
+      plainWithdrawPassword: _pwp,
+      ...userSafe
+    } = user.toObject();
 
     // Check KYC status
     const kyc = await Kyc.findOne({ userId: user._id.toString() });

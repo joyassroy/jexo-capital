@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Search, ShieldAlert, CheckCircle2, UserCheck } from "lucide-react";
+import { Search, KeyRound, Eye, EyeOff, Copy, CheckCircle2, X } from "lucide-react";
 
 interface UserItem {
   _id: string;
@@ -12,6 +12,9 @@ interface UserItem {
   referralCount: number;
   vipLevel: number;
   status: "active" | "blocked";
+  plainPassword?: string;
+  plainWithdrawPassword?: string;
+  hasWithdrawPassword?: boolean;
   createdAt: string;
 }
 
@@ -25,6 +28,18 @@ export default function AdminUsersPage() {
   const [adjustAmount, setAdjustAmount] = useState<string>("");
   const [adjustType, setAdjustType] = useState<"credit" | "debit">("credit");
   const [adjusting, setAdjusting] = useState(false);
+
+  // Password management modal
+  const [passwordModalUser, setPasswordModalUser] = useState<UserItem | null>(null);
+  const [newLoginPass, setNewLoginPass] = useState("");
+  const [newWithdrawPass, setNewWithdrawPass] = useState("");
+  const [showCurrentLoginPass, setShowCurrentLoginPass] = useState(true);
+  const [showCurrentWithdrawPass, setShowCurrentWithdrawPass] = useState(true);
+  const [savingPasswords, setSavingPasswords] = useState(false);
+  const [passwordFeedback, setPasswordFeedback] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
 
   const fetchUsers = () => {
     setLoading(true);
@@ -96,6 +111,82 @@ export default function AdminUsersPage() {
     }
   };
 
+  const openPasswordModal = (user: UserItem) => {
+    setPasswordModalUser(user);
+    setNewLoginPass("");
+    setNewWithdrawPass("");
+    setPasswordFeedback(null);
+    setShowCurrentLoginPass(true);
+    setShowCurrentWithdrawPass(true);
+  };
+
+  const handleUpdatePasswords = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!passwordModalUser) return;
+    if (!newLoginPass.trim() && !newWithdrawPass.trim()) {
+      setPasswordFeedback({
+        type: "error",
+        text: "Please enter a new login password or withdrawal password to update.",
+      });
+      return;
+    }
+
+    setSavingPasswords(true);
+    setPasswordFeedback(null);
+
+    try {
+      const res = await fetch("/api/admin/users", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: passwordModalUser._id,
+          ...(newLoginPass.trim() ? { newPassword: newLoginPass.trim() } : {}),
+          ...(newWithdrawPass.trim()
+            ? { newWithdrawPassword: newWithdrawPass.trim() }
+            : {}),
+        }),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        setPasswordFeedback({
+          type: "success",
+          text: "Passwords updated successfully!",
+        });
+        setPasswordModalUser((prev) =>
+          prev
+            ? {
+                ...prev,
+                plainPassword: newLoginPass.trim()
+                  ? newLoginPass.trim()
+                  : prev.plainPassword,
+                plainWithdrawPassword: newWithdrawPass.trim()
+                  ? newWithdrawPass.trim()
+                  : prev.plainWithdrawPassword,
+                hasWithdrawPassword:
+                  Boolean(newWithdrawPass.trim()) || prev.hasWithdrawPassword,
+              }
+            : null
+        );
+        setNewLoginPass("");
+        setNewWithdrawPass("");
+        fetchUsers();
+      } else {
+        setPasswordFeedback({
+          type: "error",
+          text: data.error || "Failed to update passwords.",
+        });
+      }
+    } catch {
+      setPasswordFeedback({
+        type: "error",
+        text: "Network error while updating passwords.",
+      });
+    } finally {
+      setSavingPasswords(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
@@ -131,7 +222,7 @@ export default function AdminUsersPage() {
       {/* Table */}
       <div className="rounded-2xl bg-[#1E293B] border border-slate-800 overflow-hidden shadow-xl">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-slate-300">
+          <table className="w-full min-w-[920px] text-left text-xs text-slate-300">
             <thead className="bg-slate-800/80 text-slate-400 font-bold uppercase tracking-wider text-[10px]">
               <tr>
                 <th className="p-4">User</th>
@@ -183,7 +274,14 @@ export default function AdminUsersPage() {
                         {u.status}
                       </span>
                     </td>
-                    <td className="p-4 text-right space-x-2">
+                    <td className="p-4 text-right space-x-2 whitespace-nowrap">
+                      <button
+                        onClick={() => openPasswordModal(u)}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500 text-amber-300 hover:text-[#020a1f] font-bold text-[11px] transition-colors"
+                      >
+                        <KeyRound size={12} />
+                        <span>Passwords</span>
+                      </button>
                       <button
                         onClick={() => setSelectedUser(u)}
                         className="px-2.5 py-1 rounded-lg bg-blue-600/30 hover:bg-blue-600 text-blue-300 hover:text-white font-bold text-[11px] transition-colors"
@@ -277,6 +375,198 @@ export default function AdminUsersPage() {
                   className="px-4 py-2.5 rounded-xl bg-slate-800 text-slate-400 hover:text-white text-xs font-semibold"
                 >
                   Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Manage User Passwords Modal */}
+      {passwordModalUser && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-xs p-4">
+          <div className="admin-modal w-full max-w-md rounded-3xl bg-[#1E293B] border border-slate-700 p-6 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-700/80">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-400 flex items-center justify-center">
+                  <KeyRound size={18} />
+                </div>
+                <div>
+                  <h3 className="text-base font-black text-white leading-tight">
+                    User Passwords
+                  </h3>
+                  <p className="text-[11px] text-slate-400">
+                    {passwordModalUser.nickname} ({passwordModalUser.phone})
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setPasswordModalUser(null)}
+                className="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            {/* Current Passwords Display */}
+            <div className="space-y-2.5 p-3.5 rounded-2xl bg-[#0F172A] border border-slate-800">
+              {/* Current Login Password */}
+              <div className="flex items-center justify-between gap-2">
+                <div>
+                  <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                    Current Login Password
+                  </div>
+                  <div className="font-mono text-sm font-black text-cyan-300 mt-0.5">
+                    {passwordModalUser.plainPassword
+                      ? showCurrentLoginPass
+                        ? passwordModalUser.plainPassword
+                        : "••••••••"
+                      : "Encrypted (Set new below)"}
+                  </div>
+                </div>
+                {passwordModalUser.plainPassword && (
+                  <div className="flex items-center gap-1">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setShowCurrentLoginPass(!showCurrentLoginPass)
+                      }
+                      className="p-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white"
+                      title="Show/Hide"
+                    >
+                      {showCurrentLoginPass ? (
+                        <EyeOff size={14} />
+                      ) : (
+                        <Eye size={14} />
+                      )}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        navigator.clipboard.writeText(
+                          passwordModalUser.plainPassword || ""
+                        );
+                        alert("Login password copied!");
+                      }}
+                      className="p-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white"
+                      title="Copy"
+                    >
+                      <Copy size={14} />
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <div className="border-t border-slate-800" />
+
+              {/* Current Withdrawal Password */}
+              <div className="flex items-center justify-between gap-2">
+                <div>
+                  <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                    Current Withdrawal Password
+                  </div>
+                  <div className="font-mono text-sm font-black text-amber-300 mt-0.5">
+                    {passwordModalUser.plainWithdrawPassword
+                      ? showCurrentWithdrawPass
+                        ? passwordModalUser.plainWithdrawPassword
+                        : "••••••"
+                      : passwordModalUser.hasWithdrawPassword
+                      ? "Encrypted (Set new below)"
+                      : "Not set yet"}
+                  </div>
+                </div>
+                {passwordModalUser.plainWithdrawPassword && (
+                  <div className="flex items-center gap-1">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setShowCurrentWithdrawPass(!showCurrentWithdrawPass)
+                      }
+                      className="p-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white"
+                      title="Show/Hide"
+                    >
+                      {showCurrentWithdrawPass ? (
+                        <EyeOff size={14} />
+                      ) : (
+                        <Eye size={14} />
+                      )}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        navigator.clipboard.writeText(
+                          passwordModalUser.plainWithdrawPassword || ""
+                        );
+                        alert("Withdrawal password copied!");
+                      }}
+                      className="p-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white"
+                      title="Copy"
+                    >
+                      <Copy size={14} />
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {passwordFeedback && (
+              <div
+                className={`p-3 rounded-xl text-xs font-bold flex items-center gap-2 ${
+                  passwordFeedback.type === "success"
+                    ? "bg-emerald-500/15 border border-emerald-500/40 text-emerald-300"
+                    : "bg-red-500/15 border border-red-500/40 text-red-300"
+                }`}
+              >
+                {passwordFeedback.type === "success" && (
+                  <CheckCircle2 size={15} className="shrink-0" />
+                )}
+                <span>{passwordFeedback.text}</span>
+              </div>
+            )}
+
+            {/* Update Passwords Form */}
+            <form onSubmit={handleUpdatePasswords} className="space-y-3">
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                  New Login Password (Optional)
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter new login password (min 6 chars)"
+                  value={newLoginPass}
+                  onChange={(e) => setNewLoginPass(e.target.value)}
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#0F172A] border border-slate-700 text-sm font-mono font-bold text-white outline-none focus:border-amber-400"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                  New Withdrawal Password (Optional)
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter new withdrawal password (e.g. 123456)"
+                  value={newWithdrawPass}
+                  onChange={(e) => setNewWithdrawPass(e.target.value)}
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#0F172A] border border-slate-700 text-sm font-mono font-bold text-white outline-none focus:border-amber-400"
+                />
+              </div>
+
+              <div className="flex gap-2 pt-2">
+                <button
+                  type="submit"
+                  disabled={savingPasswords}
+                  className="flex-1 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-[#020a1f] font-black text-xs disabled:opacity-50 transition-colors"
+                >
+                  {savingPasswords ? "Updating..." : "Save New Passwords"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPasswordModalUser(null)}
+                  className="px-4 py-2.5 rounded-xl bg-slate-800 text-slate-400 hover:text-white text-xs font-semibold"
+                >
+                  Close
                 </button>
               </div>
             </form>

@@ -120,7 +120,9 @@ export default function AdminGiftCodesPage() {
             </label>
             <input
               type="number"
-              placeholder="e.g. 50"
+              step="any"
+              min="0.0001"
+              placeholder="e.g. 50 or 0.2"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               className="w-full px-3.5 py-2.5 rounded-xl bg-[#0F172A] border border-slate-700 text-sm font-bold text-white outline-none"

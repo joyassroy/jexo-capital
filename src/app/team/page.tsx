@@ -56,12 +56,12 @@ function GoldenWing({ flip = false }: { flip?: boolean }) {
   const idPrefix = flip ? "right" : "left";
   return (
     <svg
-      width="34"
-      height="22"
+      width="24"
+      height="16"
       viewBox="0 0 40 26"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={`shrink-0 drop-shadow-[0_2px_6px_rgba(245,186,49,0.55)] ${
+      className={`shrink-0 sm:w-[30px] sm:h-[20px] drop-shadow-[0_2px_6px_rgba(245,186,49,0.55)] ${
         flip ? "scale-x-[-1]" : ""
       }`}
     >
@@ -247,33 +247,33 @@ export default function TeamPage() {
     >
       <div>
         {/* Top Header Navigation Bar */}
-        <div className="relative pt-4 pb-2 px-4 flex items-center justify-between z-20 max-w-[460px] mx-auto">
+        <div className="relative pt-3 pb-1.5 px-3 flex items-center justify-between z-20 max-w-[440px] mx-auto min-h-[48px]">
           {/* Back button */}
           <button
             onClick={() => router.back()}
-            className={`w-10 h-10 rounded-full border flex items-center justify-center active:scale-95 transition-all shadow-sm ${
+            className={`w-8 h-8 rounded-full border flex items-center justify-center active:scale-95 transition-all shadow-sm shrink-0 z-10 ${
               isLight
                 ? "bg-white border-slate-200 text-slate-700 hover:text-slate-900 shadow-slate-200"
                 : "bg-[#051338] border-amber-400/40 text-amber-300 hover:text-white shadow-black/40"
             }`}
             aria-label="Go Back"
           >
-            <ChevronLeft size={22} className="stroke-[2.5]" />
+            <ChevronLeft size={18} className="stroke-[2.5]" />
           </button>
 
-          {/* Title: Stylized "My Team" with 3D Golden Wings */}
-          <div className="flex items-center justify-center gap-1.5 flex-1 mx-2">
+          {/* Title: Stylized "My Team" with 3D Golden Wings (Dead-Center) */}
+          <div className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center gap-1 pointer-events-none">
             <GoldenWing />
 
             {/* Title Capsule (Royal Midnight Navy with Golden Border & Golden Text) */}
             <div
-              className={`px-6 py-1.5 rounded-full border-2 shadow-lg flex items-center justify-center transition-all ${
+              className={`px-3 sm:px-5 py-1 rounded-full border-2 shadow-lg flex items-center justify-center transition-all whitespace-nowrap ${
                 isLight
-                  ? "bg-gradient-to-r from-[#020a1f] via-[#0b2559] to-[#020a1f] border-amber-400 shadow-[0_4px_16px_rgba(2,10,31,0.25)]"
-                  : "bg-gradient-to-r from-[#020a1f] via-[#081d48] to-[#020a1f] border-amber-400 shadow-[0_0_20px_rgba(245,186,49,0.3)]"
+                  ? "bg-gradient-to-r from-[#020a1f] via-[#0b2559] to-[#020a1f] border-amber-400 shadow-[0_4px_14px_rgba(2,10,31,0.25)]"
+                  : "bg-gradient-to-r from-[#020a1f] via-[#081d48] to-[#020a1f] border-amber-400 shadow-[0_0_16px_rgba(245,186,49,0.3)]"
               }`}
             >
-              <h1 className="text-lg sm:text-xl font-black text-amber-300 italic tracking-wider drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]">
+              <h1 className="text-sm sm:text-base font-black text-amber-300 italic tracking-wide drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] whitespace-nowrap">
                 {t("team_title")}
               </h1>
             </div>
@@ -282,19 +282,19 @@ export default function TeamPage() {
           </div>
 
           {/* Language Switcher + Theme Toggle in Header */}
-          <div className="flex items-center gap-1.5 justify-end">
+          <div className="flex items-center gap-1 justify-end shrink-0 z-10">
             <button
               type="button"
               onClick={openLangModal}
-              className={`px-2 py-1 rounded-full border text-xs font-semibold flex items-center gap-1 active:scale-95 transition-all ${
+              className={`px-1.5 py-1 rounded-full border text-[11px] font-semibold flex items-center gap-1 active:scale-95 transition-all ${
                 isLight
                   ? "bg-white hover:bg-slate-100 border-slate-200 text-slate-700 shadow-xs"
                   : "bg-white/10 hover:bg-white/20 border-white/20 text-white shadow-xs"
               }`}
               title={t("select_language")}
             >
-              <span className="text-sm leading-none">{activeLanguageOption.flag}</span>
-              <span className="text-[10px] font-black tracking-wider uppercase">
+              <span className="text-xs leading-none">{activeLanguageOption.flag}</span>
+              <span className="text-[9px] font-black tracking-wider uppercase">
                 {activeLanguageOption.code}
               </span>
             </button>
@@ -303,27 +303,27 @@ export default function TeamPage() {
         </div>
 
         {/* Main Team Card Body */}
-        <div className="p-4 space-y-4 max-w-[430px] mx-auto z-10 relative">
+        <div className="p-3 space-y-3 max-w-[420px] mx-auto z-10 relative">
           {/* Top 2 Reward Cards: Referral Rewards & Cashback Rewards */}
-          <div className="grid grid-cols-2 gap-3.5">
+          <div className="grid grid-cols-2 gap-2.5">
             {/* Referral Rewards Card */}
             <div
-              className={`p-4 rounded-3xl border-2 text-center flex flex-col justify-between items-center transition-all ${
+              className={`p-3 rounded-2xl border-2 text-center flex flex-col justify-between items-center transition-all ${
                 isLight
-                  ? "bg-white border-amber-200/80 shadow-[0_6px_22px_rgba(2,10,31,0.06)] hover:border-amber-300"
-                  : "bg-[#04102e]/95 border-amber-400/30 shadow-[0_0_20px_rgba(245,186,49,0.12)] hover:border-amber-400/50"
+                  ? "bg-white border-amber-200/80 shadow-[0_4px_16px_rgba(2,10,31,0.06)] hover:border-amber-300"
+                  : "bg-[#04102e]/95 border-amber-400/30 shadow-[0_0_16px_rgba(245,186,49,0.12)] hover:border-amber-400/50"
               }`}
             >
               <span
-                className={`text-[11px] font-black tracking-wider uppercase ${
+                className={`text-[10px] font-black tracking-wider uppercase whitespace-nowrap ${
                   isLight ? "text-slate-600" : "text-amber-200/90"
                 }`}
               >
                 Referral Rewards
               </span>
-              <div className="my-2 flex flex-col items-center">
+              <div className="my-1.5 flex flex-col items-center">
                 <div
-                  className={`text-2xl sm:text-3xl font-black font-mono tracking-tight ${
+                  className={`text-lg sm:text-xl font-black font-mono tracking-tight whitespace-nowrap ${
                     isLight ? "text-[#020a1f]" : "text-[#ffd369]"
                   }`}
                 >
@@ -331,11 +331,11 @@ export default function TeamPage() {
                     ? "..."
                     : `${(team.referralRewardsUSDT || 0).toFixed(2)} USDT`}
                 </div>
-                <div className="text-xs font-bold text-amber-500 font-mono mt-0.5">
+                <div className="text-[11px] font-bold text-amber-500 font-mono mt-0.5">
                   ≈ {loading ? "..." : (team.referralRewardsBDT || 0).toFixed(0)} Tk
                 </div>
                 {(team.totalClaimedReferralRewardsUSDT || 0) > 0 && (
-                  <div className="text-[10px] text-emerald-500 font-bold mt-1.5 leading-tight">
+                  <div className="text-[9.5px] text-emerald-500 font-bold mt-1 leading-tight">
                     Claimed: {(team.totalClaimedReferralRewardsUSDT || 0).toFixed(2)} USDT
                     <span className="block text-emerald-400/90 font-mono">
                       (≈ {(team.totalClaimedReferralRewardsBDT || 0).toFixed(0)} Tk)
@@ -347,7 +347,7 @@ export default function TeamPage() {
                 type="button"
                 onClick={() => handleClaim("referral")}
                 disabled={claiming || (team.referralRewardsUSDT || 0) <= 0}
-                className="w-full py-2.5 px-3 rounded-full bg-gradient-to-r from-[#f5ba31] via-[#ffd369] to-[#d49002] text-[#020a1f] font-black text-xs shadow-[0_3px_12px_rgba(245,186,49,0.35)] active:scale-95 hover:brightness-105 transition-all border border-amber-200/80 tracking-wide uppercase disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                className="w-full py-1.5 px-3 rounded-full bg-gradient-to-r from-[#f5ba31] via-[#ffd369] to-[#d49002] text-[#020a1f] font-black text-[11px] shadow-[0_2px_10px_rgba(245,186,49,0.3)] active:scale-95 hover:brightness-105 transition-all border border-amber-200/80 tracking-wide uppercase disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
               >
                 {claiming
                   ? "Claiming..."
@@ -361,22 +361,22 @@ export default function TeamPage() {
 
             {/* Cashback Rewards Card */}
             <div
-              className={`p-4 rounded-3xl border-2 text-center flex flex-col justify-between items-center transition-all ${
+              className={`p-3 rounded-2xl border-2 text-center flex flex-col justify-between items-center transition-all ${
                 isLight
-                  ? "bg-white border-amber-200/80 shadow-[0_6px_22px_rgba(2,10,31,0.06)] hover:border-amber-300"
-                  : "bg-[#04102e]/95 border-amber-400/30 shadow-[0_0_20px_rgba(245,186,49,0.12)] hover:border-amber-400/50"
+                  ? "bg-white border-amber-200/80 shadow-[0_4px_16px_rgba(2,10,31,0.06)] hover:border-amber-300"
+                  : "bg-[#04102e]/95 border-amber-400/30 shadow-[0_0_16px_rgba(245,186,49,0.12)] hover:border-amber-400/50"
               }`}
             >
               <span
-                className={`text-[11px] font-black tracking-wider uppercase ${
+                className={`text-[10px] font-black tracking-wider uppercase whitespace-nowrap ${
                   isLight ? "text-slate-600" : "text-amber-200/90"
                 }`}
               >
                 Cashback Rewards
               </span>
-              <div className="my-2 flex flex-col items-center">
+              <div className="my-1.5 flex flex-col items-center">
                 <div
-                  className={`text-2xl sm:text-3xl font-black font-mono tracking-tight ${
+                  className={`text-lg sm:text-xl font-black font-mono tracking-tight whitespace-nowrap ${
                     isLight ? "text-[#020a1f]" : "text-[#ffd369]"
                   }`}
                 >
@@ -384,11 +384,11 @@ export default function TeamPage() {
                     ? "..."
                     : `${(team.cashbackRewardsUSDT || 0).toFixed(2)} USDT`}
                 </div>
-                <div className="text-xs font-bold text-amber-500 font-mono mt-0.5">
+                <div className="text-[11px] font-bold text-amber-500 font-mono mt-0.5">
                   ≈ {loading ? "..." : (team.cashbackRewardsBDT || 0).toFixed(0)} Tk
                 </div>
                 {(team.totalClaimedCashbackRewardsUSDT || 0) > 0 && (
-                  <div className="text-[10px] text-emerald-500 font-bold mt-1.5 leading-tight">
+                  <div className="text-[9.5px] text-emerald-500 font-bold mt-1 leading-tight">
                     Claimed: {(team.totalClaimedCashbackRewardsUSDT || 0).toFixed(2)} USDT
                     <span className="block text-emerald-400/90 font-mono">
                       (≈ {(team.totalClaimedCashbackRewardsBDT || 0).toFixed(0)} Tk)
@@ -400,7 +400,7 @@ export default function TeamPage() {
                 type="button"
                 onClick={() => handleClaim("cashback")}
                 disabled={claiming || (team.cashbackRewardsUSDT || 0) <= 0}
-                className="w-full py-2.5 px-3 rounded-full bg-gradient-to-r from-[#f5ba31] via-[#ffd369] to-[#d49002] text-[#020a1f] font-black text-xs shadow-[0_3px_12px_rgba(245,186,49,0.35)] active:scale-95 hover:brightness-105 transition-all border border-amber-200/80 tracking-wide uppercase disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                className="w-full py-1.5 px-3 rounded-full bg-gradient-to-r from-[#f5ba31] via-[#ffd369] to-[#d49002] text-[#020a1f] font-black text-[11px] shadow-[0_2px_10px_rgba(245,186,49,0.3)] active:scale-95 hover:brightness-105 transition-all border border-amber-200/80 tracking-wide uppercase disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
               >
                 {claiming
                   ? "Claiming..."
@@ -415,77 +415,77 @@ export default function TeamPage() {
 
           {/* Middle: Team Members Futuristic Card */}
           <div
-            className={`p-4 sm:p-5 rounded-[30px] border-2 shadow-xl backdrop-blur-md space-y-3.5 transition-all ${
+            className={`p-3 sm:p-4 rounded-2xl border-2 shadow-xl backdrop-blur-md space-y-2.5 transition-all ${
               isLight
-                ? "bg-white border-slate-200/90 shadow-[0_10px_30px_rgba(2,10,31,0.08)]"
-                : "bg-gradient-to-b from-[#04102e]/95 via-[#061845]/95 to-[#020b24]/95 border-amber-400/30 shadow-[0_0_25px_rgba(245,186,49,0.18)]"
+                ? "bg-white border-slate-200/90 shadow-[0_8px_24px_rgba(2,10,31,0.07)]"
+                : "bg-gradient-to-b from-[#04102e]/95 via-[#061845]/95 to-[#020b24]/95 border-amber-400/30 shadow-[0_0_20px_rgba(245,186,49,0.18)]"
             }`}
           >
             {/* Header Pill */}
             <div
-              className={`py-2 px-8 mx-auto rounded-full font-black text-xs sm:text-sm tracking-wider text-center border shadow-md flex items-center justify-center gap-2 w-fit ${
+              className={`py-1.5 px-5 mx-auto rounded-full font-black text-[11px] sm:text-xs tracking-wider text-center border shadow-md flex items-center justify-center gap-1.5 w-fit ${
                 isLight
-                  ? "bg-gradient-to-r from-[#020a1f] via-[#0b2559] to-[#020a1f] border-amber-400/60 text-amber-300 shadow-[0_4px_14px_rgba(2,10,31,0.2)]"
-                  : "bg-gradient-to-r from-[#020a1f] via-[#091e4a] to-[#020a1f] border-amber-400/60 text-amber-300 shadow-[0_0_15px_rgba(245,186,49,0.25)]"
+                  ? "bg-gradient-to-r from-[#020a1f] via-[#0b2559] to-[#020a1f] border-amber-400/60 text-amber-300 shadow-[0_4px_12px_rgba(2,10,31,0.2)]"
+                  : "bg-gradient-to-r from-[#020a1f] via-[#091e4a] to-[#020a1f] border-amber-400/60 text-amber-300 shadow-[0_0_12px_rgba(245,186,49,0.25)]"
               }`}
             >
-              <Sparkles size={15} className="text-amber-400 shrink-0" />
+              <Sparkles size={13} className="text-amber-400 shrink-0" />
               <span className="uppercase tracking-widest">Team Members</span>
-              <Sparkles size={15} className="text-amber-400 shrink-0" />
+              <Sparkles size={13} className="text-amber-400 shrink-0" />
             </div>
 
             {/* 5 Row Metrics */}
-            <div className="space-y-2.5 pt-1">
+            <div className="space-y-2 pt-0.5">
               {/* Row 1: Total Members */}
               <div
-                className={`p-2.5 px-4 rounded-2xl flex items-center justify-between border shadow-xs transition-all ${
+                className={`p-2 px-3 rounded-xl flex items-center justify-between border shadow-xs transition-all ${
                   isLight
                     ? "bg-gradient-to-r from-[#f8fafc] via-[#f1f5f9] to-[#f8fafc] border-slate-200/90 hover:border-amber-300/80 hover:bg-white text-slate-800"
                     : "bg-gradient-to-r from-[#07193f] via-[#0a2358] to-[#07193f] border-amber-400/20 text-white hover:border-amber-400/40"
                 }`}
               >
-                <div className="flex items-center gap-2.5">
+                <div className="flex items-center gap-2">
                   <div
-                    className={`p-1.5 rounded-lg flex items-center justify-center ${
+                    className={`p-1 rounded-md flex items-center justify-center ${
                       isLight
                         ? "bg-blue-100 text-blue-700"
                         : "bg-blue-900/50 text-blue-300"
                     }`}
                   >
-                    <Users size={16} />
+                    <Users size={14} />
                   </div>
-                  <span className="font-extrabold text-xs sm:text-sm tracking-wide">
+                  <span className="font-extrabold text-xs tracking-wide">
                     Total Members
                   </span>
                 </div>
-                <span className="px-5 py-1 rounded-full bg-[#020a1f] text-amber-300 font-black font-mono text-sm sm:text-base border-2 border-amber-400/70 shadow-[0_2px_8px_rgba(0,0,0,0.25)]">
+                <span className="px-3.5 py-0.5 rounded-full bg-[#020a1f] text-amber-300 font-black font-mono text-xs sm:text-sm border border-amber-400/70 shadow-[0_2px_6px_rgba(0,0,0,0.2)]">
                   {loading ? "..." : team.totalMembers}
                 </span>
               </div>
 
               {/* Row 2: Active Members */}
               <div
-                className={`p-2.5 px-4 rounded-2xl flex items-center justify-between border shadow-xs transition-all ${
+                className={`p-2 px-3 rounded-xl flex items-center justify-between border shadow-xs transition-all ${
                   isLight
                     ? "bg-gradient-to-r from-[#f8fafc] via-[#f1f5f9] to-[#f8fafc] border-slate-200/90 hover:border-amber-300/80 hover:bg-white text-slate-800"
                     : "bg-gradient-to-r from-[#07193f] via-[#0a2358] to-[#07193f] border-amber-400/20 text-white hover:border-amber-400/40"
                 }`}
               >
-                <div className="flex items-center gap-2.5">
+                <div className="flex items-center gap-2">
                   <div
-                    className={`p-1.5 rounded-lg flex items-center justify-center ${
+                    className={`p-1 rounded-md flex items-center justify-center ${
                       isLight
                         ? "bg-emerald-100 text-emerald-700"
                         : "bg-emerald-950/60 text-emerald-400"
                     }`}
                   >
-                    <UserCheck size={16} />
+                    <UserCheck size={14} />
                   </div>
-                  <span className="font-extrabold text-xs sm:text-sm tracking-wide">
+                  <span className="font-extrabold text-xs tracking-wide">
                     Active Members
                   </span>
                 </div>
-                <span className="px-5 py-1 rounded-full bg-[#020a1f] text-amber-300 font-black font-mono text-sm sm:text-base border-2 border-amber-400/70 shadow-[0_2px_8px_rgba(0,0,0,0.25)]">
+                <span className="px-3.5 py-0.5 rounded-full bg-[#020a1f] text-amber-300 font-black font-mono text-xs sm:text-sm border border-amber-400/70 shadow-[0_2px_6px_rgba(0,0,0,0.2)]">
                   {loading ? "..." : team.activeMembers}
                 </span>
               </div>
@@ -495,15 +495,15 @@ export default function TeamPage() {
                 <button
                   type="button"
                   onClick={() => toggleLevel(1)}
-                  className={`w-full p-2.5 px-4 rounded-2xl flex items-center justify-between border shadow-xs transition-all text-left cursor-pointer active:scale-[0.99] ${
+                  className={`w-full p-2 px-3 rounded-xl flex items-center justify-between border shadow-xs transition-all text-left cursor-pointer active:scale-[0.99] ${
                     isLight
                       ? "bg-gradient-to-r from-[#f8fafc] via-[#f1f5f9] to-[#f8fafc] border-slate-200/90 hover:border-amber-300/80 hover:bg-white text-slate-800"
                       : "bg-gradient-to-r from-[#07193f] via-[#0a2358] to-[#07193f] border-amber-400/20 text-white hover:border-amber-400/40"
                   }`}
                 >
-                  <div className="flex items-center gap-2.5">
+                  <div className="flex items-center gap-2">
                     <span
-                      className={`text-[11px] font-black px-2 py-0.5 rounded-md ${
+                      className={`text-[10px] font-black px-1.5 py-0.5 rounded-md ${
                         isLight
                           ? "bg-amber-100 text-amber-800"
                           : "bg-amber-900/40 text-amber-300"
@@ -511,18 +511,18 @@ export default function TeamPage() {
                     >
                       L1
                     </span>
-                    <span className="font-extrabold text-xs sm:text-sm tracking-wide">
+                    <span className="font-extrabold text-xs tracking-wide">
                       Level -1
                     </span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="px-5 py-1 rounded-full bg-[#020a1f] text-amber-300 font-black font-mono text-sm sm:text-base border-2 border-amber-400/70 shadow-[0_2px_8px_rgba(0,0,0,0.25)]">
+                  <div className="flex items-center gap-1.5">
+                    <span className="px-3.5 py-0.5 rounded-full bg-[#020a1f] text-amber-300 font-black font-mono text-xs sm:text-sm border border-amber-400/70 shadow-[0_2px_6px_rgba(0,0,0,0.2)]">
                       {loading
                         ? "..."
                         : `${team.level1.total}/${team.level1.active}`}
                     </span>
                     <ChevronDown
-                      size={18}
+                      size={15}
                       className={`text-amber-500 transition-transform duration-200 shrink-0 ${
                         expandedLevels[1] ? "rotate-180" : ""
                       }`}
@@ -610,15 +610,15 @@ export default function TeamPage() {
                 <button
                   type="button"
                   onClick={() => toggleLevel(2)}
-                  className={`w-full p-2.5 px-4 rounded-2xl flex items-center justify-between border shadow-xs transition-all text-left cursor-pointer active:scale-[0.99] ${
+                  className={`w-full p-2 px-3 rounded-xl flex items-center justify-between border shadow-xs transition-all text-left cursor-pointer active:scale-[0.99] ${
                     isLight
                       ? "bg-gradient-to-r from-[#f8fafc] via-[#f1f5f9] to-[#f8fafc] border-slate-200/90 hover:border-amber-300/80 hover:bg-white text-slate-800"
                       : "bg-gradient-to-r from-[#07193f] via-[#0a2358] to-[#07193f] border-amber-400/20 text-white hover:border-amber-400/40"
                   }`}
                 >
-                  <div className="flex items-center gap-2.5">
+                  <div className="flex items-center gap-2">
                     <span
-                      className={`text-[11px] font-black px-2 py-0.5 rounded-md ${
+                      className={`text-[10px] font-black px-1.5 py-0.5 rounded-md ${
                         isLight
                           ? "bg-slate-200 text-slate-700"
                           : "bg-slate-800 text-slate-300"
@@ -626,18 +626,18 @@ export default function TeamPage() {
                     >
                       L2
                     </span>
-                    <span className="font-extrabold text-xs sm:text-sm tracking-wide">
+                    <span className="font-extrabold text-xs tracking-wide">
                       Level -2
                     </span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="px-5 py-1 rounded-full bg-[#020a1f] text-amber-300 font-black font-mono text-sm sm:text-base border-2 border-amber-400/70 shadow-[0_2px_8px_rgba(0,0,0,0.25)]">
+                  <div className="flex items-center gap-1.5">
+                    <span className="px-3.5 py-0.5 rounded-full bg-[#020a1f] text-amber-300 font-black font-mono text-xs sm:text-sm border border-amber-400/70 shadow-[0_2px_6px_rgba(0,0,0,0.2)]">
                       {loading
                         ? "..."
                         : `${team.level2.total}/${team.level2.active}`}
                     </span>
                     <ChevronDown
-                      size={18}
+                      size={15}
                       className={`text-amber-500 transition-transform duration-200 shrink-0 ${
                         expandedLevels[2] ? "rotate-180" : ""
                       }`}
@@ -725,15 +725,15 @@ export default function TeamPage() {
                 <button
                   type="button"
                   onClick={() => toggleLevel(3)}
-                  className={`w-full p-2.5 px-4 rounded-2xl flex items-center justify-between border shadow-xs transition-all text-left cursor-pointer active:scale-[0.99] ${
+                  className={`w-full p-2 px-3 rounded-xl flex items-center justify-between border shadow-xs transition-all text-left cursor-pointer active:scale-[0.99] ${
                     isLight
                       ? "bg-gradient-to-r from-[#f8fafc] via-[#f1f5f9] to-[#f8fafc] border-slate-200/90 hover:border-amber-300/80 hover:bg-white text-slate-800"
                       : "bg-gradient-to-r from-[#07193f] via-[#0a2358] to-[#07193f] border-amber-400/20 text-white hover:border-amber-400/40"
                   }`}
                 >
-                  <div className="flex items-center gap-2.5">
+                  <div className="flex items-center gap-2">
                     <span
-                      className={`text-[11px] font-black px-2 py-0.5 rounded-md ${
+                      className={`text-[10px] font-black px-1.5 py-0.5 rounded-md ${
                         isLight
                           ? "bg-amber-100 text-amber-900"
                           : "bg-amber-950/40 text-amber-400"
@@ -741,18 +741,18 @@ export default function TeamPage() {
                     >
                       L3
                     </span>
-                    <span className="font-extrabold text-xs sm:text-sm tracking-wide">
+                    <span className="font-extrabold text-xs tracking-wide">
                       Level -3
                     </span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="px-5 py-1 rounded-full bg-[#020a1f] text-amber-300 font-black font-mono text-sm sm:text-base border-2 border-amber-400/70 shadow-[0_2px_8px_rgba(0,0,0,0.25)]">
+                  <div className="flex items-center gap-1.5">
+                    <span className="px-3.5 py-0.5 rounded-full bg-[#020a1f] text-amber-300 font-black font-mono text-xs sm:text-sm border border-amber-400/70 shadow-[0_2px_6px_rgba(0,0,0,0.2)]">
                       {loading
                         ? "..."
                         : `${team.level3.total}/${team.level3.active}`}
                     </span>
                     <ChevronDown
-                      size={18}
+                      size={15}
                       className={`text-amber-500 transition-transform duration-200 shrink-0 ${
                         expandedLevels[3] ? "rotate-180" : ""
                       }`}
@@ -839,15 +839,15 @@ export default function TeamPage() {
 
           {/* Bottom Rules & Guidelines Card */}
           <div
-            className={`p-5 rounded-[28px] border-2 shadow-xl text-xs space-y-3 transition-all ${
+            className={`p-3.5 rounded-2xl border-2 shadow-xl text-[11px] space-y-2 transition-all ${
               isLight
-                ? "bg-white border-slate-200/90 shadow-[0_6px_22px_rgba(2,10,31,0.06)] text-slate-700"
+                ? "bg-white border-slate-200/90 shadow-[0_6px_20px_rgba(2,10,31,0.06)] text-slate-700"
                 : "bg-[#04102e]/95 border-amber-400/30 shadow-[0_0_20px_rgba(245,186,49,0.15)] text-slate-200"
             }`}
           >
             {/* Rule 1 */}
-            <div className="flex items-center gap-3 pb-2.5 border-b border-slate-200/70 dark:border-white/10">
-              <span className="w-6 h-6 rounded-full bg-gradient-to-r from-[#020a1f] to-[#0a1f4d] border border-amber-400/60 text-amber-300 flex items-center justify-center font-black text-xs shrink-0 shadow-xs">
+            <div className="flex items-center gap-2.5 pb-2 border-b border-slate-200/70 dark:border-white/10">
+              <span className="w-5 h-5 rounded-full bg-gradient-to-r from-[#020a1f] to-[#0a1f4d] border border-amber-400/60 text-amber-300 flex items-center justify-center font-black text-[10px] shrink-0 shadow-xs">
                 1
               </span>
               <p className="font-bold leading-snug">
@@ -865,9 +865,9 @@ export default function TeamPage() {
             </div>
 
             {/* Rule 2 (with 300 BDT milestone claim button) */}
-            <div className="flex flex-col gap-2 pb-2.5 border-b border-slate-200/70 dark:border-white/10">
-              <div className="flex items-center gap-3">
-                <span className="w-6 h-6 rounded-full bg-gradient-to-r from-[#020a1f] to-[#0a1f4d] border border-amber-400/60 text-amber-300 flex items-center justify-center font-black text-xs shrink-0 shadow-xs">
+            <div className="flex flex-col gap-1.5 pb-2 border-b border-slate-200/70 dark:border-white/10">
+              <div className="flex items-center gap-2.5">
+                <span className="w-5 h-5 rounded-full bg-gradient-to-r from-[#020a1f] to-[#0a1f4d] border border-amber-400/60 text-amber-300 flex items-center justify-center font-black text-[10px] shrink-0 shadow-xs">
                   2
                 </span>
                 <p className="font-bold leading-snug">
@@ -922,8 +922,8 @@ export default function TeamPage() {
             </div>
 
             {/* Rule 3 */}
-            <div className="flex items-start gap-3 pb-2.5 border-b border-slate-200/70 dark:border-white/10">
-              <span className="w-6 h-6 rounded-full bg-gradient-to-r from-[#020a1f] to-[#0a1f4d] border border-amber-400/60 text-amber-300 flex items-center justify-center font-black text-xs shrink-0 shadow-xs mt-0.5">
+            <div className="flex items-start gap-2.5 pb-2 border-b border-slate-200/70 dark:border-white/10">
+              <span className="w-5 h-5 rounded-full bg-gradient-to-r from-[#020a1f] to-[#0a1f4d] border border-amber-400/60 text-amber-300 flex items-center justify-center font-black text-[10px] shrink-0 shadow-xs mt-0.5">
                 3
               </span>
               <p className="font-bold leading-snug">
@@ -962,8 +962,8 @@ export default function TeamPage() {
             </div>
 
             {/* Rule 4 */}
-            <div className="flex items-center gap-3">
-              <span className="w-6 h-6 rounded-full bg-gradient-to-r from-[#020a1f] to-[#0a1f4d] border border-amber-400/60 text-amber-300 flex items-center justify-center font-black text-xs shrink-0 shadow-xs">
+            <div className="flex items-center gap-2.5">
+              <span className="w-5 h-5 rounded-full bg-gradient-to-r from-[#020a1f] to-[#0a1f4d] border border-amber-400/60 text-amber-300 flex items-center justify-center font-black text-[10px] shrink-0 shadow-xs">
                 4
               </span>
               <p className="font-bold leading-snug">

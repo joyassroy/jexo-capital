@@ -33,9 +33,10 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { code, amount, maxUses, expiresAt } = body;
 
-    if (!code || !amount) {
+    const numAmount = Number(amount);
+    if (!code || !amount || isNaN(numAmount) || numAmount <= 0) {
       return NextResponse.json(
-        { error: "Please enter code name and reward amount." },
+        { error: "Please enter a valid code name and positive reward amount." },
         { status: 400 }
       );
     }
@@ -51,7 +52,7 @@ export async function POST(req: NextRequest) {
 
     const newGift = await GiftCode.create({
       code: cleanCode,
-      amount: Number(amount),
+      amount: numAmount,
       maxUses: Number(maxUses) || 1,
       expiresAt: expiresAt ? new Date(expiresAt) : undefined,
       isActive: true,

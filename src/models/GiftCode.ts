@@ -14,7 +14,7 @@ const GiftCodeSchema = new Schema<IGiftCode>(
     amount: {
       type: Number,
       required: true,
-      min: 1,
+      min: 0.0001,
     },
     maxUses: {
       type: Number,

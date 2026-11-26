@@ -65,7 +65,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    user.balance += gift.amount;
+    user.balance = Number((user.balance + gift.amount).toFixed(4));
     await user.save();
 
     // Record transaction

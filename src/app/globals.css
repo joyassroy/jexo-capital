@@ -455,22 +455,12 @@ html.light body {
 /* Light / Day Mode Overrides for VIP Page elements */
 .light .vip-balance-card {
   background: #ffffff !important;
-  border-color: #e2e8f0 !important;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06) !important;
+  border-color: #bae6fd !important;
+  box-shadow: 0 4px 18px rgba(2, 132, 199, 0.08) !important;
 }
 
-.light .vip-tier-card {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.light .vip-tier-card:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08) !important;
-}
-
-/* Dark mode tier card hover */
-.vip-tier-card:hover {
-  transform: translateY(-1px);
+.light .vip-balance-card span.text-\[\#f5ba31\] {
+  color: #0284c7 !important;
 }
 
 .light .vip-badge-pill {

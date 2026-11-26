@@ -68,7 +68,7 @@ function LoginForm() {
       }
 
       toast.success("Login successful! Welcome back.");
-      const redirectUrl = searchParams.get("redirect") || "/profile";
+      const redirectUrl = searchParams.get("redirect") || "/";
       setTimeout(() => {
         window.location.href = redirectUrl;
       }, 700);

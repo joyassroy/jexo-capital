@@ -151,7 +151,7 @@ function RegisterForm() {
 
       toast.success("Account created successfully! Welcome to Jexo Capital.");
       setTimeout(() => {
-        window.location.href = "/profile";
+        window.location.href = "/";
       }, 700);
     } catch {
       setError("An unexpected error occurred. Please try again.");

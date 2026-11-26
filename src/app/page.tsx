@@ -58,7 +58,7 @@ export default function HomePage() {
   const bannerSlides = [
     {
       src: banner1 || "/homepage-banner.jpg",
-      alt: "Zexo Capital Global Conference",
+      alt: "Jexo Capital Global Conference",
       tag: t("live_summit"),
       badge: t("usa_official"),
       title: t("conf_title"),
@@ -66,7 +66,7 @@ export default function HomePage() {
     },
     {
       src: banner2 || "/homepage-banner-2.jpg",
-      alt: "Zexo Capital Global Investor Delegation",
+      alt: "Jexo Capital Global Investor Delegation",
       tag: t("delegates_tag"),
       badge: t("global_forum"),
       title: t("delegates_title"),
@@ -290,14 +290,14 @@ export default function HomePage() {
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_85%_30%,rgba(0,210,255,0.45),transparent_60%)] pointer-events-none" />
 
           <div className="relative z-10 flex items-center justify-between px-4 pt-2.5 pb-1.5">
-            {/* Authentic Speed Z Logo + Zexo Capital Pure White Title */}
+            {/* Authentic Speed Z Logo + Jexo Capital Pure White Title */}
             <div className="flex items-center gap-2">
               <Logo size={30} showText={false} />
               <span
                 style={{ color: "#ffffff", WebkitTextFillColor: "#ffffff" }}
                 className="font-black text-xl tracking-wide logo-white-text !text-white drop-shadow-[0_1px_4px_rgba(0,0,0,0.25)] select-none"
               >
-                Zexo Capital
+                Jexo Capital
               </span>
             </div>
 
@@ -322,7 +322,7 @@ export default function HomePage() {
           <div className="flex items-center gap-2">
             <Logo size={34} showText={false} />
             <span className="font-black text-xl tracking-wide bg-clip-text text-transparent bg-gradient-to-r from-[#ffe58f] via-[#f5ba31] to-[#e69e05] drop-shadow-[0_2px_12px_rgba(245,186,49,0.35)]">
-              Zexo Capital
+              Jexo Capital
             </span>
           </div>
 

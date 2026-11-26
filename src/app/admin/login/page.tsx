@@ -47,7 +47,7 @@ export default function AdminLoginPage() {
             <Shield size={36} />
           </div>
           <h1 className="text-2xl font-black text-white tracking-tight">
-            Zexo Capital Admin
+            Jexo Capital Admin
           </h1>
           <p className="text-xs text-slate-400 mt-1">
             Secure Management & Financial Operations Portal
@@ -70,7 +70,7 @@ export default function AdminLoginPage() {
               <User size={18} className="text-slate-400 mr-2.5 flex-shrink-0" />
               <input
                 type="text"
-                placeholder="admin or admin@zexocapital.com"
+                placeholder="admin or admin@jexocapital.com"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 className="w-full bg-transparent text-sm text-white placeholder-slate-500 outline-none font-medium"

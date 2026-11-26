@@ -57,15 +57,15 @@ const SettingSchema = new Schema<ISetting>(
     },
     telegramGroupUrl: {
       type: String,
-      default: "https://t.me/zexocapital_group",
+      default: "https://t.me/jexocapital_group",
     },
     telegramChannelUrl: {
       type: String,
-      default: "https://t.me/zexocapital_channel",
+      default: "https://t.me/jexocapital_channel",
     },
     homeTickerText: {
       type: String,
-      default: "Zexo Capital is a USA-based International Investment Platform.",
+      default: "Jexo Capital is a USA-based International Investment Platform.",
     },
     homeBanner1: {
       type: String,

@@ -77,7 +77,7 @@ export default function AdminLayout({
             <Shield size={18} />
           </div>
           <span className="font-extrabold text-base tracking-tight">
-            Zexo Admin
+            Jexo Admin
           </span>
         </div>
 
@@ -103,7 +103,7 @@ export default function AdminLayout({
             </div>
             <div>
               <div className="font-black text-lg tracking-tight text-white leading-tight">
-                Zexo Capital
+                Jexo Capital
               </div>
               <div className="text-[10px] font-bold text-cyan-400 uppercase tracking-wider">
                 Admin Panel

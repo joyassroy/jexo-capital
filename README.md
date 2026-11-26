@@ -1,6 +1,6 @@
 # jexo-capital
 
-> **Zexo Capital** — A high-performance, mobile-first investment & financial rewards platform built with Next.js 14 (App Router), TypeScript, Tailwind CSS, and MongoDB Atlas.
+> **Jexo Capital** — A high-performance, mobile-first investment & financial rewards platform built with Next.js 14 (App Router), TypeScript, Tailwind CSS, and MongoDB Atlas.
 
 ---
 

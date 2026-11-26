@@ -29,7 +29,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         applyTheme("dark");
         return;
       }
-      const saved = localStorage.getItem("zexo_theme") as Theme | null;
+      const saved = (localStorage.getItem("jexo_theme") || localStorage.getItem("zexo_theme")) as Theme | null;
       // Initial default theme is White / Light mode unless explicitly switched to dark by the user
       const initialTheme: Theme = saved === "dark" ? "dark" : "light";
       setThemeState(initialTheme);
@@ -71,6 +71,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const setTheme = (newTheme: Theme) => {
     setThemeState(newTheme);
     try {
+      localStorage.setItem("jexo_theme", newTheme);
       localStorage.setItem("zexo_theme", newTheme);
     } catch {}
     applyTheme(newTheme);

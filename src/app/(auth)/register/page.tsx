@@ -310,7 +310,7 @@ export default function RegisterPage() {
         {/* Titles */}
         <div className="text-center mb-5">
           <h2 className="text-2xl sm:text-3xl font-black tracking-tight auth-heading">
-            Welcome to Zexo Capital
+            Welcome to Jexo Capital
           </h2>
           <div className="flex items-center justify-center gap-2 mt-2">
             <span className="h-[1px] w-6 bg-amber-400/50" />

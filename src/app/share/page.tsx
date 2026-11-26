@@ -55,7 +55,7 @@ export default function SharePage() {
   const origin =
     typeof window !== "undefined" && window.location.origin
       ? window.location.origin
-      : "https://zexocapital.com";
+      : "https://jexocapital.com";
 
   const referralLink = referralCode
     ? `${origin}/register?ref=${referralCode}`

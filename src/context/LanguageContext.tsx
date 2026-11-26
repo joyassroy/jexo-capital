@@ -43,12 +43,12 @@ export const translations: Record<Language, Record<string, string>> = {
     // Banner & Announcements
     live_summit: "LIVE SUMMIT",
     usa_official: "USA Official",
-    conf_title: "Zexo Capital International Conference",
+    conf_title: "Jexo Capital International Conference",
     conf_subtitle: "Invest • Grow • Prosper | Keynote Session",
     delegates_tag: "500+ DELEGATES",
     global_forum: "Global Forum",
     delegates_title: "Global Investor Delegation Summit",
-    ticker_default: "Zexo Capital is a USA-based International Investment Platform",
+    ticker_default: "Jexo Capital is a USA-based International Investment Platform",
 
     // Balance Card
     balance: "Balance",
@@ -67,7 +67,7 @@ export const translations: Record<Language, Record<string, string>> = {
     withdraw: "Withdraw",
     logout: "Logout",
     customer_service: "Customer Service",
-    intro_zexo: "Introduction to Zexo Capital",
+    intro_zexo: "Introduction to Jexo Capital",
     confirm_logout: "Are you sure you want to log out?",
 
     // Bottom Navigation
@@ -192,10 +192,10 @@ export const translations: Record<Language, Record<string, string>> = {
     save_changes: "Save Changes",
 
     // Auth Pages
-    login_title: "Welcome to Zexo Capital",
+    login_title: "Welcome to Jexo Capital",
     login_subheading: "Login to continue your investment journey",
     register_title: "Create Account",
-    register_subheading: "Join Zexo Capital and grow your wealth",
+    register_subheading: "Join Jexo Capital and grow your wealth",
     phone_placeholder: "Phone number",
     password_placeholder: "Password",
     login_button: "Sign In",
@@ -377,10 +377,10 @@ export const translations: Record<Language, Record<string, string>> = {
     save_changes: "সংরক্ষণ করুন",
 
     // Auth Pages
-    login_title: "Welcome to Zexo Capital",
+    login_title: "Welcome to Jexo Capital",
     login_subheading: "Login to continue your investment journey",
     register_title: "Create Account",
-    register_subheading: "Join Zexo Capital and grow your wealth",
+    register_subheading: "Join Jexo Capital and grow your wealth",
     phone_placeholder: "ফোন নম্বর",
     password_placeholder: "পাসওয়ার্ড",
     login_button: "লগইন করুন",
@@ -413,12 +413,12 @@ export const translations: Record<Language, Record<string, string>> = {
     // Banner & Announcements
     live_summit: "قمة مباشرة",
     usa_official: "رسمي من أمريكا",
-    conf_title: "مؤتمر زيكسو كابيتال الدولي",
+    conf_title: "مؤتمر جيكسو كابيتال الدولي",
     conf_subtitle: "استثمار • نمو • ازدهار | الجلسة الافتتاحية",
     delegates_tag: "+500 مندوب",
     global_forum: "منتدى عالمي",
     delegates_title: "قمة وفد المستثمرين العالمي",
-    ticker_default: "زيكسو كابيتال هي منصة استثمار دولية مقرها الولايات المتحدة الأمريكية",
+    ticker_default: "جيكسو كابيتال هي منصة استثمار دولية مقرها الولايات المتحدة الأمريكية",
 
     // Balance Card
     balance: "الرصيد",
@@ -437,7 +437,7 @@ export const translations: Record<Language, Record<string, string>> = {
     withdraw: "سحب",
     logout: "تسجيل الخروج",
     customer_service: "خدمة العملاء",
-    intro_zexo: "مقدمة عن زيكسو كابيتال",
+    intro_zexo: "مقدمة عن جيكسو كابيتال",
     confirm_logout: "هل أنت متأكد أنك تريد تسجيل الخروج؟",
 
     // Bottom Navigation
@@ -562,10 +562,10 @@ export const translations: Record<Language, Record<string, string>> = {
     save_changes: "حفظ التغييرات",
 
     // Auth Pages
-    login_title: "Welcome to Zexo Capital",
+    login_title: "Welcome to Jexo Capital",
     login_subheading: "Login to continue your investment journey",
     register_title: "Create Account",
-    register_subheading: "Join Zexo Capital and grow your wealth",
+    register_subheading: "Join Jexo Capital and grow your wealth",
     phone_placeholder: "رقم الهاتف",
     password_placeholder: "كلمة المرور",
     login_button: "تسجيل الدخول",
@@ -598,12 +598,12 @@ export const translations: Record<Language, Record<string, string>> = {
     // Banner & Announcements
     live_summit: "现场峰会",
     usa_official: "美国官方",
-    conf_title: "Zexo Capital 国际投资峰会",
+    conf_title: "Jexo Capital 国际投资峰会",
     conf_subtitle: "投资 • 增长 • 繁荣 | 主题演讲",
     delegates_tag: "500+ 代表",
     global_forum: "全球论坛",
     delegates_title: "全球投资者代表团峰会",
-    ticker_default: "Zexo Capital 是一家总部位于美国的国际投资财富管理平台",
+    ticker_default: "Jexo Capital 是一家总部位于美国的国际投资财富管理平台",
 
     // Balance Card
     balance: "账户余额",
@@ -622,7 +622,7 @@ export const translations: Record<Language, Record<string, string>> = {
     withdraw: "申请提现",
     logout: "退出登录",
     customer_service: "在线客服",
-    intro_zexo: "Zexo Capital 平台介绍",
+    intro_zexo: "Jexo Capital 平台介绍",
     confirm_logout: "您确定要退出登录吗？",
 
     // Bottom Navigation
@@ -747,10 +747,10 @@ export const translations: Record<Language, Record<string, string>> = {
     save_changes: "保存更改",
 
     // Auth Pages
-    login_title: "Welcome to Zexo Capital",
+    login_title: "Welcome to Jexo Capital",
     login_subheading: "Login to continue your investment journey",
     register_title: "Create Account",
-    register_subheading: "Join Zexo Capital and grow your wealth",
+    register_subheading: "Join Jexo Capital and grow your wealth",
     phone_placeholder: "手机号码",
     password_placeholder: "登录密码",
     login_button: "立即登录",
@@ -791,7 +791,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     setMounted(true);
     try {
-      const saved = localStorage.getItem("zexo_language") as Language | null;
+      const saved = (localStorage.getItem("jexo_language") || localStorage.getItem("zexo_language")) as Language | null;
       if (saved && ["en", "bn", "ar", "zh"].includes(saved)) {
         setLanguageState(saved);
         applyLanguage(saved);
@@ -818,6 +818,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
     try {
+      localStorage.setItem("jexo_language", lang);
       localStorage.setItem("zexo_language", lang);
     } catch {}
     applyLanguage(lang);

@@ -6,7 +6,7 @@ import { HelpCircle } from "lucide-react";
 export default function FaqPage() {
   const faqs = [
     {
-      q: "1. How do I register for a Zexo Capital account?",
+      q: "1. How do I register for a Jexo Capital account?",
       a: "Register by providing your nickname, mobile phone number, and a secure password.",
     },
     {

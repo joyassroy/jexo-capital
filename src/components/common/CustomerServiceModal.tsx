@@ -31,8 +31,8 @@ interface CustomerServiceProps {
 
 export default function CustomerServiceModal({
   whatsappUrl = "https://wa.me/8801728967166",
-  telegramGroupUrl = "https://t.me/zexocapital_group",
-  telegramChannelUrl = "https://t.me/zexocapital_channel",
+  telegramGroupUrl = "https://t.me/jexocapital_group",
+  telegramChannelUrl = "https://t.me/jexocapital_channel",
 }: CustomerServiceProps) {
   const { t } = useLanguage();
   const { theme } = useTheme();
@@ -128,7 +128,7 @@ export default function CustomerServiceModal({
                   isLight ? "text-slate-900" : "text-white"
                 }`}
               >
-                Zexo Capital {t("customer_service")}
+                Jexo Capital {t("customer_service")}
               </h3>
               <p
                 className={`text-xs mt-0.5 ${

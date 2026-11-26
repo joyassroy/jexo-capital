@@ -6,8 +6,8 @@ import { LanguageProvider } from "@/context/LanguageContext";
 import { ToastProvider } from "@/context/ToastContext";
 
 export const metadata: Metadata = {
-  title: "Zexo Capital - Invest • Grow • Prosper",
-  description: "Zexo Capital is a USA-based International Investment Platform.",
+  title: "Jexo Capital - Invest • Grow • Prosper",
+  description: "Jexo Capital is a USA-based International Investment Platform.",
   manifest: "/manifest.json",
   icons: {
     icon: "/favicon.ico",
@@ -34,7 +34,7 @@ export default function RootLayout({
             __html: `
               try {
                 var isAdm = window.location.pathname.indexOf('/admin') === 0;
-                var t = localStorage.getItem('zexo_theme');
+                var t = localStorage.getItem('jexo_theme') || localStorage.getItem('zexo_theme');
                 if (isAdm || t === 'dark') {
                   document.documentElement.classList.add('dark');
                   document.documentElement.classList.remove('light');

@@ -76,7 +76,7 @@ export default function Logo({ size = 34, showText = true }: LogoProps) {
               : ""
           }`}
         >
-          Zexo Capital
+          Jexo Capital
         </span>
       )}
     </div>

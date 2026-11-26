@@ -24,9 +24,9 @@ export async function ensureDbInitialized() {
         usdtRateBDT: 127,
         whatsappNumber: "+8801728967166",
         whatsappUrl: "https://wa.me/8801728967166",
-        telegramGroupUrl: "https://t.me/zexocapital_group",
-        telegramChannelUrl: "https://t.me/zexocapital_channel",
-        homeTickerText: "Zexo Capital is a USA-based International Investment Platform.",
+        telegramGroupUrl: "https://t.me/jexocapital_group",
+        telegramChannelUrl: "https://t.me/jexocapital_channel",
+        homeTickerText: "Jexo Capital is a USA-based International Investment Platform.",
         noticeItems: [
           "1. Our manager will never send you any messages. If someone sends you a message, please block them.",
           "2. Do not share your personal information with anyone.",
@@ -44,12 +44,12 @@ export async function ensureDbInitialized() {
         withdrawEndTime: "17:00",
         withdrawAllowedDays: [0, 1, 2, 3, 4], // Sun, Mon, Tue, Wed, Thu
       });
-      console.log("Default Zexo settings seeded.");
+      console.log("Default Jexo settings seeded.");
     }
 
     // 2. Ensure initial Admin account exists
     const adminUsername = process.env.INITIAL_ADMIN_USERNAME || "admin";
-    const adminEmail = process.env.INITIAL_ADMIN_EMAIL || "admin@zexocapital.com";
+    const adminEmail = process.env.INITIAL_ADMIN_EMAIL || "admin@jexocapital.com";
     const adminPassword = process.env.INITIAL_ADMIN_PASSWORD || "Admin@123456";
 
     const existingAdmin = await Admin.findOne({

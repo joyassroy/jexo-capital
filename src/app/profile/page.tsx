@@ -300,7 +300,7 @@ export default function ProfilePage() {
       <div className="relative h-36 w-full bg-slate-950 overflow-hidden shadow-inner">
         <Image
           src={profileBanner || "/profile-banner-hq.jpg"}
-          alt="Zexo Capital International Headquarters"
+          alt="Jexo Capital International Headquarters"
           fill
           className="object-cover object-center"
           priority

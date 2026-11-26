@@ -30,8 +30,8 @@ export default function SupportPage() {
   const [mounted, setMounted] = useState(false);
   const [urls, setUrls] = useState({
     whatsapp: "https://wa.me/8801728967166",
-    telegramGroup: "https://t.me/zexocapital_group",
-    telegramChannel: "https://t.me/zexocapital_channel",
+    telegramGroup: "https://t.me/jexocapital_group",
+    telegramChannel: "https://t.me/jexocapital_channel",
   });
 
   useEffect(() => {
@@ -45,9 +45,9 @@ export default function SupportPage() {
               ? `https://wa.me/${data.settings.adminWhatsapp.replace(/[^0-9]/g, "")}`
               : "https://wa.me/8801728967166",
             telegramGroup:
-              data.settings.telegramGroup || "https://t.me/zexocapital_group",
+              data.settings.telegramGroup || "https://t.me/jexocapital_group",
             telegramChannel:
-              data.settings.telegramChannel || "https://t.me/zexocapital_channel",
+              data.settings.telegramChannel || "https://t.me/jexocapital_channel",
           });
         }
       })
@@ -90,7 +90,7 @@ export default function SupportPage() {
                 isLight ? "text-slate-900" : "text-white"
               }`}
             >
-              Zexo Capital Customer Service
+              Jexo Capital Customer Service
             </h2>
             <p
               className={`text-xs mt-1.5 leading-relaxed font-semibold ${

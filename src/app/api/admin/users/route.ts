@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import { User } from "@/models/User";
+import { Setting } from "@/models/Setting";
 import { getCurrentAdmin, hashPassword } from "@/lib/auth";
 import { syncUserVipWithBalance } from "@/lib/vip";
 
@@ -26,9 +27,12 @@ export async function GET(req: NextRequest) {
       ];
     }
 
-    const rawUsers = await User.find(query)
-      .sort({ createdAt: -1 })
-      .lean();
+    const [rawUsers, setting] = await Promise.all([
+      User.find(query).sort({ createdAt: -1 }).lean(),
+      Setting.findOne({ key: "default_settings" }).lean(),
+    ]);
+
+    const usdtRate = setting?.usdtRateBDT || 127;
 
     const users = rawUsers.map((u) => {
       const { passwordHash: _p, withdrawPasswordHash, ...rest } = u;
@@ -38,7 +42,7 @@ export async function GET(req: NextRequest) {
       };
     });
 
-    return NextResponse.json({ success: true, users });
+    return NextResponse.json({ success: true, users, usdtRate });
   } catch (error: unknown) {
     console.error("Admin Get Users Error:", error);
     const message = error instanceof Error ? error.message : "Failed to fetch users.";
@@ -70,7 +74,10 @@ export async function PATCH(req: NextRequest) {
     }
 
     if (typeof balanceAdjustment === "number") {
-      user.balance += balanceAdjustment;
+      user.balance = Math.max(
+        0,
+        Number((user.balance + balanceAdjustment).toFixed(4))
+      );
     }
 
     if (status && ["active", "blocked"].includes(status)) {

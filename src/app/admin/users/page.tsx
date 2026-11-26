@@ -20,6 +20,7 @@ interface UserItem {
 
 export default function AdminUsersPage() {
   const [users, setUsers] = useState<UserItem[]>([]);
+  const [usdtRate, setUsdtRate] = useState<number>(127);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -27,6 +28,7 @@ export default function AdminUsersPage() {
   const [selectedUser, setSelectedUser] = useState<UserItem | null>(null);
   const [adjustAmount, setAdjustAmount] = useState<string>("");
   const [adjustType, setAdjustType] = useState<"credit" | "debit">("credit");
+  const [adjustCurrency, setAdjustCurrency] = useState<"USDT" | "BDT">("USDT");
   const [adjusting, setAdjusting] = useState(false);
 
   // Password management modal
@@ -47,6 +49,7 @@ export default function AdminUsersPage() {
       .then((res) => res.json())
       .then((data) => {
         if (data?.users) setUsers(data.users);
+        if (data?.usdtRate) setUsdtRate(data.usdtRate);
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -82,8 +85,15 @@ export default function AdminUsersPage() {
     e.preventDefault();
     if (!selectedUser || !adjustAmount) return;
 
-    const delta =
-      adjustType === "credit" ? Number(adjustAmount) : -Number(adjustAmount);
+    const rawVal = Number(adjustAmount);
+    if (!rawVal || isNaN(rawVal) || rawVal <= 0) return;
+
+    const usdtVal =
+      adjustCurrency === "BDT"
+        ? Number((rawVal / usdtRate).toFixed(4))
+        : Number(rawVal.toFixed(4));
+
+    const delta = adjustType === "credit" ? usdtVal : -usdtVal;
 
     setAdjusting(true);
 
@@ -199,28 +209,132 @@ export default function AdminUsersPage() {
           </p>
         </div>
 
-        <form onSubmit={handleSearchSubmit} className="flex gap-2">
-          <div className="flex items-center bg-[#1E293B] border border-slate-700 rounded-xl px-3 py-1.5 focus-within:border-blue-500">
-            <Search size={16} className="text-slate-400 mr-2" />
+        <form onSubmit={handleSearchSubmit} className="flex gap-2 w-full sm:w-auto">
+          <div className="flex items-center flex-1 sm:flex-initial bg-[#1E293B] border border-slate-700 rounded-xl px-3 py-2 sm:py-1.5 focus-within:border-blue-500">
+            <Search size={16} className="text-slate-400 mr-2 shrink-0" />
             <input
               type="text"
               placeholder="Search phone or nickname..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="bg-transparent text-xs text-white outline-none w-44"
+              className="bg-transparent text-xs text-white outline-none w-full sm:w-44"
             />
           </div>
           <button
             type="submit"
-            className="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs"
+            className="px-3.5 py-2 sm:py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shrink-0"
           >
             Search
           </button>
         </form>
       </div>
 
-      {/* Table */}
-      <div className="rounded-2xl bg-[#1E293B] border border-slate-800 overflow-hidden shadow-xl">
+      {/* Mobile Card View (< md) */}
+      <div className="md:hidden space-y-3">
+        {loading ? (
+          <div className="p-8 text-center text-slate-500 bg-[#1E293B] rounded-2xl border border-slate-800 text-xs">
+            Loading users...
+          </div>
+        ) : users.length === 0 ? (
+          <div className="p-8 text-center text-slate-500 bg-[#1E293B] rounded-2xl border border-slate-800 text-xs">
+            No users found.
+          </div>
+        ) : (
+          users.map((u) => (
+            <div
+              key={u._id}
+              className="p-4 rounded-2xl bg-[#1E293B] border border-slate-800 shadow-lg space-y-3"
+            >
+              {/* Top row: Nickname, Phone, Status */}
+              <div className="flex items-start justify-between gap-2">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-black text-white text-sm">
+                      {u.nickname}
+                    </span>
+                    <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30 text-[10px] font-bold">
+                      Vip {u.vipLevel}
+                    </span>
+                  </div>
+                  <div className="font-mono text-xs text-slate-300 mt-0.5">
+                    {u.phone}
+                  </div>
+                </div>
+                <span
+                  className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border shrink-0 ${
+                    u.status === "active"
+                      ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30"
+                      : "bg-red-500/10 text-red-400 border-red-500/30"
+                  }`}
+                >
+                  {u.status}
+                </span>
+              </div>
+
+              {/* Middle grid: Balance (USDT & BDT), Referral Code, Team */}
+              <div className="grid grid-cols-3 gap-2 p-2.5 rounded-xl bg-[#0F172A] border border-slate-800 text-xs">
+                <div>
+                  <div className="text-[10px] text-slate-400 font-semibold">
+                    Balance
+                  </div>
+                  <div className="font-black text-emerald-400 font-mono mt-0.5">
+                    {Number(u.balance).toFixed(2)} USDT
+                  </div>
+                  <div className="text-[10px] text-amber-400 font-mono font-bold">
+                    ≈ {(Number(u.balance) * usdtRate).toFixed(0)} Tk
+                  </div>
+                </div>
+                <div>
+                  <div className="text-[10px] text-slate-400 font-semibold">
+                    Ref Code
+                  </div>
+                  <div className="font-mono text-cyan-400 font-bold mt-0.5">
+                    {u.referralCode}
+                  </div>
+                </div>
+                <div>
+                  <div className="text-[10px] text-slate-400 font-semibold">
+                    Team
+                  </div>
+                  <div className="font-black text-blue-400 mt-0.5">
+                    {u.referralCount}
+                  </div>
+                </div>
+              </div>
+
+              {/* Action buttons */}
+              <div className="grid grid-cols-3 gap-2 pt-0.5">
+                <button
+                  onClick={() => openPasswordModal(u)}
+                  className="flex items-center justify-center gap-1 py-2 px-2 rounded-xl bg-amber-500/20 hover:bg-amber-500 text-amber-300 hover:text-[#020a1f] font-bold text-[11px] transition-colors"
+                >
+                  <KeyRound size={12} />
+                  <span>Passwords</span>
+                </button>
+                <button
+                  onClick={() => setSelectedUser(u)}
+                  className="py-2 px-2 rounded-xl bg-blue-600/30 hover:bg-blue-600 text-blue-300 hover:text-white font-bold text-[11px] transition-colors text-center"
+                >
+                  Balance
+                </button>
+                <button
+                  onClick={() => toggleUserStatus(u)}
+                  className={`py-2 px-2 rounded-xl text-[11px] font-bold transition-colors text-center ${
+                    u.status === "active"
+                      ? "bg-red-500/20 text-red-300 hover:bg-red-600 hover:text-white"
+                      : "bg-emerald-500/20 text-emerald-300 hover:bg-emerald-600 hover:text-white"
+                  }`}
+                >
+                  {u.status === "active" ? "Block" : "Activate"}
+                </button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* Desktop Table (>= md) */}
+      <div className="hidden md:block rounded-2xl bg-[#1E293B] border border-slate-800 overflow-hidden shadow-xl">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[920px] text-left text-xs text-slate-300">
             <thead className="bg-slate-800/80 text-slate-400 font-bold uppercase tracking-wider text-[10px]">
@@ -260,8 +374,13 @@ export default function AdminUsersPage() {
                         Vip {u.vipLevel}
                       </span>
                     </td>
-                    <td className="p-4 font-black text-white text-sm">
-                      {Number(u.balance).toFixed(2)} TK
+                    <td className="p-4 whitespace-nowrap">
+                      <div className="font-black text-white text-sm font-mono">
+                        {Number(u.balance).toFixed(2)} USDT
+                      </div>
+                      <div className="text-[11px] font-bold text-amber-400 font-mono">
+                        ≈ {(Number(u.balance) * usdtRate).toFixed(0)} Tk
+                      </div>
                     </td>
                     <td className="p-4">
                       <span
@@ -314,12 +433,17 @@ export default function AdminUsersPage() {
             <h3 className="text-base font-black text-white">
               Adjust Balance for {selectedUser.nickname}
             </h3>
-            <p className="text-xs text-slate-400">
-              Current Balance:{" "}
-              <span className="font-bold text-white">
-                {selectedUser.balance} TK
-              </span>
-            </p>
+            <div className="p-3 rounded-xl bg-[#0F172A] border border-slate-800 text-xs flex items-center justify-between">
+              <span className="text-slate-400">Current Balance:</span>
+              <div className="text-right">
+                <div className="font-black text-emerald-400 font-mono">
+                  {Number(selectedUser.balance).toFixed(2)} USDT
+                </div>
+                <div className="text-[11px] font-bold text-amber-400 font-mono">
+                  ≈ {(Number(selectedUser.balance) * usdtRate).toFixed(0)} Tk
+                </div>
+              </div>
+            </div>
 
             <form onSubmit={handleAdjustBalance} className="space-y-4">
               <div className="grid grid-cols-2 gap-2">
@@ -347,18 +471,53 @@ export default function AdminUsersPage() {
                 </button>
               </div>
 
+              {/* Currency Toggle: USDT or BDT */}
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setAdjustCurrency("USDT")}
+                  className={`py-1.5 rounded-xl text-xs font-bold border transition-all ${
+                    adjustCurrency === "USDT"
+                      ? "bg-cyan-600/20 border-cyan-400 text-cyan-300"
+                      : "bg-slate-800 border-slate-700 text-slate-400"
+                  }`}
+                >
+                  In USDT
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setAdjustCurrency("BDT")}
+                  className={`py-1.5 rounded-xl text-xs font-bold border transition-all ${
+                    adjustCurrency === "BDT"
+                      ? "bg-amber-500/20 border-amber-400 text-amber-300"
+                      : "bg-slate-800 border-slate-700 text-slate-400"
+                  }`}
+                >
+                  In BDT (Tk)
+                </button>
+              </div>
+
               <div>
                 <label className="block text-xs font-semibold text-slate-300 mb-1">
-                  Amount in TK
+                  Amount in {adjustCurrency === "USDT" ? "USDT" : "BDT (Tk)"}
                 </label>
                 <input
                   type="number"
-                  placeholder="Enter amount"
+                  step="any"
+                  min="0.0001"
+                  placeholder={adjustCurrency === "USDT" ? "e.g. 5.00" : "e.g. 500"}
                   value={adjustAmount}
                   onChange={(e) => setAdjustAmount(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#0F172A] border border-slate-700 text-sm font-bold text-white outline-none"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#0F172A] border border-slate-700 text-sm font-bold text-white outline-none font-mono"
                   required
                 />
+                {Number(adjustAmount) > 0 && (
+                  <div className="text-[11px] font-mono font-bold mt-1.5 text-amber-400">
+                    {adjustCurrency === "USDT"
+                      ? `≈ ${(Number(adjustAmount) * usdtRate).toFixed(2)} Tk`
+                      : `≈ ${(Number(adjustAmount) / usdtRate).toFixed(4)} USDT`}
+                  </div>
+                )}
               </div>
 
               <div className="flex gap-2 pt-2">

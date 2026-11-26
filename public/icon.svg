@@ -1,0 +1,35 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" rx="108" fill="url(#bgGrad)" />
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a1f52" />
+      <stop offset="100%" stop-color="#020a1f" />
+    </linearGradient>
+    <linearGradient id="logoZSwoosh" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00D2FF" />
+      <stop offset="50%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#80E5FF" />
+    </linearGradient>
+    <linearGradient id="logoZGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFE58F" />
+      <stop offset="50%" stop-color="#F5BA31" />
+      <stop offset="100%" stop-color="#D49002" />
+    </linearGradient>
+  </defs>
+  <g transform="translate(86, 110) scale(7.7)">
+    <path
+      d="M6 7 C6 7, 9.5 3, 15 3 L37 3 C39.5 3, 40.5 4.5, 39 6.5 L24 22 L37 22 C39.5 22, 40.5 23.5, 39 25.5 L34 32 C32.5 34, 29.5 34, 26 34 L6 34 C3 34, 2 32.5, 3.5 30.5 L18 15 L6 15 C3.5 15, 2.5 13.5, 4 11 Z"
+      fill="url(#logoZGold)"
+    />
+    <path
+      d="M2 23 C10 26, 30 25, 41 12 C30 20, 11 19, 2 23 Z"
+      fill="url(#logoZSwoosh)"
+      opacity="0.95"
+    />
+    <path
+      d="M9 9 C18 5, 32 6, 38 12 C32 8, 18 7, 9 9 Z"
+      fill="#FFFFFF"
+      opacity="0.9"
+    />
+  </g>
+</svg>

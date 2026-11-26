@@ -10,7 +10,18 @@ export const metadata: Metadata = {
   description: "Jexo Capital is a USA-based International Investment Platform.",
   manifest: "/manifest.json",
   icons: {
-    icon: "/favicon.ico",
+    icon: [
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Jexo Capital",
   },
 };
 
@@ -19,6 +30,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
+  themeColor: "#05143a",
 };
 
 export default function RootLayout({
@@ -55,6 +67,19 @@ export default function RootLayout({
                   localStorage.setItem('jexo_referral_code', c);
                   sessionStorage.setItem('jexo_referral_code', c);
                   document.cookie = 'jexo_ref=' + encodeURIComponent(c) + '; path=/; max-age=2592000; SameSite=Lax';
+                }
+              } catch (e) {}
+
+              try {
+                window.addEventListener('beforeinstallprompt', function(e) {
+                  e.preventDefault();
+                  window.__jexoInstallPrompt = e;
+                  window.dispatchEvent(new Event('jexo-install-ready'));
+                });
+                if ('serviceWorker' in navigator) {
+                  window.addEventListener('load', function() {
+                    navigator.serviceWorker.register('/sw.js').catch(function() {});
+                  });
                 }
               } catch (e) {}
             `,

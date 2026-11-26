@@ -39,9 +39,9 @@ export async function ensureDbInitialized() {
         ],
         minWithdrawBDT: 250,
         minWithdrawUSDT: 5,
-        withdrawFeePercent: 10,
-        withdrawStartTime: "09:00",
-        withdrawEndTime: "17:00",
+        withdrawFeePercent: 15,
+        withdrawStartTime: "10:00",
+        withdrawEndTime: "18:00",
         withdrawAllowedDays: [0, 1, 2, 3, 4], // Sun, Mon, Tue, Wed, Thu
       });
       console.log("Default Jexo settings seeded.");

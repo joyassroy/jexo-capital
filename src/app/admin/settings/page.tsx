@@ -26,9 +26,9 @@ export default function AdminSettingsPage() {
   const [minWithdrawBDT, setMinWithdrawBDT] = useState(250);
   const [minWithdrawUSDT, setMinWithdrawUSDT] = useState(6);
   const [signupBonusBDT, setSignupBonusBDT] = useState(500);
-  const [withdrawFeePercent, setWithdrawFeePercent] = useState(10);
-  const [withdrawStartTime, setWithdrawStartTime] = useState("09:00");
-  const [withdrawEndTime, setWithdrawEndTime] = useState("17:00");
+  const [withdrawFeePercent, setWithdrawFeePercent] = useState(15);
+  const [withdrawStartTime, setWithdrawStartTime] = useState("10:00");
+  const [withdrawEndTime, setWithdrawEndTime] = useState("18:00");
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -60,9 +60,9 @@ export default function AdminSettingsPage() {
           setMinWithdrawBDT(s.minWithdrawBDT || 250);
           setMinWithdrawUSDT(s.minWithdrawUSDT || 6);
           setSignupBonusBDT(s.signupBonusBDT ?? 500);
-          setWithdrawFeePercent(s.withdrawFeePercent || 10);
-          setWithdrawStartTime(s.withdrawStartTime || "09:00");
-          setWithdrawEndTime(s.withdrawEndTime || "17:00");
+          setWithdrawFeePercent(s.withdrawFeePercent || 15);
+          setWithdrawStartTime(s.withdrawStartTime || "10:00");
+          setWithdrawEndTime(s.withdrawEndTime || "18:00");
         }
         setLoading(false);
       })

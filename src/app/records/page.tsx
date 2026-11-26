@@ -21,6 +21,7 @@ export default function RecordsPage() {
   const { t } = useLanguage();
   const [mounted, setMounted] = useState(false);
   const [records, setRecords] = useState<RecordItem[]>([]);
+  const [usdtRate, setUsdtRate] = useState<number>(127);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -29,6 +30,7 @@ export default function RecordsPage() {
       .then((res) => res.json())
       .then((data) => {
         if (data?.records) setRecords(data.records);
+        if (data?.usdtRate) setUsdtRate(data.usdtRate);
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -122,20 +124,31 @@ export default function RecordsPage() {
                   >
                     {formatDate(item.createdAt)}
                   </div>
-                  <div
-                    className={`font-black text-right text-sm font-mono shrink-0 ${
-                      item.amount >= 0
-                        ? isLight
-                          ? "text-emerald-700"
-                          : "text-[#00e676]"
-                        : isLight
-                        ? "text-rose-700"
-                        : "text-[#ff4d4f]"
-                    }`}
-                  >
-                    {item.amount >= 0
-                      ? `+${Number(item.amount).toFixed(2)} USDT`
-                      : `${Number(item.amount).toFixed(2)} USDT`}
+                  <div className="text-right shrink-0">
+                    <div
+                      className={`font-black text-sm font-mono leading-tight ${
+                        item.amount >= 0
+                          ? isLight
+                            ? "text-emerald-700"
+                            : "text-[#00e676]"
+                          : isLight
+                          ? "text-rose-700"
+                          : "text-[#ff4d4f]"
+                      }`}
+                    >
+                      {item.amount >= 0
+                        ? `+${Number(item.amount).toFixed(2)} USDT`
+                        : `${Number(item.amount).toFixed(2)} USDT`}
+                    </div>
+                    <div
+                      className={`text-[10.5px] font-bold font-mono mt-0.5 ${
+                        isLight ? "text-amber-600" : "text-[#ffd369]/90"
+                      }`}
+                    >
+                      {item.amount >= 0
+                        ? `≈ +${(Number(item.amount) * usdtRate).toFixed(0)} Tk`
+                        : `≈ ${(Number(item.amount) * usdtRate).toFixed(0)} Tk`}
+                    </div>
                   </div>
                 </div>
               ))}

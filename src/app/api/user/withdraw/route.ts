@@ -135,6 +135,21 @@ export async function POST(req: NextRequest) {
     let setting = await Setting.findOne({ key: "default_settings" });
     if (!setting) {
       setting = await Setting.create({ key: "default_settings" });
+    } else {
+      // Auto-upgrade legacy defaults (09:00-17:00, 10%) to updated policy (10:00-18:00, 15%)
+      let needsUpdate = false;
+      if (setting.withdrawStartTime === "09:00" && setting.withdrawEndTime === "17:00") {
+        setting.withdrawStartTime = "10:00";
+        setting.withdrawEndTime = "18:00";
+        needsUpdate = true;
+      }
+      if (setting.withdrawFeePercent === 10) {
+        setting.withdrawFeePercent = 15;
+        needsUpdate = true;
+      }
+      if (needsUpdate) {
+        await setting.save();
+      }
     }
 
     const usdtRate = setting.usdtRateBDT || 127;
@@ -231,10 +246,10 @@ export async function POST(req: NextRequest) {
     const currentMinute = bdTime.getUTCMinutes();
     const currentTimeMinutes = currentHour * 60 + currentMinute;
 
-    const [startH, startM] = (setting.withdrawStartTime || "09:00")
+    const [startH, startM] = (setting.withdrawStartTime || "10:00")
       .split(":")
       .map(Number);
-    const [endH, endM] = (setting.withdrawEndTime || "17:00")
+    const [endH, endM] = (setting.withdrawEndTime || "18:00")
       .split(":")
       .map(Number);
     const startMinutes = startH * 60 + startM;
@@ -243,14 +258,14 @@ export async function POST(req: NextRequest) {
     if (currentTimeMinutes < startMinutes || currentTimeMinutes > endMinutes) {
       return NextResponse.json(
         {
-          error: `Withdrawals are only accepted between ${setting.withdrawStartTime} and ${setting.withdrawEndTime}.`,
+          error: `Withdrawals are only accepted between ${setting.withdrawStartTime || "10:00"} and ${setting.withdrawEndTime || "18:00"}.`,
         },
         { status: 400 }
       );
     }
 
-    // 5. Calculate 10% fee and arrival amount in USDT & BDT
-    const feePercent = setting.withdrawFeePercent || 10;
+    // 5. Calculate 15% fee and arrival amount in USDT & BDT
+    const feePercent = setting.withdrawFeePercent || 15;
     const chargeUSDT = Number(((amountUSDT * feePercent) / 100).toFixed(4));
     const chargeBDT = Number(((amountBDT * feePercent) / 100).toFixed(2));
     const arrivalAmountUSDT = Number((amountUSDT - chargeUSDT).toFixed(4));

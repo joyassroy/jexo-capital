@@ -625,11 +625,11 @@ export default function WithdrawPage() {
                         isLight ? "text-slate-600" : "text-slate-300"
                       }`}
                     >
-                      <span>10% Platform Fee:</span>
+                      <span>15% Platform Fee:</span>
                       <span className={isLight ? "text-rose-600 font-bold" : "text-rose-400 font-bold"}>
                         {activeTab === "Bank"
-                          ? `- ${(numAmount * 0.1).toFixed(2)} BDT`
-                          : `- ${(numAmount * 0.1).toFixed(2)} USDT`}
+                          ? `- ${(numAmount * 0.15).toFixed(2)} BDT`
+                          : `- ${(numAmount * 0.15).toFixed(2)} USDT`}
                       </span>
                     </div>
 
@@ -643,8 +643,8 @@ export default function WithdrawPage() {
                       <span>Net Arrival:</span>
                       <span className={isLight ? "text-emerald-600 font-black text-sm" : "text-emerald-400 font-black text-sm"}>
                         {activeTab === "Bank"
-                          ? `TK ${(numAmount * 0.9).toFixed(2)}`
-                          : `${(numAmount * 0.9).toFixed(2)} USDT`}
+                          ? `TK ${(numAmount * 0.85).toFixed(2)}`
+                          : `${(numAmount * 0.85).toFixed(2)} USDT`}
                       </span>
                     </div>
 
@@ -656,8 +656,8 @@ export default function WithdrawPage() {
                       <span>Equivalent:</span>
                       <span className={isLight ? "text-amber-700 font-mono font-bold" : "text-[#ffd369] font-mono"}>
                         {activeTab === "Bank"
-                          ? `≈ ${((numAmount * 0.9) / usdtRate).toFixed(4)} USDT`
-                          : `≈ TK ${((numAmount * 0.9) * usdtRate).toFixed(2)}`}
+                          ? `≈ ${((numAmount * 0.85) / usdtRate).toFixed(4)} USDT`
+                          : `≈ TK ${((numAmount * 0.85) * usdtRate).toFixed(2)}`}
                       </span>
                     </div>
                   </div>
@@ -747,6 +747,9 @@ export default function WithdrawPage() {
             </p>
             <p className="font-medium">
               4. Working days: <strong className={isLight ? "text-slate-900 font-bold" : "text-white"}>Sunday to Thursday</strong> (<span className={isLight ? "text-rose-600 font-bold" : "text-rose-400 font-bold"}>{t("weekend_badge")}</span>).
+            </p>
+            <p className="font-medium">
+              5. Withdraw time <strong className={isLight ? "text-slate-900 font-bold" : "text-white"}>10:00am to 6.00pm (18:00)</strong>. Withdrawal fee <strong className={isLight ? "text-rose-600 font-bold" : "text-rose-400 font-bold"}>15%</strong>
             </p>
           </div>
         </div>

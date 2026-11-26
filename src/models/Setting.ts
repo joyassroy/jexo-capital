@@ -106,15 +106,15 @@ const SettingSchema = new Schema<ISetting>(
     },
     withdrawFeePercent: {
       type: Number,
-      default: 10,
+      default: 15,
     },
     withdrawStartTime: {
       type: String,
-      default: "09:00",
+      default: "10:00",
     },
     withdrawEndTime: {
       type: String,
-      default: "17:00",
+      default: "18:00",
     },
     withdrawAllowedDays: {
       type: [Number],

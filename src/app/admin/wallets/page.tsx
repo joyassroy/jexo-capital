@@ -213,8 +213,8 @@ export default function AdminWalletsPage() {
       {/* Wallets Table */}
       <div className="bg-[#1E293B] border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
-            <thead className="bg-slate-900/60 text-slate-400 text-xs uppercase font-extrabold border-b border-slate-800">
+          <table className="w-full min-w-[880px] text-left text-sm">
+            <thead className="bg-slate-900/60 text-slate-400 text-xs uppercase font-extrabold border-b border-slate-800 whitespace-nowrap">
               <tr>
                 <th className="p-4">User</th>
                 <th className="p-4">Type</th>
@@ -257,30 +257,30 @@ export default function AdminWalletsPage() {
                       </td>
 
                       {/* Type Column */}
-                      <td className="p-4">
+                      <td className="p-4 whitespace-nowrap">
                         {isBep20 ? (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 text-xs font-black">
-                            <Coins size={12} />
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 text-xs font-black whitespace-nowrap">
+                            <Coins size={12} className="shrink-0" />
                             <span>USDT (BEP-20)</span>
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-pink-500/10 text-pink-400 border border-pink-500/30 text-xs font-bold">
-                            <Building2 size={12} />
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-pink-500/10 text-pink-400 border border-pink-500/30 text-xs font-bold whitespace-nowrap">
+                            <Building2 size={12} className="shrink-0" />
                             <span>{w.bankType}</span>
                           </span>
                         )}
                       </td>
 
                       {/* Address Column */}
-                      <td className="p-4 max-w-xs">
+                      <td className="p-4 min-w-[260px] max-w-xs">
                         <div className="flex items-center gap-2">
-                          <span className="font-mono text-xs font-semibold text-slate-200 break-all select-all">
+                          <span className="font-mono text-xs font-semibold text-slate-200 break-all select-all leading-relaxed">
                             {address}
                           </span>
                           {address && (
                             <button
                               onClick={() => copyToClipboard(address)}
-                              className="p-1 rounded hover:bg-slate-700 text-slate-400 hover:text-white"
+                              className="p-1.5 rounded hover:bg-slate-700 text-slate-400 hover:text-white shrink-0"
                               title="Copy"
                             >
                               <Copy size={13} />
@@ -291,7 +291,7 @@ export default function AdminWalletsPage() {
                               href={`https://bscscan.com/address/${address}`}
                               target="_blank"
                               rel="noreferrer"
-                              className="p-1 rounded hover:bg-slate-700 text-cyan-400 hover:text-cyan-300"
+                              className="p-1.5 rounded hover:bg-slate-700 text-cyan-400 hover:text-cyan-300 shrink-0"
                               title="View on BscScan"
                             >
                               <ExternalLink size={13} />
@@ -306,12 +306,12 @@ export default function AdminWalletsPage() {
                       </td>
 
                       {/* Real Name */}
-                      <td className="p-4 font-semibold text-white">
+                      <td className="p-4 font-semibold text-white whitespace-nowrap">
                         {w.realName}
                       </td>
 
                       {/* Status */}
-                      <td className="p-4">
+                      <td className="p-4 whitespace-nowrap">
                         {w.status === "approved" ? (
                           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-xs font-bold">
                             <CheckCircle2 size={12} /> Verified

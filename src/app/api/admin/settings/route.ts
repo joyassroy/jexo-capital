@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import { Setting } from "@/models/Setting";
 import { getCurrentAdmin } from "@/lib/auth";
+import { getTodayBDDate, normalizeGatewayAccounts } from "@/lib/gateway-rotation";
+import { GatewayAccount } from "@/types";
 
 export const dynamic = "force-dynamic";
 
@@ -16,6 +18,23 @@ export async function GET() {
     let setting = await Setting.findOne({ key: "default_settings" });
     if (!setting) {
       setting = await Setting.create({ key: "default_settings" });
+    }
+
+    const normBkash = normalizeGatewayAccounts(
+      setting.bkashAccounts,
+      setting.bkashNumber,
+      setting.bkashType
+    );
+    const normNagad = normalizeGatewayAccounts(
+      setting.nagadAccounts,
+      setting.nagadNumber,
+      setting.nagadType
+    );
+
+    if (normBkash.changed || normNagad.changed) {
+      setting.bkashAccounts = normBkash.accounts;
+      setting.nagadAccounts = normNagad.accounts;
+      await setting.save();
     }
 
     return NextResponse.json({ success: true, setting });
@@ -42,10 +61,47 @@ export async function PUT(req: NextRequest) {
     }
 
     // Update fields
-    if (body.bkashNumber !== undefined) setting.bkashNumber = body.bkashNumber;
-    if (body.bkashType !== undefined) setting.bkashType = body.bkashType;
-    if (body.nagadNumber !== undefined) setting.nagadNumber = body.nagadNumber;
-    if (body.nagadType !== undefined) setting.nagadType = body.nagadType;
+    const today = getTodayBDDate();
+    if (Array.isArray(body.bkashAccounts)) {
+      const cleanedBkash: GatewayAccount[] = body.bkashAccounts
+        .filter((a: Partial<GatewayAccount>) => a && typeof a.number === "string" && a.number.trim() !== "")
+        .map((a: Partial<GatewayAccount>) => ({
+          number: (a.number || "").trim(),
+          type: a.type === "merchant" ? "merchant" : "personal",
+          dailyLimitBDT: Math.max(0, Number(a.dailyLimitBDT ?? 25000)),
+          usedTodayBDT: Math.max(0, Number(a.usedTodayBDT ?? 0)),
+          lastResetDate: a.lastResetDate || today,
+          isActive: a.isActive !== false,
+        }));
+      setting.bkashAccounts = cleanedBkash;
+      const firstActive = cleanedBkash.find((a) => a.isActive) || cleanedBkash[0];
+      if (firstActive) {
+        setting.bkashNumber = firstActive.number;
+        setting.bkashType = firstActive.type;
+      }
+    }
+    if (Array.isArray(body.nagadAccounts)) {
+      const cleanedNagad: GatewayAccount[] = body.nagadAccounts
+        .filter((a: Partial<GatewayAccount>) => a && typeof a.number === "string" && a.number.trim() !== "")
+        .map((a: Partial<GatewayAccount>) => ({
+          number: (a.number || "").trim(),
+          type: a.type === "merchant" ? "merchant" : "personal",
+          dailyLimitBDT: Math.max(0, Number(a.dailyLimitBDT ?? 25000)),
+          usedTodayBDT: Math.max(0, Number(a.usedTodayBDT ?? 0)),
+          lastResetDate: a.lastResetDate || today,
+          isActive: a.isActive !== false,
+        }));
+      setting.nagadAccounts = cleanedNagad;
+      const firstActive = cleanedNagad.find((a) => a.isActive) || cleanedNagad[0];
+      if (firstActive) {
+        setting.nagadNumber = firstActive.number;
+        setting.nagadType = firstActive.type;
+      }
+    }
+    if (body.bkashNumber !== undefined && !Array.isArray(body.bkashAccounts)) setting.bkashNumber = body.bkashNumber;
+    if (body.bkashType !== undefined && !Array.isArray(body.bkashAccounts)) setting.bkashType = body.bkashType;
+    if (body.nagadNumber !== undefined && !Array.isArray(body.nagadAccounts)) setting.nagadNumber = body.nagadNumber;
+    if (body.nagadType !== undefined && !Array.isArray(body.nagadAccounts)) setting.nagadType = body.nagadType;
     if (body.usdtBep20Address !== undefined) setting.usdtBep20Address = body.usdtBep20Address;
     if (body.usdtRateBDT !== undefined) setting.usdtRateBDT = Number(body.usdtRateBDT);
     if (body.usdtQrCodeUrl !== undefined) setting.usdtQrCodeUrl = body.usdtQrCodeUrl;

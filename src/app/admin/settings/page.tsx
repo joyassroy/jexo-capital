@@ -1,11 +1,22 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Save, AlertCircle, CheckCircle2, Upload, QrCode, Trash2, Image as ImageIcon, RotateCcw, Loader2, User } from "lucide-react";
+import { Save, AlertCircle, CheckCircle2, Upload, QrCode, Trash2, Image as ImageIcon, RotateCcw, Loader2, User, Plus } from "lucide-react";
+
+interface GatewayAccountItem {
+  number: string;
+  type: "personal" | "merchant";
+  dailyLimitBDT: number;
+  usedTodayBDT: number;
+  lastResetDate?: string;
+  isActive: boolean;
+}
 
 export default function AdminSettingsPage() {
   const [bkashNumber, setBkashNumber] = useState("");
   const [nagadNumber, setNagadNumber] = useState("");
+  const [bkashAccounts, setBkashAccounts] = useState<GatewayAccountItem[]>([]);
+  const [nagadAccounts, setNagadAccounts] = useState<GatewayAccountItem[]>([]);
   const [usdtBep20Address, setUsdtBep20Address] = useState("");
   const [usdtRateBDT, setUsdtRateBDT] = useState(127);
   const [usdtQrCodeUrl, setUsdtQrCodeUrl] = useState("");
@@ -42,6 +53,32 @@ export default function AdminSettingsPage() {
           const s = data.setting;
           setBkashNumber(s.bkashNumber || "");
           setNagadNumber(s.nagadNumber || "");
+          setBkashAccounts(
+            Array.isArray(s.bkashAccounts) && s.bkashAccounts.length > 0
+              ? s.bkashAccounts
+              : [
+                  {
+                    number: s.bkashNumber || "",
+                    type: s.bkashType || "personal",
+                    dailyLimitBDT: 25000,
+                    usedTodayBDT: 0,
+                    isActive: true,
+                  },
+                ]
+          );
+          setNagadAccounts(
+            Array.isArray(s.nagadAccounts) && s.nagadAccounts.length > 0
+              ? s.nagadAccounts
+              : [
+                  {
+                    number: s.nagadNumber || "",
+                    type: s.nagadType || "personal",
+                    dailyLimitBDT: 25000,
+                    usedTodayBDT: 0,
+                    isActive: true,
+                  },
+                ]
+          );
           setUsdtBep20Address(s.usdtBep20Address || "");
           setUsdtRateBDT(s.usdtRateBDT || 127);
           setUsdtQrCodeUrl(s.usdtQrCodeUrl || "");
@@ -186,8 +223,10 @@ export default function AdminSettingsPage() {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          bkashNumber,
-          nagadNumber,
+          bkashNumber: bkashAccounts.find((a) => a.isActive)?.number || bkashNumber,
+          nagadNumber: nagadAccounts.find((a) => a.isActive)?.number || nagadNumber,
+          bkashAccounts,
+          nagadAccounts,
           usdtBep20Address,
           usdtRateBDT,
           usdtQrCodeUrl,
@@ -247,36 +286,323 @@ export default function AdminSettingsPage() {
 
       <form onSubmit={handleSave} className="space-y-6">
         {/* Payment Gateways Card */}
-        <div className="p-6 rounded-2xl bg-[#1E293B] border border-slate-800 space-y-4">
-          <h2 className="text-sm font-extrabold text-cyan-400 uppercase tracking-wider">
-            Mobile Banking Deposit Gateways
-          </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="p-6 rounded-2xl bg-[#1E293B] border border-slate-800 space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-800">
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">
-                Admin bKash Number
-              </label>
-              <input
-                type="text"
-                value={bkashNumber}
-                onChange={(e) => setBkashNumber(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl bg-[#0F172A] border border-slate-700 text-sm text-white font-mono outline-none"
-              />
+              <h2 className="text-sm font-extrabold text-cyan-400 uppercase tracking-wider">
+                Mobile Banking Deposit Gateways (Auto-Rotation & Daily Limit)
+              </h2>
+              <p className="text-[11px] text-slate-400 mt-0.5">
+                Add 4–5+ bKash & Nagad numbers with daily limits. When a number reaches its limit, users automatically get the next available number.
+              </p>
+            </div>
+          </div>
+
+          {/* bKash Accounts List */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-extrabold text-pink-400 uppercase tracking-wider">
+                bKash Accounts ({bkashAccounts.length})
+              </span>
+              <button
+                type="button"
+                onClick={() =>
+                  setBkashAccounts([
+                    ...bkashAccounts,
+                    {
+                      number: "",
+                      type: "personal",
+                      dailyLimitBDT: 25000,
+                      usedTodayBDT: 0,
+                      isActive: true,
+                    },
+                  ])
+                }
+                className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-pink-500/20 hover:bg-pink-500/30 text-pink-300 border border-pink-500/30 text-xs font-bold transition-all"
+              >
+                <Plus size={14} /> Add bKash Number
+              </button>
             </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">
-                Admin Nagad Number
-              </label>
-              <input
-                type="text"
-                value={nagadNumber}
-                onChange={(e) => setNagadNumber(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl bg-[#0F172A] border border-slate-700 text-sm text-white font-mono outline-none"
-              />
+            <div className="space-y-2.5">
+              {bkashAccounts.map((acc, idx) => (
+                <div
+                  key={`bkash-${idx}`}
+                  className="p-3.5 rounded-xl bg-[#0F172A] border border-slate-800 grid grid-cols-1 sm:grid-cols-12 gap-2.5 items-center"
+                >
+                  <div className="sm:col-span-4">
+                    <label className="block text-[10px] font-bold text-slate-400 mb-1">
+                      bKash #{idx + 1} Number
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="017xxxxxxxx"
+                      value={acc.number}
+                      onChange={(e) => {
+                        const updated = [...bkashAccounts];
+                        updated[idx] = { ...updated[idx], number: e.target.value };
+                        setBkashAccounts(updated);
+                      }}
+                      className="w-full px-3 py-2 rounded-lg bg-[#1E293B] border border-slate-700 text-xs text-white font-mono outline-none focus:border-pink-500"
+                    />
+                  </div>
+
+                  <div className="sm:col-span-2">
+                    <label className="block text-[10px] font-bold text-slate-400 mb-1">
+                      Type
+                    </label>
+                    <select
+                      value={acc.type}
+                      onChange={(e) => {
+                        const updated = [...bkashAccounts];
+                        updated[idx] = {
+                          ...updated[idx],
+                          type: e.target.value as "personal" | "merchant",
+                        };
+                        setBkashAccounts(updated);
+                      }}
+                      className="w-full px-2.5 py-2 rounded-lg bg-[#1E293B] border border-slate-700 text-xs text-white font-semibold outline-none"
+                    >
+                      <option value="personal">Personal</option>
+                      <option value="merchant">Merchant</option>
+                    </select>
+                  </div>
+
+                  <div className="sm:col-span-3">
+                    <label className="block text-[10px] font-bold text-slate-400 mb-1">
+                      Daily Limit (TK, 0=No Limit)
+                    </label>
+                    <input
+                      type="number"
+                      min={0}
+                      value={acc.dailyLimitBDT}
+                      onChange={(e) => {
+                        const updated = [...bkashAccounts];
+                        updated[idx] = {
+                          ...updated[idx],
+                          dailyLimitBDT: Number(e.target.value),
+                        };
+                        setBkashAccounts(updated);
+                      }}
+                      className="w-full px-3 py-2 rounded-lg bg-[#1E293B] border border-slate-700 text-xs text-white font-mono outline-none"
+                    />
+                  </div>
+
+                  <div className="sm:col-span-3 flex items-center justify-between sm:justify-end gap-2 pt-2 sm:pt-4">
+                    <div className="text-[10px] font-mono text-slate-300">
+                      Used:{" "}
+                      <span
+                        className={
+                          acc.dailyLimitBDT > 0 && acc.usedTodayBDT >= acc.dailyLimitBDT
+                            ? "text-rose-400 font-bold"
+                            : "text-emerald-400 font-bold"
+                        }
+                      >
+                        {acc.usedTodayBDT}
+                      </span>
+                      {acc.usedTodayBDT > 0 && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = [...bkashAccounts];
+                            updated[idx] = { ...updated[idx], usedTodayBDT: 0 };
+                            setBkashAccounts(updated);
+                          }}
+                          className="ml-1.5 text-[9px] text-amber-400 underline"
+                          title="Reset today's usage"
+                        >
+                          Reset
+                        </button>
+                      )}
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const updated = [...bkashAccounts];
+                        updated[idx] = { ...updated[idx], isActive: !updated[idx].isActive };
+                        setBkashAccounts(updated);
+                      }}
+                      className={`px-2.5 py-1 rounded-lg text-[10px] font-bold border ${
+                        acc.isActive
+                          ? "bg-emerald-500/15 border-emerald-500/40 text-emerald-400"
+                          : "bg-slate-800 border-slate-700 text-slate-400"
+                      }`}
+                    >
+                      {acc.isActive ? "ON" : "OFF"}
+                    </button>
+
+                    {bkashAccounts.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setBkashAccounts(bkashAccounts.filter((_, i) => i !== idx))
+                        }
+                        className="p-1.5 rounded-lg bg-red-500/15 hover:bg-red-500/30 text-red-400"
+                        title="Remove"
+                      >
+                        <Trash2 size={13} />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Nagad Accounts List */}
+          <div className="space-y-3 pt-2 border-t border-slate-800">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-extrabold text-orange-400 uppercase tracking-wider">
+                Nagad Accounts ({nagadAccounts.length})
+              </span>
+              <button
+                type="button"
+                onClick={() =>
+                  setNagadAccounts([
+                    ...nagadAccounts,
+                    {
+                      number: "",
+                      type: "personal",
+                      dailyLimitBDT: 25000,
+                      usedTodayBDT: 0,
+                      isActive: true,
+                    },
+                  ])
+                }
+                className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-orange-500/20 hover:bg-orange-500/30 text-orange-300 border border-orange-500/30 text-xs font-bold transition-all"
+              >
+                <Plus size={14} /> Add Nagad Number
+              </button>
             </div>
 
+            <div className="space-y-2.5">
+              {nagadAccounts.map((acc, idx) => (
+                <div
+                  key={`nagad-${idx}`}
+                  className="p-3.5 rounded-xl bg-[#0F172A] border border-slate-800 grid grid-cols-1 sm:grid-cols-12 gap-2.5 items-center"
+                >
+                  <div className="sm:col-span-4">
+                    <label className="block text-[10px] font-bold text-slate-400 mb-1">
+                      Nagad #{idx + 1} Number
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="018xxxxxxxx"
+                      value={acc.number}
+                      onChange={(e) => {
+                        const updated = [...nagadAccounts];
+                        updated[idx] = { ...updated[idx], number: e.target.value };
+                        setNagadAccounts(updated);
+                      }}
+                      className="w-full px-3 py-2 rounded-lg bg-[#1E293B] border border-slate-700 text-xs text-white font-mono outline-none focus:border-orange-500"
+                    />
+                  </div>
+
+                  <div className="sm:col-span-2">
+                    <label className="block text-[10px] font-bold text-slate-400 mb-1">
+                      Type
+                    </label>
+                    <select
+                      value={acc.type}
+                      onChange={(e) => {
+                        const updated = [...nagadAccounts];
+                        updated[idx] = {
+                          ...updated[idx],
+                          type: e.target.value as "personal" | "merchant",
+                        };
+                        setNagadAccounts(updated);
+                      }}
+                      className="w-full px-2.5 py-2 rounded-lg bg-[#1E293B] border border-slate-700 text-xs text-white font-semibold outline-none"
+                    >
+                      <option value="personal">Personal</option>
+                      <option value="merchant">Merchant</option>
+                    </select>
+                  </div>
+
+                  <div className="sm:col-span-3">
+                    <label className="block text-[10px] font-bold text-slate-400 mb-1">
+                      Daily Limit (TK, 0=No Limit)
+                    </label>
+                    <input
+                      type="number"
+                      min={0}
+                      value={acc.dailyLimitBDT}
+                      onChange={(e) => {
+                        const updated = [...nagadAccounts];
+                        updated[idx] = {
+                          ...updated[idx],
+                          dailyLimitBDT: Number(e.target.value),
+                        };
+                        setNagadAccounts(updated);
+                      }}
+                      className="w-full px-3 py-2 rounded-lg bg-[#1E293B] border border-slate-700 text-xs text-white font-mono outline-none"
+                    />
+                  </div>
+
+                  <div className="sm:col-span-3 flex items-center justify-between sm:justify-end gap-2 pt-2 sm:pt-4">
+                    <div className="text-[10px] font-mono text-slate-300">
+                      Used:{" "}
+                      <span
+                        className={
+                          acc.dailyLimitBDT > 0 && acc.usedTodayBDT >= acc.dailyLimitBDT
+                            ? "text-rose-400 font-bold"
+                            : "text-emerald-400 font-bold"
+                        }
+                      >
+                        {acc.usedTodayBDT}
+                      </span>
+                      {acc.usedTodayBDT > 0 && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = [...nagadAccounts];
+                            updated[idx] = { ...updated[idx], usedTodayBDT: 0 };
+                            setNagadAccounts(updated);
+                          }}
+                          className="ml-1.5 text-[9px] text-amber-400 underline"
+                          title="Reset today's usage"
+                        >
+                          Reset
+                        </button>
+                      )}
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const updated = [...nagadAccounts];
+                        updated[idx] = { ...updated[idx], isActive: !updated[idx].isActive };
+                        setNagadAccounts(updated);
+                      }}
+                      className={`px-2.5 py-1 rounded-lg text-[10px] font-bold border ${
+                        acc.isActive
+                          ? "bg-emerald-500/15 border-emerald-500/40 text-emerald-400"
+                          : "bg-slate-800 border-slate-700 text-slate-400"
+                      }`}
+                    >
+                      {acc.isActive ? "ON" : "OFF"}
+                    </button>
+
+                    {nagadAccounts.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setNagadAccounts(nagadAccounts.filter((_, i) => i !== idx))
+                        }
+                        className="p-1.5 rounded-lg bg-red-500/15 hover:bg-red-500/30 text-red-400"
+                        title="Remove"
+                      >
+                        <Trash2 size={13} />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="pt-2 border-t border-slate-800 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-semibold text-slate-300 mb-1">
                 1 USDT Rate in BDT

@@ -1,5 +1,17 @@
 import mongoose, { Schema, Model, models } from "mongoose";
-import { ISetting } from "@/types";
+import { ISetting, GatewayAccount } from "@/types";
+
+const GatewayAccountSchema = new Schema<GatewayAccount>(
+  {
+    number: { type: String, required: true, trim: true },
+    type: { type: String, enum: ["personal", "merchant"], default: "personal" },
+    dailyLimitBDT: { type: Number, default: 25000 },
+    usedTodayBDT: { type: Number, default: 0 },
+    lastResetDate: { type: String, default: "" },
+    isActive: { type: Boolean, default: true },
+  },
+  { _id: false }
+);
 
 const SettingSchema = new Schema<ISetting>(
   {
@@ -17,6 +29,14 @@ const SettingSchema = new Schema<ISetting>(
       enum: ["personal", "merchant"],
       default: "personal",
     },
+    bkashAccounts: {
+      type: [GatewayAccountSchema],
+      default: undefined,
+    },
+    bkashRotationIndex: {
+      type: Number,
+      default: 0,
+    },
     nagadNumber: {
       type: String,
       default: "01812345678",
@@ -25,6 +45,14 @@ const SettingSchema = new Schema<ISetting>(
       type: String,
       enum: ["personal", "merchant"],
       default: "personal",
+    },
+    nagadAccounts: {
+      type: [GatewayAccountSchema],
+      default: undefined,
+    },
+    nagadRotationIndex: {
+      type: Number,
+      default: 0,
     },
     usdtBep20Address: {
       type: String,

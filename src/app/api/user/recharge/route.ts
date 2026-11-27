@@ -5,6 +5,7 @@ import { Deposit } from "@/models/Deposit";
 import { Setting } from "@/models/Setting";
 import { Kyc } from "@/models/Kyc";
 import { getCurrentUser } from "@/lib/auth";
+import { normalizeGatewayAccounts } from "@/lib/gateway-rotation";
 
 export async function POST(req: NextRequest) {
   try {
@@ -37,7 +38,15 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { amount, method, senderNumber, transferType, transactionId, proofImage } = body;
+    const {
+      amount,
+      method,
+      senderNumber,
+      receiverNumber,
+      transferType,
+      transactionId,
+      proofImage,
+    } = body;
 
     if (!amount || Number(amount) <= 0) {
       return NextResponse.json(
@@ -96,6 +105,44 @@ export async function POST(req: NextRequest) {
     const setting = await Setting.findOne({ key: "default_settings" });
     const usdtRate = setting?.usdtRateBDT || 127;
 
+    // Track daily usage on the selected bKash/Nagad gateway number
+    let resolvedReceiver = typeof receiverNumber === "string" ? receiverNumber.trim() : "";
+    if (setting && (method === "bKash" || method === "Nagad")) {
+      if (method === "bKash") {
+        const norm = normalizeGatewayAccounts(
+          setting.bkashAccounts,
+          setting.bkashNumber,
+          setting.bkashType
+        );
+        const accounts = norm.accounts;
+        const target =
+          accounts.find((a) => a.number === resolvedReceiver) ||
+          accounts.find((a) => a.isActive);
+        if (target) {
+          resolvedReceiver = target.number;
+          target.usedTodayBDT = Number((target.usedTodayBDT + Math.round(Number(body.amountBDT || body.amount || 0))).toFixed(2));
+        }
+        setting.bkashAccounts = accounts;
+        await setting.save();
+      } else if (method === "Nagad") {
+        const norm = normalizeGatewayAccounts(
+          setting.nagadAccounts,
+          setting.nagadNumber,
+          setting.nagadType
+        );
+        const accounts = norm.accounts;
+        const target =
+          accounts.find((a) => a.number === resolvedReceiver) ||
+          accounts.find((a) => a.isActive);
+        if (target) {
+          resolvedReceiver = target.number;
+          target.usedTodayBDT = Number((target.usedTodayBDT + Math.round(Number(body.amountBDT || body.amount || 0))).toFixed(2));
+        }
+        setting.nagadAccounts = accounts;
+        await setting.save();
+      }
+    }
+
     // In the application workflow, recharge amount is always initiated in BDT (Taka)
     const rawInputBDT = Number(body.amountBDT || body.amount || 0);
     const amountBDT = Math.round(rawInputBDT * 100) / 100;
@@ -115,6 +162,7 @@ export async function POST(req: NextRequest) {
       amountBDT,
       amountUSDT,
       senderNumber: effectiveSender,
+      receiverNumber: resolvedReceiver,
       transferType: transferType || "send_money",
       transactionId: cleanTxId,
       proofImage: proofImage || "",

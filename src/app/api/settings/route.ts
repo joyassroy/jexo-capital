@@ -2,6 +2,10 @@ import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import { Setting } from "@/models/Setting";
 import { ensureDbInitialized } from "@/lib/init-db";
+import {
+  normalizeGatewayAccounts,
+  selectNextGatewayAccount,
+} from "@/lib/gateway-rotation";
 
 export const dynamic = "force-dynamic";
 
@@ -15,13 +19,61 @@ export async function GET() {
       setting = await Setting.create({ key: "default_settings" });
     }
 
+    // Normalize & auto-reset daily usage if a new day started in Bangladesh
+    const normBkash = normalizeGatewayAccounts(
+      setting.bkashAccounts,
+      setting.bkashNumber,
+      setting.bkashType
+    );
+    const normNagad = normalizeGatewayAccounts(
+      setting.nagadAccounts,
+      setting.nagadNumber,
+      setting.nagadType
+    );
+
+    const bkashSelection = selectNextGatewayAccount(
+      normBkash.accounts,
+      setting.bkashRotationIndex || 0
+    );
+    const nagadSelection = selectNextGatewayAccount(
+      normNagad.accounts,
+      setting.nagadRotationIndex || 0
+    );
+
+    if (normBkash.changed) setting.bkashAccounts = normBkash.accounts;
+    if (normNagad.changed) setting.nagadAccounts = normNagad.accounts;
+    setting.bkashRotationIndex = bkashSelection.nextRotationIndex;
+    setting.nagadRotationIndex = nagadSelection.nextRotationIndex;
+    await setting.save();
+
+    const activeBkashNumber =
+      bkashSelection.selected?.number || setting.bkashNumber;
+    const activeBkashType =
+      bkashSelection.selected?.type || setting.bkashType;
+    const activeNagadNumber =
+      nagadSelection.selected?.number || setting.nagadNumber;
+    const activeNagadType =
+      nagadSelection.selected?.type || setting.nagadType;
+
     return NextResponse.json({
       success: true,
       settings: {
-        bkashNumber: setting.bkashNumber,
-        bkashType: setting.bkashType,
-        nagadNumber: setting.nagadNumber,
-        nagadType: setting.nagadType,
+        bkashNumber: activeBkashNumber,
+        bkashType: activeBkashType,
+        bkashAccounts: bkashSelection.availableAccounts.map((a) => ({
+          number: a.number,
+          type: a.type,
+          dailyLimitBDT: a.dailyLimitBDT,
+          usedTodayBDT: a.usedTodayBDT,
+        })),
+        nagadNumber: activeNagadNumber,
+        nagadType: activeNagadType,
+        nagadAccounts: nagadSelection.availableAccounts.map((a) => ({
+          number: a.number,
+          type: a.type,
+          dailyLimitBDT: a.dailyLimitBDT,
+          usedTodayBDT: a.usedTodayBDT,
+        })),
         usdtBep20Address: setting.usdtBep20Address,
         usdtRateBDT: setting.usdtRateBDT,
         usdtQrCodeUrl: setting.usdtQrCodeUrl || "",

@@ -22,7 +22,15 @@ import {
   Loader2,
   Sparkles,
   Clock,
+  RefreshCw,
 } from "lucide-react";
+
+interface PublicGatewayAccount {
+  number: string;
+  type: "personal" | "merchant";
+  dailyLimitBDT: number;
+  usedTodayBDT: number;
+}
 
 export default function RechargePage() {
   const router = useRouter();
@@ -36,6 +44,10 @@ export default function RechargePage() {
   const [usdtRate, setUsdtRate] = useState<number>(127);
   const [adminBkash, setAdminBkash] = useState<string>("01728967166");
   const [adminNagad, setAdminNagad] = useState<string>("01812345678");
+  const [bkashAccounts, setBkashAccounts] = useState<PublicGatewayAccount[]>([]);
+  const [nagadAccounts, setNagadAccounts] = useState<PublicGatewayAccount[]>([]);
+  const [bkashIdx, setBkashIdx] = useState<number>(0);
+  const [nagadIdx, setNagadIdx] = useState<number>(0);
   const [adminUsdtAddress, setAdminUsdtAddress] = useState<string>(
     "TKrvSHzuR9CcvRwPGiDDb7kzPvCGU3jtyi"
   );
@@ -161,6 +173,20 @@ export default function RechargePage() {
           setUsdtRate(data.settings.usdtRateBDT || 127);
           setAdminBkash(data.settings.bkashNumber || "01728967166");
           setAdminNagad(data.settings.nagadNumber || "01812345678");
+          if (Array.isArray(data.settings.bkashAccounts) && data.settings.bkashAccounts.length > 0) {
+            setBkashAccounts(data.settings.bkashAccounts);
+            const matchedIdx = data.settings.bkashAccounts.findIndex(
+              (a: PublicGatewayAccount) => a.number === data.settings.bkashNumber
+            );
+            if (matchedIdx >= 0) setBkashIdx(matchedIdx);
+          }
+          if (Array.isArray(data.settings.nagadAccounts) && data.settings.nagadAccounts.length > 0) {
+            setNagadAccounts(data.settings.nagadAccounts);
+            const matchedIdx = data.settings.nagadAccounts.findIndex(
+              (a: PublicGatewayAccount) => a.number === data.settings.nagadNumber
+            );
+            if (matchedIdx >= 0) setNagadIdx(matchedIdx);
+          }
           setAdminUsdtAddress(
             data.settings.usdtBep20Address ||
             "TKrvSHzuR9CcvRwPGiDDb7kzPvCGU3jtyi"
@@ -180,6 +206,37 @@ export default function RechargePage() {
   }, []);
 
   const isLight = mounted && theme === "light";
+
+  const activeBkashPool = (() => {
+    const reqAmt = Number(amount) || 0;
+    const withinLimit = bkashAccounts.filter(
+      (a) => a.dailyLimitBDT <= 0 || a.usedTodayBDT + reqAmt <= a.dailyLimitBDT
+    );
+    return withinLimit.length > 0 ? withinLimit : bkashAccounts;
+  })();
+
+  const activeNagadPool = (() => {
+    const reqAmt = Number(amount) || 0;
+    const withinLimit = nagadAccounts.filter(
+      (a) => a.dailyLimitBDT <= 0 || a.usedTodayBDT + reqAmt <= a.dailyLimitBDT
+    );
+    return withinLimit.length > 0 ? withinLimit : nagadAccounts;
+  })();
+
+  const currentBkashNumber =
+    activeBkashPool.length > 0
+      ? activeBkashPool[bkashIdx % activeBkashPool.length].number
+      : adminBkash;
+
+  const currentNagadNumber =
+    activeNagadPool.length > 0
+      ? activeNagadPool[nagadIdx % activeNagadPool.length].number
+      : adminNagad;
+
+  const currentChannelPool =
+    paymentChannel === "bKash" ? activeBkashPool : activeNagadPool;
+  const currentReceiverNumber =
+    paymentChannel === "bKash" ? currentBkashNumber : currentNagadNumber;
 
   const handleCopy = (text: string, label: string) => {
     navigator.clipboard.writeText(text);
@@ -306,6 +363,7 @@ export default function RechargePage() {
           amountUSDT: Number((Number(amount) / usdtRate).toFixed(4)),
           method: paymentChannel,
           senderNumber,
+          receiverNumber: currentReceiverNumber,
           transferType,
           transactionId,
           proofImage: proofImage || proofPreview || "",
@@ -952,9 +1010,31 @@ export default function RechargePage() {
                   : "bg-[#04102e]/85 backdrop-blur-md border-[#f5ba31]/30 shadow-lg"
               }`}
             >
-              <h3 className="text-xs font-black text-[#f5ba31] uppercase tracking-wider">
-                Step 1. Official {paymentChannel} Account
-              </h3>
+              <div className="flex items-center justify-between">
+                <h3 className="text-xs font-black text-[#f5ba31] uppercase tracking-wider">
+                  Step 1. Official {paymentChannel} Account
+                </h3>
+                {currentChannelPool.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (paymentChannel === "bKash") {
+                        setBkashIdx((prev) => (prev + 1) % activeBkashPool.length);
+                      } else {
+                        setNagadIdx((prev) => (prev + 1) % activeNagadPool.length);
+                      }
+                    }}
+                    className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold border transition-all active:scale-95 ${
+                      isLight
+                        ? "bg-amber-50 border-amber-300 text-amber-800 hover:bg-amber-100"
+                        : "bg-white/10 border-[#f5ba31]/40 text-[#ffd369] hover:bg-white/20"
+                    }`}
+                  >
+                    <RefreshCw size={11} />
+                    <span>Switch Number</span>
+                  </button>
+                )}
+              </div>
               <div className="space-y-2.5 text-sm font-semibold">
                 <div
                   className={`flex items-center justify-between py-2 border-b ${
@@ -970,16 +1050,11 @@ export default function RechargePage() {
                         isLight ? "text-slate-900" : "text-[#ffd369]"
                       }`}
                     >
-                      {paymentChannel === "bKash" ? adminBkash : adminNagad}
+                      {currentReceiverNumber}
                     </span>
                     <button
                       type="button"
-                      onClick={() =>
-                        handleCopy(
-                          paymentChannel === "bKash" ? adminBkash : adminNagad,
-                          "account"
-                        )
-                      }
+                      onClick={() => handleCopy(currentReceiverNumber, "account")}
                       className="btn-gold-premium p-1.5 rounded-xl text-xs"
                       title="Copy number"
                     >

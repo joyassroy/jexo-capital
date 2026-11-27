@@ -37,6 +37,11 @@ const DepositSchema = new Schema<IDeposit>(
       required: true,
       trim: true,
     },
+    receiverNumber: {
+      type: String,
+      trim: true,
+      default: "",
+    },
     transferType: {
       type: String,
       enum: ["send_money", "payment"],

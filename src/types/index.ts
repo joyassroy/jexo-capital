@@ -80,6 +80,7 @@ export interface IDeposit {
   amountBDT: number;
   amountUSDT: number;
   senderNumber: string;
+  receiverNumber?: string;
   transferType?: "send_money" | "payment";
   transactionId: string;
   proofImage?: string;
@@ -163,14 +164,27 @@ export interface IGiftCode {
   createdAt: Date;
 }
 
+export interface GatewayAccount {
+  number: string;
+  type: "personal" | "merchant";
+  dailyLimitBDT: number; // 0 = unlimited
+  usedTodayBDT: number;
+  lastResetDate: string; // YYYY-MM-DD (Asia/Dhaka)
+  isActive: boolean;
+}
+
 export interface ISetting {
   _id?: string;
   key: string;
   // Financial Gateways
   bkashNumber: string;
   bkashType: "personal" | "merchant";
+  bkashAccounts?: GatewayAccount[];
+  bkashRotationIndex?: number;
   nagadNumber: string;
   nagadType: "personal" | "merchant";
+  nagadAccounts?: GatewayAccount[];
+  nagadRotationIndex?: number;
   usdtBep20Address: string;
   usdtRateBDT: number;
   usdtQrCodeUrl?: string;

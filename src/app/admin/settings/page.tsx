@@ -43,6 +43,8 @@ export default function AdminSettingsPage() {
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [savingGateways, setSavingGateways] = useState(false);
+  const [gatewaySavedMsg, setGatewaySavedMsg] = useState("");
   const [message, setMessage] = useState("");
 
   useEffect(() => {
@@ -259,6 +261,37 @@ export default function AdminSettingsPage() {
       alert("Network error.");
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleSaveGateways = async () => {
+    setSavingGateways(true);
+    setGatewaySavedMsg("");
+    try {
+      const res = await fetch("/api/admin/settings", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          bkashNumber: bkashAccounts.find((a) => a.isActive)?.number || bkashNumber,
+          nagadNumber: nagadAccounts.find((a) => a.isActive)?.number || nagadNumber,
+          bkashAccounts,
+          nagadAccounts,
+          usdtRateBDT,
+        }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        if (data?.setting?.bkashAccounts) setBkashAccounts(data.setting.bkashAccounts);
+        if (data?.setting?.nagadAccounts) setNagadAccounts(data.setting.nagadAccounts);
+        setGatewaySavedMsg("Gateways saved to database!");
+        setTimeout(() => setGatewaySavedMsg(""), 3500);
+      } else {
+        alert(data.error || "Failed to save gateways.");
+      }
+    } catch {
+      alert("Network error while saving gateways.");
+    } finally {
+      setSavingGateways(false);
     }
   };
 
@@ -602,8 +635,8 @@ export default function AdminSettingsPage() {
             </div>
           </div>
 
-          <div className="pt-2 border-t border-slate-800 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
+          <div className="pt-3 border-t border-slate-800 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div className="w-full sm:w-64">
               <label className="block text-xs font-semibold text-slate-300 mb-1">
                 1 USDT Rate in BDT
               </label>
@@ -613,6 +646,28 @@ export default function AdminSettingsPage() {
                 onChange={(e) => setUsdtRateBDT(Number(e.target.value))}
                 className="w-full px-4 py-2.5 rounded-xl bg-[#0F172A] border border-slate-700 text-sm text-white font-bold outline-none"
               />
+            </div>
+
+            <div className="flex items-center gap-3">
+              {gatewaySavedMsg && (
+                <span className="text-xs font-bold text-emerald-400 flex items-center gap-1">
+                  <CheckCircle2 size={15} />
+                  {gatewaySavedMsg}
+                </span>
+              )}
+              <button
+                type="button"
+                onClick={handleSaveGateways}
+                disabled={savingGateways}
+                className="px-5 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs shadow-lg flex items-center gap-2 transition-all disabled:opacity-50"
+              >
+                {savingGateways ? (
+                  <Loader2 size={15} className="animate-spin" />
+                ) : (
+                  <Save size={15} />
+                )}
+                <span>{savingGateways ? "Saving..." : "Save Gateways"}</span>
+              </button>
             </div>
           </div>
         </div>
